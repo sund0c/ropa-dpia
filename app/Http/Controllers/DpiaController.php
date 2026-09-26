@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\DpiaStatus;
+use App\Support\PdfFooter;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Validator;
 use App\Support\MetodologiRisiko;
 use App\Support\RopaStatus;
 use Illuminate\Http\RedirectResponse;
@@ -138,16 +143,7 @@ class DpiaController extends Controller
             404
         );
 
-        $this->cleanRows($request);
-        if ($tab === 'penilaian')    $this->cleanInheren($request);
-        if ($tab === 'pengendalian') $this->cleanPengendalian($request);
-
-        $data = $request->validate($this->rules($tab), $this->messages(), $this->attributes());
-
-        // Konsultasi Lembaga tidak dilakukan: buang isian Lembaga yang terlanjur diketik
-        if ($tab === 'rekomendasi' && $data['lembaga_konsultasi'] === 'tidak') {
-            $data['lembaga_tanggal'] = $data['lembaga_saran'] = $data['lembaga_tindak_lanjut'] = null;
-        }
+        $data = $this->dataTab($tab, $request);
 
         $dpia = session('dpia', []);
         $dpia[$tab]         = $data;
@@ -158,6 +154,36 @@ class DpiaController extends Controller
         return redirect()
             ->route('dpia.form', ['tab' => $tab])
             ->with('saved', self::TABS[$tab] . ' tersimpan.');
+    }
+
+    /**
+     * Bersihkan + validasi isian satu tab DPIA. Dipakai oleh Simpan dan Impor JSON.
+     * Beberapa aturan bergantung pada RoPA/Tab VI di session, jadi impor memuat tab secara berurutan.
+     */
+    public function dataTab(string $tab, Request $request): array
+    {
+        abort_unless(
+            array_key_exists($tab, self::TABS) && ! in_array($tab, self::TABS_OTOMATIS, true),
+            404
+        );
+
+        $this->cleanRows($request);
+        if ($tab === 'penilaian')    $this->cleanInheren($request);
+        if ($tab === 'pengendalian') $this->cleanPengendalian($request);
+
+        $data = Validator::make(
+            $request->all(),
+            $this->rules($tab),
+            $this->messages(),
+            $this->attributes()
+        )->validate();
+
+        // Konsultasi Lembaga tidak dilakukan: buang isian Lembaga
+        if ($tab === 'rekomendasi' && $data['lembaga_konsultasi'] === 'tidak') {
+            $data['lembaga_tanggal'] = $data['lembaga_saran'] = $data['lembaga_tindak_lanjut'] = null;
+        }
+
+        return $data;
     }
 
     /** Kembalikan metodologi penilaian risiko ke nilai default (risiko inheren tidak disentuh). */
@@ -187,6 +213,77 @@ class DpiaController extends Controller
             ->route('dpia.form', ['tab' => 'penilaian'])
             ->with('saved', 'Daftar risiko inheren dikembalikan ke nilai default.');
     }
+
+    public function pdf(Request $request)
+    {
+        if ($redirect = $this->guard()) return $redirect;
+
+        $ropa = session('ropa');
+        $dpia = session('dpia', []);
+
+        if ($masalah = DpiaStatus::masalah($ropa, $dpia)) {
+            return redirect()->route('dpia.form', ['tab' => 'kesimpulan'])
+                ->withErrors(['dpia' => 'DPIA belum lengkap: ' . $masalah[0]]);
+        }
+
+        // Lokasi, tanggal, dan penandatangan kiri: hanya untuk cetakan ini, tidak disimpan
+        $v = Validator::make($request->only('lokasi', 'tanggal'), [
+            'lokasi'  => ['required', 'string', 'max:100'],
+            'tanggal' => ['required', 'date_format:Y-m-d'],
+        ]);
+
+        if ($v->fails()) {
+            return redirect()->route('dpia.form', ['tab' => 'kesimpulan'])
+                ->withErrors(['dpia' => 'Lokasi dan tanggal pengesahan wajib diisi dengan benar sebelum mencetak PDF.']);
+        }
+
+        $in   = $v->validated();
+        $kode = self::kodeDokumen($ropa);
+
+        $pdf = Pdf::loadView('dpia.pdf', [
+            'ropa'       => $ropa,
+            'dpia'       => $dpia,
+            'kode'       => $kode,
+            'indikator'  => RopaStatus::indikatorAktif($ropa),
+            'risikoList' => MetodologiRisiko::daftarRisiko($dpia['penilaian'] ?? []),
+            'labelsRopa' => RopaController::labelsPdf(),
+            'labels'     => [
+                'status'            => self::STATUS_DOKUMEN,
+                'risiko'            => RopaController::INDIKATOR_RISIKO,
+                'peran'             => RopaController::PERAN_PENERIMA,
+                'lokasi'            => self::LOKASI_PIHAK,
+                'jenis_umum'        => RopaController::JENIS_DATA_UMUM,
+                'jenis_spesifik'    => RopaController::JENIS_DATA_SPESIFIK,
+                'penilaian'         => self::PENILAIAN,
+                'jawaban'           => self::JAWABAN,
+                'status_kontrol'    => self::STATUS_KONTROL,
+                'jenis_kontrol'     => self::JENIS_KONTROL,
+                'keputusan'         => self::KEPUTUSAN,
+                'status_penanganan' => self::STATUS_PENANGANAN,
+                'efektivitas'       => self::EFEKTIVITAS,
+                'keputusan_akhir'   => self::KEPUTUSAN_AKHIR,
+            ],
+            'pengesahan' => [
+                'lokasi'  => $in['lokasi'],
+                'tanggal' => Carbon::createFromFormat('!Y-m-d', $in['tanggal'])->locale('id')->translatedFormat('d F Y'),
+            ],
+        ])
+            ->setPaper('a4', 'portrait')
+            ->setOption([
+                'isRemoteEnabled'     => false,
+                'isPhpEnabled'        => false,
+                'isJavascriptEnabled' => false,
+                'defaultFont'         => 'Helvetica',
+            ]);
+
+        PdfFooter::tambah(
+            $pdf,
+            $kode . ' / ' . $ropa['nomor'] . ' - Dicetak ' . now()->locale('id')->translatedFormat('d F Y, H:i') . ' WITA'
+        );
+
+        return $pdf->stream($kode . '.pdf')->header('Cache-Control', 'no-store, private');
+    }
+
 
     /** Kode DPIA = akhiran Nomor RoPA dengan awalan DPIA. */
     public static function kodeDokumen(array $ropa): string

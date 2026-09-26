@@ -71,9 +71,11 @@
         </dialog>
     @endif
 
-    <form method="POST" action="{{ route('session.reset') }}" style="margin-top:2rem"
-          onsubmit="return confirm('Semua data RoPA dan DPIA di sesi ini akan dihapus. Lanjutkan?')">
-        @csrf
-        <button type="submit" class="secondary">Mulai sesi baru</button>
-    </form>
+    <div style="margin-top:2rem">
+        @include('partials.data-json')
+    </div>
+    <div style="margin-top:1rem">
+        @include('partials.sesi-baru')
+    </div>
+
 @endsection

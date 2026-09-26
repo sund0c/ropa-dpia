@@ -5,8 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'RoPA & DPIA')</title>
     <style>
-        body { font-family: system-ui, sans-serif; max-width: 860px; margin: 2rem auto; padding: 0 1rem; color: #1f2937; }
-        .meta { background: #f3f4f6; padding: .75rem 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: .9rem; }
+:root { --latar: #1e293b; }   /* abu-abu gelap kebiruan; ganti di sini bila ingin warna lain */
+body { margin: 0; min-height: 100vh; font-family: system-ui, sans-serif; color: #1f2937; background: var(--latar); }
+.wadah { max-width: 920px; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+.kepala-app { color: #cbd5e1; font-size: .85rem; letter-spacing: .2px; margin-bottom: .75rem; }
+.kepala-app strong { color: #fff; }
+.kartu { background: #fff; border-radius: 12px; padding: 1.75rem 2rem; box-shadow: 0 12px 32px rgba(0, 0, 0, .35); }
+@media (max-width: 640px) { .kartu { padding: 1.25rem 1rem; border-radius: 8px; } }        .meta { background: #f3f4f6; padding: .75rem 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: .9rem; }
         .tabs { display: flex; gap: .25rem; border-bottom: 2px solid #e5e7eb; margin-bottom: 1.25rem; flex-wrap: wrap; }
         .tabs a { padding: .5rem .9rem; text-decoration: none; color: #4b5563; border-radius: 6px 6px 0 0; }
         .tabs a.active { background: #1e40af; color: #fff; }
@@ -104,20 +109,40 @@ h4.sub4 { font-size: .95rem; margin: 1rem 0 .5rem; color: #1f2937; }
 h5.sub5 { font-size: .9rem; margin: .5rem 0; color: #1f2937; }
 .penanganan { margin-top: .75rem; padding: .6rem .8rem; border-left: 3px solid #047857; background: #f0fdf4; border-radius: 0 6px 6px 0; }
 .risk-block .card { background: #fff; }
+
+dialog.dialog-lebar { width: min(680px, 92vw); }
+ol.persetujuan { padding-left: 1.3rem; line-height: 1.55; }
+ol.persetujuan li { margin-bottom: .7rem; }
+button.btn-merah { background: #b91c1c; }
+button.btn-merah:hover { background: #991b1b; }
+button:disabled { opacity: .5; cursor: not-allowed; }
+
+.status-dpia { margin-top: 1.5rem; padding: .8rem 1rem; border: 1px solid #e5e7eb; border-radius: 8px; background: #f9fafb; }
+.status-dpia ul { margin: .4rem 0 0; }
+
+.data-json { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; margin-bottom: .35rem; }
+a.btn-garis { display: inline-block; padding: .55rem 1.1rem; border: 1px solid #1e40af; border-radius: 6px; color: #1e40af; text-decoration: none; }
+a.btn-garis:hover { background: #eff6ff; }
+
     </style>
 </head>
 <body>
-    @if (session('expired'))
-        <div class="alert warn">Sesi sebelumnya sudah lebih dari 24 jam dan telah dihapus. Silakan mulai baru.</div>
-    @endif
-    @if (session('saved'))
-        <div class="alert ok">{{ session('saved') }}</div>
-    @endif
+    <div class="wadah">
+        <div class="kepala-app"><strong>Alat bantu membuat dokumen RoPA &amp; DPIA</strong></div>
 
-    @yield('content')
-</body>
+        <main class="kartu">
+            @if (session('expired'))
+                <div class="alert warn">Sesi sebelumnya sudah lebih dari 24 jam dan telah dihapus. Silakan mulai baru.</div>
+            @endif
+            @if (session('saved'))
+                <div class="alert ok">{{ session('saved') }}</div>
+            @endif
 
-<script>
+            @yield('content')
+        </main>
+    </div>
+
+    <script>
 let repSeq = Date.now();   // indeks unik untuk baris baru dari <template>
 
 function clearRow(row) {
@@ -218,6 +243,8 @@ document.addEventListener('submit', (e) => {
 
 syncTransferData();
 </script>
+
+</body>
 
 
 </html>

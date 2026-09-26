@@ -1,6 +1,10 @@
 <x-field name="nama_aktivitas" label="Nama Aktivitas Pemrosesan"
          :value="$d['nama_aktivitas'] ?? null" required />
 
+         <x-field name="penanggung_jawab" label="Nama Penanggung Jawab Layanan/Aktivitas"
+         :value="$d['penanggung_jawab'] ?? null" required
+         hint="Nama ini akan tercantum pada kolom tanda tangan RoPA dan DPIA." />
+
 <x-repeater name="tahapan" label="Deskripsi Aktivitas Pemrosesan"
             :items="$d['tahapan'] ?? []" required
             hint="Masukkan seluruh tahapan aktivitas yang dilakukan. Satu tahapan satu isian."

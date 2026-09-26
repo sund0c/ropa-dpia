@@ -133,10 +133,7 @@ class RopaController extends Controller
     {
         abort_unless(array_key_exists($tab, self::TABS), 404);
 
-        $this->cleanLists($request);
-
-        $data = $request->validate($this->rules($tab, $request), $this->messages(), $this->attributes());
-        $data = array_merge(self::DEFAULTS[$tab] ?? [], $data);
+        $data = $this->dataTab($tab, $request);
 
         $ropa = session('ropa', []);
         $ropa['nomor']    ??= $this->generateNomor();
@@ -150,6 +147,41 @@ class RopaController extends Controller
             ->with('saved', self::TABS[$tab] . ' tersimpan.');
     }
 
+    /**
+     * Bersihkan + validasi isian satu tab. Dipakai oleh tombol Simpan dan oleh Impor JSON,
+     * sehingga keduanya selalu memakai aturan yang sama. Melempar ValidationException bila gagal.
+     */
+    public function dataTab(string $tab, Request $request): array
+    {
+        abort_unless(array_key_exists($tab, self::TABS), 404);
+
+        $this->cleanLists($request);
+
+        $data = Validator::make(
+            $request->all(),
+            $this->rules($tab, $request),
+            $this->messages(),
+            $this->attributes()
+        )->validate();
+
+        return array_merge(self::DEFAULTS[$tab] ?? [], $data);
+    }
+
+
+    /** Label untuk PDF RoPA (dipakai juga oleh PDF gabungan DPIA). */
+    public static function labelsPdf(): array
+    {
+        return [
+            'dasar'          => self::DASAR_PEMROSESAN,
+            'jenis_umum'     => self::JENIS_DATA_UMUM,
+            'jenis_spesifik' => self::JENIS_DATA_SPESIFIK,
+            'jenis'          => self::JENIS_DATA_UMUM + self::JENIS_DATA_SPESIFIK,
+            'peran'          => self::PERAN_PENERIMA,
+            'hak'            => self::HAK_SUBJEK,
+            'status_siklus'  => self::STATUS_SIKLUS,
+            'risiko'         => self::INDIKATOR_RISIKO,
+        ];
+    }
 
     public function pdf(Request $request)
     {
@@ -179,16 +211,7 @@ class RopaController extends Controller
 
         $pdf = Pdf::loadView('ropa.pdf', [
             'ropa'       => $ropa,
-            'labels'     => [
-                'dasar'          => self::DASAR_PEMROSESAN,
-                'jenis_umum'     => self::JENIS_DATA_UMUM,
-                'jenis_spesifik' => self::JENIS_DATA_SPESIFIK,
-                'jenis'          => self::JENIS_DATA_UMUM + self::JENIS_DATA_SPESIFIK,
-                'peran'          => self::PERAN_PENERIMA,
-                'hak'            => self::HAK_SUBJEK,
-                'status_siklus'  => self::STATUS_SIKLUS,
-                'risiko'         => self::INDIKATOR_RISIKO,
-            ],
+            'labels'     => self::labelsPdf(),
             'indikator'  => RopaStatus::indikatorAktif($ropa),
             'wajibDpia'  => RopaStatus::wajibDpia($ropa),
             'pengesahan' => $pengesahan,
@@ -217,9 +240,12 @@ class RopaController extends Controller
 
         $canvas->page_line($kiri, $yGaris, $kanan, $yGaris, $hitam, 0.75);
         $canvas->page_text(
-            $kiri, $yGaris + 4,
+            $kiri,
+            $yGaris + 4,
             $ropa['nomor'] . ' - Dicetak ' . now()->translatedFormat('d F Y, H:i') . ' WITA',
-            $font, $size, $hitam
+            $font,
+            $size,
+            $hitam
         );
 
         $lebar = $metrics->getTextWidth('Halaman 99 dari 99', $font, $size);
@@ -268,6 +294,7 @@ class RopaController extends Controller
             ],
             'aktivitas' => [
                 'nama_aktivitas'    => ['required', 'string', 'max:255'],
+                'penanggung_jawab'  => ['required', 'string', 'max:255'],
                 'tahapan'           => ['required', 'array', 'max:50'],
                 'tahapan.*'         => ['required', 'string', 'max:1000'],
                 'tujuan'            => ['required', 'string', 'max:2000'],
@@ -396,6 +423,7 @@ class RopaController extends Controller
             'pengamanan.*'          => 'Langkah pengamanan',
             'status_siklus'         => 'Status siklus hidup',
             'indikator.*'           => 'Indikator risiko',
+            'penanggung_jawab'  => 'Nama penanggung jawab layanan/aktivitas',
         ];
     }
 
