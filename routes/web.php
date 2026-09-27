@@ -30,7 +30,8 @@ Route::post('/persetujuan', function (Request $request) {
 // ---------------------------------------------------------------------
 //  Aplikasi (wajib sudah menyetujui)
 // ---------------------------------------------------------------------
-Route::middleware(EnsurePersetujuan::class)->group(function () {
+
+Route::middleware([EnsurePersetujuan::class, 'cache.headers:no_store;private'])->group(function () {
 
     Route::get('/', fn() => redirect()->route('ropa.form'));
 
