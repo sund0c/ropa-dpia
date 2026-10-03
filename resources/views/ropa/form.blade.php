@@ -9,7 +9,8 @@
         <strong>Nomor RoPA:</strong> {{ $ropa['nomor'] ?? 'dibuat otomatis saat pertama kali menyimpan' }}<br>
         <strong>Terakhir diperbarui:</strong>
         {{ isset($ropa['diperbarui'])
-            ? \Carbon\Carbon::parse($ropa['diperbarui'])->timezone(config('app.timezone'))->translatedFormat('d F Y, H:i') . ' WITA'
+            ? \Carbon\Carbon::parse($ropa['diperbarui'])->timezone(config('app.timezone'))->translatedFormat('d F Y, H:i') .
+                ' WITA'
             : '-' }}
     </div>
 
@@ -37,9 +38,9 @@
                 @if (\App\Support\RopaStatus::wajibDpia($ropa))
                     <a class="btn" href="{{ route('dpia.form') }}">Lanjut ke DPIA →</a>
                 @else
-<button type="button" class="btn-hijau" data-open-dialog="dialog-pdf">Export PDF</button>
+                    <button type="button" class="btn-hijau" data-open-dialog="dialog-pdf">Export PDF</button>
                 @endif
-            @elseif (! empty($ropa['nomor']))
+            @elseif (!empty($ropa['nomor']))
                 <small class="hint">
                     Belum disimpan: {{ implode(', ', \App\Support\RopaStatus::tabBelumDisimpan($ropa)) }}
                 </small>
@@ -62,7 +63,7 @@
                     <label for="pdf-tanggal">Tanggal pengesahan <span class="req">*</span></label>
                     <input id="pdf-tanggal" name="tanggal" type="date" required value="{{ now()->format('Y-m-d') }}">
                 </div>
-
+                @include('partials.pilihan-tte')
                 <div class="actions">
                     <button type="button" class="secondary" data-close-dialog>Batal</button>
                     <button type="submit">Cetak PDF</button>

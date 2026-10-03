@@ -227,9 +227,11 @@ class DpiaController extends Controller
         }
 
         // Lokasi, tanggal, dan penandatangan kiri: hanya untuk cetakan ini, tidak disimpan
-        $v = Validator::make($request->only('lokasi', 'tanggal'), [
+        $v = Validator::make($request->only('lokasi', 'tanggal', 'tte'), [
             'lokasi'  => ['required', 'string', 'max:100'],
             'tanggal' => ['required', 'date_format:Y-m-d'],
+            'tte'     => ['nullable', 'array'],
+            'tte.*'   => [Rule::in(['pj', 'ppdp', 'pengendali'])],
         ]);
 
         if ($v->fails()) {
@@ -266,6 +268,7 @@ class DpiaController extends Controller
             'pengesahan' => [
                 'lokasi'  => $in['lokasi'],
                 'tanggal' => Carbon::createFromFormat('!Y-m-d', $in['tanggal'])->locale('id')->translatedFormat('d F Y'),
+                'tte'     => array_values(array_unique($in['tte'] ?? [])),
             ],
         ])
             ->setPaper('a4', 'portrait')

@@ -10,7 +10,8 @@
         <strong>Referensi RoPA:</strong> {{ $ropa['nomor'] }}<br>
         <strong>Terakhir diperbarui:</strong>
         {{ isset($dpia['diperbarui'])
-            ? \Carbon\Carbon::parse($dpia['diperbarui'])->timezone(config('app.timezone'))->translatedFormat('d F Y, H:i') . ' WITA'
+            ? \Carbon\Carbon::parse($dpia['diperbarui'])->timezone(config('app.timezone'))->translatedFormat('d F Y, H:i') .
+                ' WITA'
             : '-' }}
     </div>
 
@@ -83,7 +84,7 @@
                     <label for="dpia-tanggal">Tanggal <span class="req">*</span></label>
                     <input id="dpia-tanggal" name="tanggal" type="date" required value="{{ now()->format('Y-m-d') }}">
                 </div>
-
+                @include('partials.pilihan-tte')
 
                 <div class="actions">
                     <button type="button" class="secondary" data-close-dialog>Batal</button>
