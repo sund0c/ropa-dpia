@@ -51,8 +51,16 @@
         <td>{{ $o['nama_pengendali'] }}</td>
     </tr>
     <tr>
+        <td class="k">Jabatan Pengendali Data Pribadi</td>
+        <td>{{ $o['jabatan_pengendali'] ?? '-' }}</td>
+    </tr>
+    <tr>
         <td class="k">Nama Pejabat Pelindung Data Pribadi (PPDP)</td>
         <td>{{ $o['nama_ppdp'] }}</td>
+    </tr>
+    <tr>
+        <td class="k">Jabatan PPDP</td>
+        <td>{{ $o['jabatan_ppdp'] ?? '-' }}</td>
     </tr>
     <tr>
         <td class="k">Kontak PPDP</td>
@@ -72,6 +80,10 @@
         <td>{{ $pj ?: '-' }}</td>
     </tr>
     <tr>
+        <td class="k">Jabatan Penanggung Jawab Layanan/Aktivitas</td>
+        <td>{{ $a['jabatan_pj'] ?? '-' }}</td>
+    </tr>
+    <tr>
         <td class="k">Deskripsi Aktivitas Pemrosesan</td>
         <td>
             <ol>
@@ -86,11 +98,13 @@
         <td>{!! $multiline($a['tujuan']) !!}</td>
     </tr>
     <tr>
-        <td class="k">Dasar Pemrosesan</td>
+        <td class="k">Dasar Pemrosesan<br><span style="font-weight:normal">(Pasal 20 ayat (2) UU PDP)</span></td>
         <td>
             <ul>
                 @foreach ($a['dasar'] as $k)
-                    <li>{{ $labels['dasar'][$k] ?? $k }}</li>
+                    <li>{{ $labels['dasar'][$k] ?? $k }}
+                        ({{ \App\Http\Controllers\RopaController::PASAL_DASAR[$k] ?? '' }})
+                    </li>
                 @endforeach
             </ul>
         </td>

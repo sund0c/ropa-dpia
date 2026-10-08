@@ -33,6 +33,17 @@ class RopaController extends Controller
         'balancing'           => 'Keseimbangan kepentingan Pengendali dan hak Subjek Data Pribadi',
     ];
 
+    /** Rujukan Pasal 20 ayat (2) UU PDP untuk setiap dasar pemrosesan. */
+    public const PASAL_DASAR = [
+        'consent'             => 'huruf a',
+        'contract'            => 'huruf b',
+        'legal_obligation'    => 'huruf c',
+        'vital_interest'      => 'huruf d',
+        'public_interest'     => 'huruf e',
+        'legitimate_interest' => 'huruf f',
+        'balancing'           => 'huruf f',
+    ];
+
     /** Pasal 4 ayat (3) UU PDP */
     public const JENIS_DATA_UMUM = [
         'nama'              => 'Nama lengkap',
@@ -142,9 +153,14 @@ class RopaController extends Controller
 
         session(['ropa' => $ropa]);
 
-        return redirect()
-            ->route('ropa.form', ['tab' => $tab])
-            ->with('saved', self::TABS[$tab] . ' tersimpan.');
+        // Lanjut otomatis ke tab berikutnya; tab terakhir tetap di tempat
+        $urutan = array_keys(self::TABS);
+        $next   = $urutan[array_search($tab, $urutan, true) + 1] ?? $tab;
+
+        $pesan = self::TABS[$tab] . ' tersimpan.'
+            . ($next !== $tab ? ' Silakan lanjutkan ' . self::TABS[$next] . '.' : '');
+
+        return redirect()->route('ropa.form', ['tab' => $next])->with('saved', $pesan);
     }
 
     /**
@@ -156,6 +172,7 @@ class RopaController extends Controller
         abort_unless(array_key_exists($tab, self::TABS), 404);
 
         $this->cleanLists($request);
+        if ($tab === 'pemetaan') $this->syncDataAnak($request);
 
         $data = Validator::make(
             $request->all(),
@@ -244,14 +261,7 @@ class RopaController extends Controller
         $yGaris = $canvas->get_height() - 50;
 
         $canvas->page_line($kiri, $yGaris, $kanan, $yGaris, $hitam, 0.75);
-        $canvas->page_text(
-            $kiri,
-            $yGaris + 4,
-            $ropa['nomor'] . ' - Dicetak ' . now()->translatedFormat('d F Y, H:i') . ' WITA',
-            $font,
-            $size,
-            $hitam
-        );
+        $canvas->page_text($kiri, $yGaris + 4, $ropa['nomor'], $font, $size, $hitam);
 
         $lebar = $metrics->getTextWidth('Halaman 99 dari 99', $font, $size);
         $canvas->page_text($kanan - $lebar, $yGaris + 4, 'Halaman {PAGE_NUM} dari {PAGE_COUNT}', $font, $size, $hitam);
@@ -284,6 +294,18 @@ class RopaController extends Controller
         }
     }
 
+    /** "Data anak" (data spesifik) selalu mengikuti isian "Pemrosesan melibatkan Data Pribadi Anak". */
+    private function syncDataAnak(Request $request): void
+    {
+        $spesifik = array_values(array_diff((array) $request->input('jenis_spesifik', []), ['anak']));
+
+        if ($request->boolean('data_anak')) {
+            $spesifik[] = 'anak';
+        }
+
+        $request->merge(['jenis_spesifik' => $spesifik]);
+    }
+
     private function rules(string $tab, Request $request): array
     {
         return match ($tab) {
@@ -294,12 +316,15 @@ class RopaController extends Controller
                 'email'           => ['nullable', 'required_without:telepon', 'email:rfc', 'max:255'],
                 'nama_pengendali' => ['required', 'string', 'max:255'],
                 'nama_ppdp'       => ['required', 'string', 'max:255'],
+                'jabatan_pengendali' => ['required', 'string', 'max:255'],
+                'jabatan_ppdp'       => ['required', 'string', 'max:255'],
                 'ppdp_email'      => ['nullable', 'required_without:ppdp_hp', 'email:rfc', 'max:255'],
                 'ppdp_hp'         => ['nullable', 'required_without:ppdp_email', 'regex:/^(\+62|62|0)8[0-9]{7,12}$/'],
             ],
             'aktivitas' => [
                 'nama_aktivitas'    => ['required', 'string', 'max:255'],
                 'penanggung_jawab'  => ['required', 'string', 'max:255'],
+                'jabatan_pj'        => ['required', 'string', 'max:255'],
                 'tahapan'           => ['required', 'array', 'max:50'],
                 'tahapan.*'         => ['required', 'string', 'max:1000'],
                 'tujuan'            => ['required', 'string', 'max:2000'],
@@ -429,6 +454,9 @@ class RopaController extends Controller
             'status_siklus'         => 'Status siklus hidup',
             'indikator.*'           => 'Indikator risiko',
             'penanggung_jawab'  => 'Nama penanggung jawab layanan/aktivitas',
+            'jabatan_pengendali' => 'Jabatan Pengendali Data Pribadi',
+            'jabatan_ppdp'       => 'Jabatan PPDP',
+            'jabatan_pj'         => 'Jabatan penanggung jawab layanan/aktivitas',
         ];
     }
 

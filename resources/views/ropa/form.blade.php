@@ -34,7 +34,7 @@
 
         <div class="actions">
             <button type="submit">Simpan tab ini</button>
-            @if (\App\Support\RopaStatus::lengkap($ropa))
+            {{-- @if (\App\Support\RopaStatus::lengkap($ropa))
                 @if (\App\Support\RopaStatus::wajibDpia($ropa))
                     <a class="btn" href="{{ route('dpia.form') }}">Lanjut ke DPIA →</a>
                 @else
@@ -44,6 +44,13 @@
                 <small class="hint">
                     Belum disimpan: {{ implode(', ', \App\Support\RopaStatus::tabBelumDisimpan($ropa)) }}
                 </small>
+            @endif --}}
+            @if (\App\Support\RopaStatus::lengkap($ropa))
+                @if (\App\Support\RopaStatus::wajibDpia($ropa))
+                    <a class="btn" href="{{ route('dpia.form') }}">Lanjut ke DPIA →</a>
+                @else
+                    <button type="button" class="btn-hijau" data-open-dialog="dialog-pdf">Export PDF</button>
+                @endif
             @endif
         </div>
     </form>

@@ -7,26 +7,33 @@
     <label class="field">
         <span>Langkah Mitigasi <span class="req">*</span></span>
         <textarea name="kontrol[{{ $rid }}][{{ $i }}][langkah]" rows="3"
-                  placeholder="Contoh: Role-Based Access Control pada aplikasi">{{ $row['langkah'] ?? '' }}</textarea>
-        @error("kontrol.$rid.$i.langkah") <small class="error">{{ $message }}</small> @enderror
+            placeholder="Contoh: Role-Based Access Control pada aplikasi">{{ $row['langkah'] ?? '' }}</textarea>
+        @error("kontrol.$rid.$i.langkah")
+            <small class="error">{{ $message }}</small>
+        @enderror
     </label>
 
     <div class="row3">
         <label class="field">
             <span>Status <span class="req">*</span></span>
-            <select name="kontrol[{{ $rid }}][{{ $i }}][status]">
+            <select name="kontrol[{{ $rid }}][{{ $i }}][status]" data-kontrol-status>
                 <option value="">— Pilih —</option>
                 @foreach ($options['status_kontrol'] as $key => $label)
                     <option value="{{ $key }}" @selected(($row['status'] ?? '') === $key)>{{ $label }}</option>
                 @endforeach
             </select>
-            @error("kontrol.$rid.$i.status") <small class="error">{{ $message }}</small> @enderror
+            @error("kontrol.$rid.$i.status")
+                <small class="error">{{ $message }}</small>
+            @enderror
         </label>
         <label class="field">
-            <span>Bukti Dukung</span>
-            <input type="text" name="kontrol[{{ $rid }}][{{ $i }}][bukti]" value="{{ $row['bukti'] ?? '' }}"
-                   placeholder="Contoh: Modul hak akses aplikasi">
-            @error("kontrol.$rid.$i.bukti") <small class="error">{{ $message }}</small> @enderror
+            <span>Bukti Dukung
+                <span class="req" data-bukti-req @unless (($row['status'] ?? '') === 'aktif') hidden @endunless>*</span>
+            </span> <input type="text" name="kontrol[{{ $rid }}][{{ $i }}][bukti]"
+                value="{{ $row['bukti'] ?? '' }}" placeholder="Contoh: Modul hak akses aplikasi">
+            @error("kontrol.$rid.$i.bukti")
+                <small class="error">{{ $message }}</small>
+            @enderror
         </label>
         <label class="field">
             <span>Keterangan <span class="req">*</span></span>
@@ -36,8 +43,11 @@
                     <option value="{{ $key }}" @selected(($row['jenis'] ?? '') === $key)>{{ $label }}</option>
                 @endforeach
             </select>
-            @error("kontrol.$rid.$i.jenis") <small class="error">{{ $message }}</small> @enderror
+            @error("kontrol.$rid.$i.jenis")
+                <small class="error">{{ $message }}</small>
+            @enderror
         </label>
     </div>
-    <small class="hint">Bukti dukung wajib diisi bila status Aktif.</small>
+    <small class="hint">Tanda <span class="req">*</span> pada Bukti Dukung muncul bila status Aktif, dan kolom
+        tersebut wajib diisi.</small>
 </div>

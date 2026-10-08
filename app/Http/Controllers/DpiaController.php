@@ -151,9 +151,20 @@ class DpiaController extends Controller
 
         session(['dpia' => $dpia]);
 
-        return redirect()
-            ->route('dpia.form', ['tab' => $tab])
-            ->with('saved', self::TABS[$tab] . ' tersimpan.');
+        // Lanjut otomatis ke tab berikutnya yang bisa diisi (tab otomatis dari RoPA dilewati)
+        $urutan = array_keys(self::TABS);
+        $next   = $tab;
+        foreach (array_slice($urutan, array_search($tab, $urutan, true) + 1) as $kandidat) {
+            if (! in_array($kandidat, self::TABS_OTOMATIS, true)) {
+                $next = $kandidat;
+                break;
+            }
+        }
+
+        $pesan = self::TABS[$tab] . ' tersimpan.'
+            . ($next !== $tab ? ' Silakan lanjutkan ' . self::TABS[$next] . '.' : '');
+
+        return redirect()->route('dpia.form', ['tab' => $next])->with('saved', $pesan);
     }
 
     /**
@@ -278,11 +289,7 @@ class DpiaController extends Controller
                 'isJavascriptEnabled' => false,
                 'defaultFont'         => 'Helvetica',
             ]);
-
-        PdfFooter::tambah(
-            $pdf,
-            $kode . ' / ' . $ropa['nomor'] . ' - Dicetak ' . now()->locale('id')->translatedFormat('d F Y, H:i') . ' WITA'
-        );
+        PdfFooter::tambah($pdf, $kode . ' / ' . $ropa['nomor']);
 
         return $pdf->stream($kode . '.pdf')->header('Cache-Control', 'no-store, private');
     }
@@ -402,9 +409,9 @@ class DpiaController extends Controller
                 'status_dokumen'      => ['required', Rule::in(array_keys(self::STATUS_DOKUMEN))],
                 'riwayat'             => ['required', 'array', 'max:30'],
                 'riwayat.*.versi'     => ['required', 'string', 'max:20'],
-                'riwayat.*.tanggal'   => ['required', 'date_format:Y-m-d'],
-                'riwayat.*.deskripsi' => ['nullable', 'string', 'max:1000'],
-                'riwayat.*.oleh'      => ['nullable', 'string', 'max:255'],
+                'riwayat.*.tanggal'   => ['required', 'date_format:Y-m-d', 'after_or_equal:tanggal_penyusunan'],
+                'riwayat.*.deskripsi' => ['required', 'string', 'max:1000'],
+                'riwayat.*.oleh'      => ['required', 'string', 'max:255'],
             ],
             'risiko'       => $this->rulesRisiko(),
             'deskripsi'    => $this->rulesDeskripsi(),
@@ -602,6 +609,8 @@ class DpiaController extends Controller
             'ringkasan.*.required'     => 'Kesimpulan wajib diisi.',
             'efektivitas.required'     => 'Pilih efektivitas langkah mitigasi.',
             'keputusan_akhir.required' => 'Pilih keputusan akhir pemrosesan.',
+
+            'riwayat.*.tanggal.after_or_equal' => 'Tanggal riwayat tidak boleh sebelum Tanggal Penyusunan.',
         ];
     }
 

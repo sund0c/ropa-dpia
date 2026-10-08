@@ -221,8 +221,8 @@
         }
 
         .blok-ttd .tempat {
-            text-align: right;
-            margin-bottom: 10pt;
+            text-align: center;
+            margin-bottom: 18pt;
         }
 
         .ttd td {
@@ -234,7 +234,7 @@
         }
 
         .ttd .ruang {
-            height: 60pt;
+            height: 65pt;
         }
 
         .ttd .nama {
@@ -286,8 +286,8 @@
             <td>{{ $dok['unit_kerja'] }}</td>
         </tr>
         <tr>
-            <td class="k">Penanggung Jawab Layanan/Aktivitas</td>
-            <td>{{ $a['penanggung_jawab'] ?? '-' }}</td>
+            <td class="k">Jabatan Penanggung Jawab</td>
+            <td>{{ $a['jabatan_pj'] ?? '-' }}</td>
         </tr>
         <tr>
             <td class="k">Kode Referensi RoPA</td>
@@ -788,7 +788,10 @@
             : '';
     @endphp
     <div class="blok-ttd">
-        <div class="tempat">{{ $pengesahan['lokasi'] }}, {{ $pengesahan['tanggal'] }}</div>
+        <div class="tempat">
+            Tanggal Pengesahan<br>
+            {{ $pengesahan['lokasi'] }}, {{ $pengesahan['tanggal'] }}
+        </div>
         <table class="ttd">
             <tr>
                 <td>Penanggung Jawab Layanan/Aktivitas</td>
