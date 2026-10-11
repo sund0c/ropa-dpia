@@ -325,10 +325,21 @@
     </div>
 
     <table class="ttd">
+        {{-- Baris 1: Penanggung Jawab (kiri) & PPDP (kanan) --}}
         <tr>
             <td>Penanggung Jawab Layanan/Aktivitas</td>
             <td></td>
             <td>Pejabat Pelindung Data Pribadi</td>
+        </tr>
+        <tr>
+            <td>{{ $a['jabatan_pj'] ?? '' }}</td>
+            <td></td>
+            <td>{{ $o['jabatan_ppdp'] ?? '' }}</td>
+        </tr>
+        <tr>
+            <td>{{ $o['nama_instansi'] }}</td>
+            <td></td>
+            <td>{{ $o['nama_instansi'] }}</td>
         </tr>
         <tr>
             <td class="ruang">{!! $ruang('pj') !!}</td>
@@ -340,9 +351,21 @@
             <td></td>
             <td class="nama">{{ $o['nama_ppdp'] }}</td>
         </tr>
+
+        {{-- Baris 2: Pengendali (tengah) --}}
         <tr>
             <td></td>
             <td class="jarak">Pengendali Data Pribadi</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>{{ $o['jabatan_pengendali'] ?? '' }}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>{{ $o['nama_instansi'] }}</td>
             <td></td>
         </tr>
         <tr>

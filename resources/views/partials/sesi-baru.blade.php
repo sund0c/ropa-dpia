@@ -4,7 +4,7 @@
     <h3 style="margin-top:0">Mulai Sesi Baru?</h3>
     <p>
         Anda akan membuat sesi baru dan <strong>semua data yang sebelumnya Anda inputkan akan hilang</strong>,
-        termasuk seluruh isian RoPA dan DPIA.
+        termasuk seluruh isian di <strong>semua modul</strong> (Aset TIK, RoPA, dan DPIA) dan di semua tab browser yang sedang terbuka.
     </p>
     <p class="hint">Pastikan PDF yang diperlukan sudah diunduh sebelum melanjutkan.</p>
 

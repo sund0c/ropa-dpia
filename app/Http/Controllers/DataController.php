@@ -71,9 +71,9 @@ class DataController extends Controller
         }
 
         // --- 2. Kosongkan sesi (persetujuan penggunaan dibawa), lalu muat tab satu per satu ---
-        session()->invalidate();
-        session()->regenerateToken();
-        session(['persetujuan' => now()->toIso8601String()]);
+        // Hanya data RoPA & DPIA yang dikosongkan; data modul lain (aset) tetap
+        session()->forget(['ropa', 'dpia']);
+        session()->regenerate();
 
         $gagal = [];
 

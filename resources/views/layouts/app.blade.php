@@ -128,7 +128,7 @@ a.btn-garis:hover { background: #eff6ff; }
 </head>
 <body>
     <div class="wadah">
-        <div class="kepala-app"><strong>Alat bantu membuat dokumen RoPA &amp; DPIA</strong></div>
+        <div class="kepala-app"><a href="/" style="color:#cbd5e1;text-decoration:none">← Beranda</a> · <strong>Penyusunan RoPA &amp; DPIA</strong></div>
 
         <main class="kartu">
             @if (session('expired'))
