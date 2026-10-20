@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use App\Support\LabelTte;
 
 class AsetController extends Controller
 {
@@ -440,8 +441,16 @@ class AsetController extends Controller
 
         $input = $v->validated();
 
+        [$label, $galat] = LabelTte::ambil($request, array_values(array_unique($input['tte'] ?? [])));
+        if ($galat) {
+            return redirect()->route('aset.form', ['tab' => array_key_last(self::tabsAktif($aset))])
+                ->withErrors(['aset' => $galat]);
+        }
+
+
         $penetapan = [
             'lokasi'  => $input['lokasi'],
+            'label'   => $label,
             'tanggal' => Carbon::createFromFormat('!Y-m-d', $input['tanggal'])->locale('id')->translatedFormat('d F Y'),
             'tte'     => array_values(array_unique($input['tte'] ?? [])),
         ];

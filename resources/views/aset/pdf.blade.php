@@ -15,8 +15,16 @@
         ->translatedFormat('d F Y, H:i') . ' WITA';
 
     $tte = (array) ($penetapan['tte'] ?? []);
-    $ruang = fn(string $k) => in_array($k, $tte, true) ? '<span class="tte">Ditandatangani menggunakan TTE</span>' : '';
-
+    $label = (array) ($penetapan['label'] ?? []);
+    $kolom = fn(string $k, string $peran, ?string $jabatan, ?string $nama) => \App\Support\LabelTte::kolom(
+        $k,
+        $label,
+        210,
+        $peran,
+        $jabatan,
+        $inf['pemilik_aset'] ?? '',
+        $nama,
+    );
     $jumlahIiv = array_count_values(array_map(fn($k) => $iv[$k], array_keys(A::IIV)));
 @endphp
 <!DOCTYPE html>
@@ -162,6 +170,10 @@
             font-size: 8pt;
             font-style: italic;
             color: #333;
+        }
+
+        .ttd .ruang-ttd {
+            height: 60pt;
         }
     </style>
 </head>
@@ -326,24 +338,13 @@
 
         <table class="ttd">
             <tr>
-                <td>Penanggung Jawab Aset</td>
-                <td>Pimpinan Instansi Pemilik Aset</td>
-            </tr>
-            <tr>
-                <td>{{ $inf['pj_jabatan'] ?? '' }}</td>
-                <td>{{ $inf['pimpinan_jabatan'] ?? '' }}</td>
-            </tr>
-            <tr>
-                <td>{{ $inf['pemilik_aset'] }}</td>
-                <td>{{ $inf['pemilik_aset'] }}</td>
-            </tr>
-            <tr>
-                <td class="ruang">{!! $ruang('pj') !!}</td>
-                <td class="ruang">{!! $ruang('pimpinan') !!}</td>
-            </tr>
-            <tr>
-                <td class="nama">{{ $inf['pj_nama'] ?? '' }}</td>
-                <td class="nama">{{ $inf['pimpinan_nama'] ?? '' }}</td>
+                <td>{!! $kolom('pj', 'Penanggung Jawab Aset', $inf['pj_jabatan'] ?? null, $inf['pj_nama'] ?? null) !!}</td>
+                <td>{!! $kolom(
+                    'pimpinan',
+                    'Pimpinan Instansi Pemilik Aset',
+                    $inf['pimpinan_jabatan'] ?? null,
+                    $inf['pimpinan_nama'] ?? null,
+                ) !!}</td>
             </tr>
         </table>
     </div>

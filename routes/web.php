@@ -41,12 +41,12 @@ Route::middleware([EnsurePersetujuan::class, 'cache.headers:no_store;private'])-
 
     // RoPA
     Route::get('/ropa',        [RopaController::class, 'form'])->name('ropa.form');
-    Route::get('/ropa/pdf',    [RopaController::class, 'pdf'])->name('ropa.pdf');
+    Route::post('/ropa/pdf',    [RopaController::class, 'pdf'])->name('ropa.pdf');
     Route::post('/ropa/{tab}', [RopaController::class, 'save'])->name('ropa.save');
 
     // DPIA
     Route::get('/dpia',                     [DpiaController::class, 'form'])->name('dpia.form');
-    Route::get('/dpia/pdf',                 [DpiaController::class, 'pdf'])->name('dpia.pdf');
+    Route::post('/dpia/pdf',                 [DpiaController::class, 'pdf'])->name('dpia.pdf');
     Route::post('/dpia/metodologi/default', [DpiaController::class, 'resetMetodologi'])->name('dpia.metodologi.default');
     Route::post('/dpia/inheren/default',    [DpiaController::class, 'resetInheren'])->name('dpia.inheren.default');
     Route::post('/dpia/{tab}',              [DpiaController::class, 'save'])->name('dpia.save');
@@ -92,7 +92,7 @@ Route::middleware([EnsurePersetujuanAset::class, 'cache.headers:no_store;private
     ->prefix('aset')->name('aset.')->group(function () {
 
         Route::get('/',            [AsetController::class, 'form'])->name('form');
-        Route::get('/pdf',         [AsetController::class, 'pdf'])->name('pdf');
+        Route::post('/pdf',        [AsetController::class, 'pdf'])->name('pdf');
         Route::get('/data/ekspor', [AsetDataController::class, 'ekspor'])->name('data.ekspor');
         Route::post('/data/impor', [AsetDataController::class, 'impor'])->name('data.impor');
 

@@ -72,7 +72,8 @@
 
     @if (empty($masalahDpia))
         <dialog id="dialog-pdf-dpia" class="dialog">
-            <form method="GET" action="{{ route('dpia.pdf') }}" target="_blank" data-close-on-submit>
+            <form method="POST" action="{{ route('dpia.pdf') }}" enctype="multipart/form-data" target="_blank" data-close-on-submit>
+                @csrf
                 <h3 style="margin-top:0">Pengesahan Dokumen DPIA</h3>
                 <p class="hint">Data ini hanya dipakai untuk cetakan ini dan tidak disimpan.</p>
 

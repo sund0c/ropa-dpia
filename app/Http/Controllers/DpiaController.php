@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use App\Support\LabelTte;
 
 class DpiaController extends Controller
 {
@@ -251,6 +252,12 @@ class DpiaController extends Controller
         }
 
         $in   = $v->validated();
+
+        [$label, $galat] = LabelTte::ambil($request, array_values(array_unique($in['tte'] ?? [])));
+        if ($galat) {
+            return redirect()->route('dpia.form', ['tab' => 'kesimpulan'])->withErrors(['dpia' => $galat]);
+        }
+
         $kode = self::kodeDokumen($ropa);
 
         $pdf = Pdf::loadView('dpia.pdf', [
@@ -278,6 +285,7 @@ class DpiaController extends Controller
             ],
             'pengesahan' => [
                 'lokasi'  => $in['lokasi'],
+                'label'   => $label,
                 'tanggal' => Carbon::createFromFormat('!Y-m-d', $in['tanggal'])->locale('id')->translatedFormat('d F Y'),
                 'tte'     => array_values(array_unique($in['tte'] ?? [])),
             ],

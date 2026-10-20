@@ -62,8 +62,7 @@
         <strong>Nomor Aset:</strong> {{ $aset['nomor'] ?? 'dibuat otomatis saat pertama kali menyimpan' }}<br>
         <strong>Terakhir diperbarui:</strong>
         {{ isset($aset['diperbarui'])
-            ? \Carbon\Carbon::parse($aset['diperbarui'])->timezone(config('app.timezone'))->locale('id')->translatedFormat('d F Y, H:i') .
-                ' WITA'
+            ? \Carbon\Carbon::parse($aset['diperbarui'])->timezone(config('app.timezone'))->locale('id')->translatedFormat('d F Y, H:i') . ' WITA'
             : '-' }}
     </div>
 
@@ -101,7 +100,9 @@
     @if ($lengkap)
         @php $inf = $aset['informasi']; @endphp
         <dialog id="dialog-pdf" class="dialog dialog-lebar">
-            <form method="GET" action="{{ route('aset.pdf') }}" target="_blank" data-close-on-submit>
+            <form method="POST" action="{{ route('aset.pdf') }}" enctype="multipart/form-data" target="_blank"
+                data-close-on-submit>
+                @csrf
                 <h3 style="margin-top:0">Penetapan Dokumen</h3>
                 <p class="hint">Tanggal dan pilihan TTE hanya dipakai untuk cetakan ini dan tidak disimpan.</p>
 
@@ -129,20 +130,39 @@
                         <span class="peran">Penanggung Jawab Aset</span>
                         <strong>{{ $inf['pj_nama'] ?? '-' }}</strong>
                         <span class="jab">{{ $inf['pj_jabatan'] ?? '' }} {{ $inf['pemilik_aset'] ?? '' }}</span>
-                        <label class="check">
-                            <input type="checkbox" name="tte[]" value="pj">
-                            <span>Menggunakan TTE</span>
-                        </label>
+                        <div class="ttd-kartu" data-tte-item>
+                            <span class="peran">Penanggung Jawab Aset</span>
+                            <strong>{{ $inf['pj_nama'] ?? '-' }}</strong>
+                            <span class="jab">{{ $inf['pj_jabatan'] ?? '' }} {{ $inf['pemilik_aset'] ?? '' }}</span>
+                            <label class="check">
+                                <input type="checkbox" name="tte[]" value="pj" data-tte-cek>
+                                <span>Menggunakan TTE</span>
+                            </label>
+                            <div class="tte-unggah" hidden>
+                                <input type="file" name="tte_label[pj]" accept="image/png,image/jpeg" disabled>
+                                <small class="hint">Label TTE (PNG/JPG, maks. 512 KB)</small>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="ttd-kartu">
                         <span class="peran">Pimpinan Instansi Pemilik Aset</span>
                         <strong>{{ $inf['pimpinan_nama'] ?? '-' }}</strong>
                         <span class="jab">{{ $inf['pimpinan_jabatan'] ?? '' }} {{ $inf['pemilik_aset'] ?? '' }}</span>
-                        <label class="check">
-                            <input type="checkbox" name="tte[]" value="pimpinan">
-                            <span>Menggunakan TTE</span>
-                        </label>
+                        <div class="ttd-kartu" data-tte-item>
+                            <span class="peran">Pimpinan Instansi Pemilik Aset</span>
+                            <strong>{{ $inf['pimpinan_nama'] ?? '-' }}</strong>
+                            <span class="jab">{{ $inf['pimpinan_jabatan'] ?? '' }}
+                                {{ $inf['pemilik_aset'] ?? '' }}</span>
+                            <label class="check">
+                                <input type="checkbox" name="tte[]" value="pimpinan" data-tte-cek>
+                                <span>Menggunakan TTE</span>
+                            </label>
+                            <div class="tte-unggah" hidden>
+                                <input type="file" name="tte_label[pimpinan]" accept="image/png,image/jpeg" disabled>
+                                <small class="hint">Label TTE (PNG/JPG, maks. 512 KB)</small>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

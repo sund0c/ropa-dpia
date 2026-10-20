@@ -257,6 +257,10 @@
             color: #333;
         }
 
+        .ttd .ruang-ttd {
+            height: 60pt;
+        }
+
         @include('ropa._css')
     </style>
 </head>
@@ -783,9 +787,16 @@
     @php
         $pj = $a['penanggung_jawab'] ?? null;
         $tte = (array) ($pengesahan['tte'] ?? []);
-        $ruang = fn(string $k) => in_array($k, $tte, true)
-            ? '<span class="tte">Ditandatangani menggunakan TTE</span>'
-            : '';
+        $label = (array) ($pengesahan['label'] ?? []);
+        $kolom = fn(string $k, string $peran, ?string $jabatan, ?string $nama) => \App\Support\LabelTte::kolom(
+            $k,
+            $label,
+            150,
+            $peran,
+            $jabatan,
+            $o['nama_instansi'] ?? '',
+            $nama,
+        );
     @endphp
     <div class="blok-ttd">
         <div class="tempat">
@@ -793,57 +804,19 @@
             {{ $pengesahan['lokasi'] }}, {{ $pengesahan['tanggal'] }}
         </div>
         <table class="ttd">
-            {{-- Baris 1: Penanggung Jawab (kiri) & PPDP (kanan) --}}
             <tr>
-                <td>Penanggung Jawab Layanan/Aktivitas</td>
+                <td>{!! $kolom('pj', 'Penanggung Jawab Layanan/Aktivitas', $a['jabatan_pj'] ?? null, $pj) !!}</td>
                 <td></td>
-                <td>Pejabat Pelindung Data Pribadi</td>
-            </tr>
-            <tr>
-                <td>{{ $a['jabatan_pj'] ?? '' }}</td>
-                <td></td>
-                <td>{{ $o['jabatan_ppdp'] ?? '' }}</td>
-            </tr>
-            <tr>
-                <td>{{ $o['nama_instansi'] }}</td>
-                <td></td>
-                <td>{{ $o['nama_instansi'] }}</td>
-            </tr>
-            <tr>
-                <td class="ruang">{!! $ruang('pj') !!}</td>
-                <td></td>
-                <td class="ruang">{!! $ruang('ppdp') !!}</td>
-            </tr>
-            <tr>
-                <td class="nama {{ $pj ? '' : 'kosong' }}">{{ $pj ?: '(....................................)' }}</td>
-                <td></td>
-                <td class="nama">{{ $o['nama_ppdp'] }}</td>
-            </tr>
-
-            {{-- Baris 2: Pengendali (tengah) --}}
-            <tr>
-                <td></td>
-                <td style="padding-top:18pt">Pengendali Data Pribadi</td>
-                <td></td>
+                <td>{!! $kolom('ppdp', 'Pejabat Pelindung Data Pribadi', $o['jabatan_ppdp'] ?? null, $o['nama_ppdp'] ?? null) !!}</td>
             </tr>
             <tr>
                 <td></td>
-                <td>{{ $o['jabatan_pengendali'] ?? '' }}</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>{{ $o['nama_instansi'] }}</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td class="ruang">{!! $ruang('pengendali') !!}</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td class="nama">{{ $o['nama_pengendali'] }}</td>
+                <td style="padding-top:22pt">{!! $kolom(
+                    'pengendali',
+                    'Pengendali Data Pribadi',
+                    $o['jabatan_pengendali'] ?? null,
+                    $o['nama_pengendali'] ?? null,
+                ) !!}</td>
                 <td></td>
             </tr>
         </table>

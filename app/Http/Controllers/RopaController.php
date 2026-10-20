@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use App\Support\RopaStatus;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Support\LabelTte;
 
 class RopaController extends Controller
 {
@@ -224,9 +225,16 @@ class RopaController extends Controller
 
         $input = $v->validated();
 
+        [$label, $galat] = LabelTte::ambil($request, array_values(array_unique($input['tte'] ?? [])));
+        if ($galat) {
+            return redirect()->route('ropa.form', ['tab' => 'risiko'])->withErrors(['ropa' => $galat]);
+        }
+
+
 
         $pengesahan = [
             'lokasi'  => $input['lokasi'],
+            'label'   => $label,
             'tanggal' => Carbon::createFromFormat('!Y-m-d', $input['tanggal'])->locale('id')->translatedFormat('d F Y'),
             'tte'     => array_values(array_unique($input['tte'] ?? [])),
         ];

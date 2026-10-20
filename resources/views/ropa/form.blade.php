@@ -57,7 +57,8 @@
 
     @if (\App\Support\RopaStatus::lengkap($ropa))
         <dialog id="dialog-pdf" class="dialog">
-            <form method="GET" action="{{ route('ropa.pdf') }}" target="_blank" data-close-on-submit>
+            <form method="POST" action="{{ route('ropa.pdf') }}" enctype="multipart/form-data" target="_blank" data-close-on-submit>
+                @csrf
                 <h3 style="margin-top:0">Pengesahan Dokumen</h3>
                 <p class="hint">Lokasi dan tanggal ini hanya dipakai untuk cetakan ini dan tidak disimpan.</p>
 
