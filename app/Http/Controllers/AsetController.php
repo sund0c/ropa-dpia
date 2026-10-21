@@ -26,7 +26,7 @@ class AsetController extends Controller
         'data'             => 'Data dan Informasi',
         'perangkat_lunak'  => 'Perangkat Lunak',
         'perangkat_keras'  => 'Perangkat Keras',
-        'sarana_penunjang' => 'Sarana Penunjang',
+        'sarana_penunjang' => 'Sarana Pendukung',
         'sdm'              => 'SDM',
     ];
 
@@ -38,6 +38,26 @@ class AsetController extends Controller
         'sarana_penunjang' => 'pk',
         'sdm'              => 'sdm',
     ];
+
+    /** Kode klasifikasi aset (BSSN) untuk penyusunan Kode Aset. */
+    public const KODE_KLASIFIKASI = [
+        'data'             => 'DI',
+        'perangkat_lunak'  => 'PL',
+        'perangkat_keras'  => 'PK',
+        'sarana_penunjang' => 'SP',
+        'sdm'              => 'PS',
+    ];
+
+    /** Kode Aset = kode klasifikasi + nomor urut 6 digit, mis. PL-000001. Null bila belum lengkap. */
+    public static function kodeAset(array $info): ?string
+    {
+        $awalan = self::KODE_KLASIFIKASI[$info['klasifikasi'] ?? ''] ?? null;
+        $urut   = (int) ($info['nomor_urut'] ?? 0);
+
+        return ($awalan && $urut >= 1 && $urut <= 999999)
+            ? $awalan . '-' . str_pad((string) $urut, 6, '0', STR_PAD_LEFT)
+            : null;
+    }
 
     /** Urutan field Kelengkapan Data (Tab I bagian B) per kelompok, untuk PDF. */
     private const FIELD_KELOMPOK = [
@@ -308,6 +328,7 @@ class AsetController extends Controller
             'iiv'       => self::IIV,
             'levelIiv'  => self::LEVEL_IIV,
             'statusIiv' => self::STATUS_IIV,
+            'kodeKlasifikasi' => self::KODE_KLASIFIKASI,
         ]);
     }
 
@@ -324,8 +345,8 @@ class AsetController extends Controller
 
         $data = $this->dataTab($tab, $request);
 
-        $aset['nomor'] ??= $this->generateNomor();
-        $aset[$tab]      = $data;
+        $aset[$tab]    = $data;
+        $aset['nomor'] = self::kodeAset($aset['informasi'] ?? []);
 
         // Tab yang tidak berlaku lagi (mis. klasifikasi bukan Perangkat Lunak → Tab IV) dibuang isiannya
         $tabs = self::tabsAktif($aset);
@@ -505,6 +526,7 @@ class AsetController extends Controller
         $rules = [
             'nama_aset'        => ['required', 'string', 'max:255'],
             'klasifikasi'      => ['required', Rule::in(array_keys(self::KLASIFIKASI))],
+            'nomor_urut'       => ['required', 'regex:/^\d{1,6}$/', 'not_regex:/^0+$/'],
             'pemilik_aset'     => ['required', 'string', 'max:255'],
             'pimpinan_nama'    => ['required', 'string', 'max:255'],
             'pimpinan_jabatan' => ['required', 'string', 'max:255'],
@@ -575,6 +597,8 @@ class AsetController extends Controller
             'digits'      => ':attribute harus :digits digit.',
             'tahun_perolehan.min' => 'Tahun Perolehan minimal :min.',
             'tahun_perolehan.max' => 'Tahun Perolehan tidak boleh melebihi tahun ini (:max).',
+            'nomor_urut.regex'     => 'Nomor Urut Aset harus berupa angka, maksimal 6 digit.',
+            'nomor_urut.not_regex' => 'Nomor Urut Aset minimal 1.',
         ];
 
         // Tab II & III: "Pilih salah satu nilai <aspek>."
@@ -638,6 +662,7 @@ class AsetController extends Controller
             'fin'                  => 'Dampak Finansial',
             'umum'                 => 'Dampak Umum / Sosial',
             'ketergantungan'       => 'Dampak Ketergantungan',
+            'nomor_urut'           => 'Nomor Urut Aset',
         ];
     }
 

@@ -186,7 +186,7 @@
 
     <table class="meta">
         <tr>
-            <td class="k">Nomor Aset</td>
+            <td class="k">Kode Aset</td>
             <td>{{ $aset['nomor'] }}</td>
         </tr>
         <tr>

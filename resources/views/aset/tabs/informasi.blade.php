@@ -11,8 +11,22 @@
 
     <div class="row">
         <x-aset-field name="nama_aset" label="Nama Aset" :value="$d['nama_aset'] ?? null" required maxlength="255" />
-        <x-aset-field name="klasifikasi" label="Klasifikasi Aset" type="select" :options="$o['klasifikasi']" :value="$d['klasifikasi'] ?? null" required
-            data-klasifikasi hint="Field pada bagian B menyesuaikan klasifikasi yang dipilih." />
+        <x-aset-field name="klasifikasi" label="Klasifikasi Aset" type="select" :options="$o['klasifikasi']" :value="$d['klasifikasi'] ?? null"
+            required data-klasifikasi hint="Field pada bagian B menyesuaikan klasifikasi yang dipilih." />
+    </div>
+
+    <div class="row">
+        <x-aset-field name="nomor_urut" label="Nomor Urut Aset" :value="$d['nomor_urut'] ?? null" required inputmode="numeric"
+            maxlength="6" placeholder="Contoh: 1" data-nomor-urut
+            hint="Nomor urut aset pada inventaris instansi (1–999999)." />
+        <div class="field">
+            <label for="kode_aset">Kode Aset</label>
+            <input id="kode_aset" type="text" readonly tabindex="-1" data-kode-aset
+                style="background:#f3f4f6; font-weight:bold; letter-spacing:.5px"
+                value="{{ \App\Http\Controllers\AsetController::kodeAset(['klasifikasi' => old('klasifikasi', $d['klasifikasi'] ?? ''), 'nomor_urut' => old('nomor_urut', $d['nomor_urut'] ?? '')]) }}"
+                placeholder="Tersusun otomatis">
+            <small class="hint">Kode klasifikasi + nomor urut 6 digit, contoh PL-000001.</small>
+        </div>
     </div>
 
     <x-aset-field name="pemilik_aset" label="Nama Instansi Pemilik Aset" :value="$d['pemilik_aset'] ?? null" required maxlength="255"
@@ -55,19 +69,21 @@
                 placeholder="Contoh: 2.1.0" />
         </div>
         <div class="row">
-            <x-aset-field name="lisensi" label="Lisensi" type="select" :options="$o['lisensi']" :value="$d['lisensi'] ?? null" required />
+            <x-aset-field name="lisensi" label="Lisensi" type="select" :options="$o['lisensi']" :value="$d['lisensi'] ?? null"
+                required />
             <x-aset-field name="tgl_lisensi_berakhir" label="Tanggal Lisensi Berakhir" type="date" :value="$d['tgl_lisensi_berakhir'] ?? null"
                 hint="Opsional" />
         </div>
         <div class="row">
             <x-aset-field name="vendor" label="Vendor/Pengembang" type="select" :options="$o['vendor']" :value="$d['vendor'] ?? null"
                 required />
-            <x-aset-field name="platform" label="Platform" type="select" :options="$o['platform']" :value="$d['platform'] ?? null" required />
+            <x-aset-field name="platform" label="Platform" type="select" :options="$o['platform']" :value="$d['platform'] ?? null"
+                required />
         </div>
         <div class="row">
             <x-aset-field name="lead_developer" label="Lead Developer" :value="$d['lead_developer'] ?? null" required maxlength="255" />
-            <x-aset-field name="lokasi_hosting" label="Lokasi Hosting" type="select" :options="$o['hosting']" :value="$d['lokasi_hosting'] ?? null"
-                required />
+            <x-aset-field name="lokasi_hosting" label="Lokasi Hosting" type="select" :options="$o['hosting']"
+                :value="$d['lokasi_hosting'] ?? null" required />
         </div>
     </fieldset>
 
@@ -85,7 +101,8 @@
         <div class="row">
             <x-aset-field name="tahun_perolehan" label="Tahun Perolehan" type="number" :value="$d['tahun_perolehan'] ?? null" required
                 min="1970" :max="now()->year" step="1" :placeholder="now()->year" />
-            <x-aset-field name="kondisi" label="Kondisi" type="select" :options="$o['kondisi']" :value="$d['kondisi'] ?? null" required />
+            <x-aset-field name="kondisi" label="Kondisi" type="select" :options="$o['kondisi']" :value="$d['kondisi'] ?? null"
+                required />
         </div>
         <x-aset-field name="lokasi_fisik" label="Lokasi Fisik" :value="$d['lokasi_fisik'] ?? null" required maxlength="255"
             placeholder="Contoh: Ruang Server Lt. 2, Rak A3" />
@@ -110,11 +127,11 @@
                 placeholder="Contoh: 5 tahun" />
         </div>
         <div class="row">
-            <x-aset-field name="enkripsi" label="Enkripsi" type="select" :options="$o['enkripsi']" :value="$d['enkripsi'] ?? null" required
-                data-enkripsi />
+            <x-aset-field name="enkripsi" label="Enkripsi" type="select" :options="$o['enkripsi']" :value="$d['enkripsi'] ?? null"
+                required data-enkripsi />
             <fieldset class="kelompok" data-metode-enkripsi @if ($aktif !== 'data' || $enkripsi !== 'ada') hidden disabled @endif>
-                <x-aset-field name="metode_enkripsi" label="Metode Enkripsi" :value="$d['metode_enkripsi'] ?? null" required maxlength="255"
-                    placeholder="Contoh: AES-256 at rest, TLS 1.3 in transit" />
+                <x-aset-field name="metode_enkripsi" label="Metode Enkripsi" :value="$d['metode_enkripsi'] ?? null" required
+                    maxlength="255" placeholder="Contoh: AES-256 at rest, TLS 1.3 in transit" />
             </fieldset>
         </div>
     </fieldset>
@@ -128,12 +145,14 @@
         <div class="row">
             <x-aset-field name="no_hp" label="No. HP" type="tel" :value="$d['no_hp'] ?? null" required
                 hint="Contoh: 081234567890 atau +6281234567890" />
-            <x-aset-field name="email" label="Email" type="email" :value="$d['email'] ?? null" required maxlength="255" />
+            <x-aset-field name="email" label="Email" type="email" :value="$d['email'] ?? null" required
+                maxlength="255" />
         </div>
         <div class="row">
-            <x-aset-field name="tipe" label="Tipe" type="select" :options="$o['tipe_sdm']" :value="$d['tipe'] ?? null" required />
-            <x-aset-field name="tgl_kontrak_berakhir" label="Tanggal Kontrak Berakhir" type="date" :value="$d['tgl_kontrak_berakhir'] ?? null"
-                hint="Opsional" />
+            <x-aset-field name="tipe" label="Tipe" type="select" :options="$o['tipe_sdm']" :value="$d['tipe'] ?? null"
+                required />
+            <x-aset-field name="tgl_kontrak_berakhir" label="Tanggal Kontrak Berakhir" type="date"
+                :value="$d['tgl_kontrak_berakhir'] ?? null" hint="Opsional" />
         </div>
         <x-aset-field name="akses_sistem" label="Akses ke Sistem" type="textarea" :value="$d['akses_sistem'] ?? null" required
             maxlength="2000"
@@ -171,4 +190,17 @@
         klas.addEventListener('change', syncKelompok);
         enk.addEventListener('change', syncEnkripsi);
     })();
+
+    // Pratinjau Kode Aset
+    const kodeKlas = @json($kodeKlasifikasi);
+    const urut = document.querySelector('[data-nomor-urut]');
+    const kodeOut = document.querySelector('[data-kode-aset]');
+
+    function syncKode() {
+        const awalan = kodeKlas[klas.value];
+        const n = parseInt((urut.value || '').replace(/\D/g, ''), 10);
+        kodeOut.value = (awalan && n >= 1 && n <= 999999) ? awalan + '-' + String(n).padStart(6, '0') : '';
+    }
+    klas.addEventListener('change', syncKode);
+    urut.addEventListener('input', syncKode);
 </script>

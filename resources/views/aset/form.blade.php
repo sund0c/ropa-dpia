@@ -49,6 +49,18 @@
             margin-top: .35rem;
         }
 
+        .ttd-kartu .tte-unggah {
+            display: flex;
+            flex-direction: column;
+            gap: .25rem;
+            margin-top: .25rem;
+        }
+
+        .ttd-kartu .tte-unggah input[type=file] {
+            font-size: .85rem;
+            max-width: 100%;
+        }
+
         @media (max-width: 640px) {
             .ttd-grid {
                 grid-template-columns: 1fr;
@@ -59,7 +71,7 @@
     <h1>Manajemen Aset TIK</h1>
 
     <div class="meta">
-        <strong>Nomor Aset:</strong> {{ $aset['nomor'] ?? 'dibuat otomatis saat pertama kali menyimpan' }}<br>
+        <strong>Kode Aset:</strong> {{ $aset['nomor'] ?? 'tersusun otomatis setelah Tab I disimpan' }}<br>
         <strong>Terakhir diperbarui:</strong>
         {{ isset($aset['diperbarui'])
             ? \Carbon\Carbon::parse($aset['diperbarui'])->timezone(config('app.timezone'))->locale('id')->translatedFormat('d F Y, H:i') . ' WITA'
@@ -100,11 +112,11 @@
     @if ($lengkap)
         @php $inf = $aset['informasi']; @endphp
         <dialog id="dialog-pdf" class="dialog dialog-lebar">
-            <form method="POST" action="{{ route('aset.pdf') }}" enctype="multipart/form-data" target="_blank"
-                data-close-on-submit>
+            <form method="POST" action="{{ route('aset.pdf') }}" enctype="multipart/form-data" data-close-on-submit>
                 @csrf
                 <h3 style="margin-top:0">Penetapan Dokumen</h3>
-                <p class="hint">Tanggal dan pilihan TTE hanya dipakai untuk cetakan ini dan tidak disimpan.</p>
+                <p class="hint">Lokasi, tanggal, pilihan TTE, dan label TTE hanya dipakai untuk cetakan ini dan tidak
+                    disimpan.</p>
 
                 <div class="row">
                     <div class="field">
@@ -120,48 +132,38 @@
                 <div class="field" style="margin-bottom:0">
                     <strong>Penandatangan</strong>
                     <small class="hint">
-                        Diambil dari Tab I. Centang <em>TTE</em> bila penandatangan menggunakan Tanda Tangan Elektronik;
-                        kosongkan untuk tanda tangan basah.
+                        Diambil dari Tab I. Centang <em>TTE</em> bila penandatangan menggunakan Tanda Tangan Elektronik,
+                        lalu unggah gambar label TTE-nya (PNG/JPG, maks. {{ \App\Support\LabelTte::MAKS_KB }} KB).
+                        Kosongkan untuk tanda tangan basah.
                     </small>
                 </div>
 
                 <div class="ttd-grid">
-                    <div class="ttd-kartu">
+                    <div class="ttd-kartu" data-tte-item>
                         <span class="peran">Penanggung Jawab Aset</span>
                         <strong>{{ $inf['pj_nama'] ?? '-' }}</strong>
                         <span class="jab">{{ $inf['pj_jabatan'] ?? '' }} {{ $inf['pemilik_aset'] ?? '' }}</span>
-                        <div class="ttd-kartu" data-tte-item>
-                            <span class="peran">Penanggung Jawab Aset</span>
-                            <strong>{{ $inf['pj_nama'] ?? '-' }}</strong>
-                            <span class="jab">{{ $inf['pj_jabatan'] ?? '' }} {{ $inf['pemilik_aset'] ?? '' }}</span>
-                            <label class="check">
-                                <input type="checkbox" name="tte[]" value="pj" data-tte-cek>
-                                <span>Menggunakan TTE</span>
-                            </label>
-                            <div class="tte-unggah" hidden>
-                                <input type="file" name="tte_label[pj]" accept="image/png,image/jpeg" disabled>
-                                <small class="hint">Label TTE (PNG/JPG, maks. 512 KB)</small>
-                            </div>
+                        <label class="check">
+                            <input type="checkbox" name="tte[]" value="pj" data-tte-cek>
+                            <span>Menggunakan TTE</span>
+                        </label>
+                        <div class="tte-unggah" hidden>
+                            <input type="file" name="tte_label[pj]" accept="image/png,image/jpeg" disabled>
+                            <small class="hint">Label TTE (PNG/JPG)</small>
                         </div>
                     </div>
 
-                    <div class="ttd-kartu">
+                    <div class="ttd-kartu" data-tte-item>
                         <span class="peran">Pimpinan Instansi Pemilik Aset</span>
                         <strong>{{ $inf['pimpinan_nama'] ?? '-' }}</strong>
                         <span class="jab">{{ $inf['pimpinan_jabatan'] ?? '' }} {{ $inf['pemilik_aset'] ?? '' }}</span>
-                        <div class="ttd-kartu" data-tte-item>
-                            <span class="peran">Pimpinan Instansi Pemilik Aset</span>
-                            <strong>{{ $inf['pimpinan_nama'] ?? '-' }}</strong>
-                            <span class="jab">{{ $inf['pimpinan_jabatan'] ?? '' }}
-                                {{ $inf['pemilik_aset'] ?? '' }}</span>
-                            <label class="check">
-                                <input type="checkbox" name="tte[]" value="pimpinan" data-tte-cek>
-                                <span>Menggunakan TTE</span>
-                            </label>
-                            <div class="tte-unggah" hidden>
-                                <input type="file" name="tte_label[pimpinan]" accept="image/png,image/jpeg" disabled>
-                                <small class="hint">Label TTE (PNG/JPG, maks. 512 KB)</small>
-                            </div>
+                        <label class="check">
+                            <input type="checkbox" name="tte[]" value="pimpinan" data-tte-cek>
+                            <span>Menggunakan TTE</span>
+                        </label>
+                        <div class="tte-unggah" hidden>
+                            <input type="file" name="tte_label[pimpinan]" accept="image/png,image/jpeg" disabled>
+                            <small class="hint">Label TTE (PNG/JPG)</small>
                         </div>
                     </div>
                 </div>
@@ -171,10 +173,11 @@
                     <button type="submit" class="btn-hijau">Cetak PDF</button>
                 </div>
             </form>
+            @include('partials.tte-js')
         </dialog>
 
         <script>
-            // Tutup popup setelah form cetak dikirim (PDF terbuka di tab baru)
+            // Tutup popup setelah form cetak dikirim (PDF langsung terunduh)
             document.addEventListener('submit', (e) => {
                 if (e.target.matches('[data-close-on-submit]')) {
                     setTimeout(() => e.target.closest('dialog')?.close(), 0);

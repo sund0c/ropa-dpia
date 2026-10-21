@@ -62,18 +62,13 @@ class AsetDataController extends Controller
             return $gagalFile('Versi format file tidak didukung.');
         }
 
-        $nomor = $in['aset']['nomor'] ?? null;
-        if (! is_string($nomor) || ! preg_match('/^ASET-\d{8}-[A-Z0-9]{6}$/', $nomor)) {
-            return $gagalFile('Nomor aset di dalam file tidak valid.');
-        }
-
         // Hanya data aset yang dikosongkan; data RoPA & DPIA di sesi yang sama tetap
         session()->forget('aset');
         session()->regenerate();
 
         $gagal = [];
         $ctl   = app(AsetController::class);
-        $aset  = ['nomor' => $nomor];
+        $aset  = [];
 
         foreach (AsetController::TABS as $tab => $label) {
             $isiTab = $in['aset'][$tab] ?? null;
@@ -86,10 +81,11 @@ class AsetDataController extends Controller
                 $gagal[] = $label;
             }
         }
+        $aset['nomor'] = AsetController::kodeAset($aset['informasi'] ?? []);
         $aset['diperbarui'] = $this->waktu($in['aset']['diperbarui'] ?? null);
         session(['aset' => $aset]);
 
-        $redirect = redirect()->route('aset.form')->with('saved', "Data $nomor berhasil diimpor.");
+        $redirect = redirect()->route('aset.form')->with('saved', 'Data ' . ($aset['nomor'] ?? 'aset') . ' berhasil diimpor.');
 
         return $gagal
             ? $redirect->withErrors(['aset' => 'Sebagian data tidak dimuat karena tidak lolos validasi: ' . implode('; ', $gagal) . '. Silakan isi ulang bagian tersebut.'])
