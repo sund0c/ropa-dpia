@@ -274,7 +274,7 @@ class RopaController extends Controller
         $lebar = $metrics->getTextWidth('Halaman 99 dari 99', $font, $size);
         $canvas->page_text($kanan - $lebar, $yGaris + 4, 'Halaman {PAGE_NUM} dari {PAGE_COUNT}', $font, $size, $hitam);
 
-        return $pdf->stream('RoPA-' . $ropa['nomor'] . '.pdf')
+        return $pdf->download('RoPA-' . $ropa['nomor'] . '.pdf')
             ->header('Cache-Control', 'no-store, private');
     }
 

@@ -36,9 +36,9 @@
             <button type="submit">Simpan tab ini</button>
             {{-- @if (\App\Support\RopaStatus::lengkap($ropa))
                 @if (\App\Support\RopaStatus::wajibDpia($ropa))
-                    <a class="btn" href="{{ route('dpia.form') }}">Lanjut ke DPIA →</a>
+                    <span style="display:inline-flex;gap:.5rem;flex-wrap:wrap"><a class="btn-garis" href="{{ route('ropa.kebijakan') }}" target="_blank" rel="noopener">Kebijakan Privasi</a><a class="btn" href="{{ route('dpia.form') }}">Lanjut ke DPIA →</a></span>
                 @else
-                    <button type="button" class="btn-hijau" data-open-dialog="dialog-pdf">Export PDF</button>
+                    <span style="display:inline-flex;gap:.5rem;flex-wrap:wrap"><a class="btn-garis" href="{{ route('ropa.kebijakan') }}" target="_blank" rel="noopener">Kebijakan Privasi</a><button type="button" class="btn-hijau" data-open-dialog="dialog-pdf">Export PDF</button></span>
                 @endif
             @elseif (!empty($ropa['nomor']))
                 <small class="hint">
@@ -47,9 +47,9 @@
             @endif --}}
             @if (\App\Support\RopaStatus::lengkap($ropa))
                 @if (\App\Support\RopaStatus::wajibDpia($ropa))
-                    <a class="btn" href="{{ route('dpia.form') }}">Lanjut ke DPIA →</a>
+                    <span style="display:inline-flex;gap:.5rem;flex-wrap:wrap"><a class="btn-garis" href="{{ route('ropa.kebijakan') }}" target="_blank" rel="noopener">Kebijakan Privasi</a><a class="btn" href="{{ route('dpia.form') }}">Lanjut ke DPIA →</a></span>
                 @else
-                    <button type="button" class="btn-hijau" data-open-dialog="dialog-pdf">Export PDF</button>
+                    <span style="display:inline-flex;gap:.5rem;flex-wrap:wrap"><a class="btn-garis" href="{{ route('ropa.kebijakan') }}" target="_blank" rel="noopener">Kebijakan Privasi</a><button type="button" class="btn-hijau" data-open-dialog="dialog-pdf">Export PDF</button></span>
                 @endif
             @endif
         </div>
@@ -57,7 +57,7 @@
 
     @if (\App\Support\RopaStatus::lengkap($ropa))
         <dialog id="dialog-pdf" class="dialog">
-            <form method="POST" action="{{ route('ropa.pdf') }}" enctype="multipart/form-data" target="_blank" data-close-on-submit>
+            <form method="POST" action="{{ route('ropa.pdf') }}" enctype="multipart/form-data" data-close-on-submit>
                 @csrf
                 <h3 style="margin-top:0">Pengesahan Dokumen</h3>
                 <p class="hint">Lokasi dan tanggal ini hanya dipakai untuk cetakan ini dan tidak disimpan.</p>

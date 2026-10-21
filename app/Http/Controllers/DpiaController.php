@@ -299,7 +299,7 @@ class DpiaController extends Controller
             ]);
         PdfFooter::tambah($pdf, $kode . ' / ' . $ropa['nomor']);
 
-        return $pdf->stream($kode . '.pdf')->header('Cache-Control', 'no-store, private');
+        return $pdf->download($kode . '.pdf')->header('Cache-Control', 'no-store, private');
     }
 
 

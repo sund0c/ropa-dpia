@@ -470,7 +470,7 @@ class AsetController extends Controller
 
         PdfFooter::tambah($pdf, $aset['nomor']);
 
-        return $pdf->stream('Aset-' . $aset['nomor'] . '.pdf')
+        return $pdf->download('Aset-' . $aset['nomor'] . '.pdf')
             ->header('Cache-Control', 'no-store, private');
     }
 

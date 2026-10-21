@@ -42,6 +42,7 @@ Route::middleware([EnsurePersetujuan::class, 'cache.headers:no_store;private'])-
     // RoPA
     Route::get('/ropa',        [RopaController::class, 'form'])->name('ropa.form');
     Route::post('/ropa/pdf',    [RopaController::class, 'pdf'])->name('ropa.pdf');
+    Route::get('/ropa/kebijakan-privasi', [\App\Http\Controllers\KebijakanPrivasiController::class, 'pdf'])->name('ropa.kebijakan');
     Route::post('/ropa/{tab}', [RopaController::class, 'save'])->name('ropa.save');
 
     // DPIA
