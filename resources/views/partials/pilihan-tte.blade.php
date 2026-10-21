@@ -1,7 +1,7 @@
 @php
     $orgTte = $ropa['organisasi'] ?? [];
     $penandatangan = [
-        'pj'         => ['Penanggung Jawab Layanan/Aktivitas', $ropa['aktivitas']['penanggung_jawab'] ?? null],
+        'pj'         => ['Penanggungjawab Layanan', $ropa['aktivitas']['penanggung_jawab'] ?? null],
         'ppdp'       => ['Pejabat Pelindung Data Pribadi',     $orgTte['nama_ppdp'] ?? null],
         'pengendali' => ['Pengendali Data Pribadi',            $orgTte['nama_pengendali'] ?? null],
     ];

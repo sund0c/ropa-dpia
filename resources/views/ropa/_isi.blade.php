@@ -328,7 +328,7 @@ $kolom = fn(string $k, string $peran, ?string $jabatan, ?string $nama) =>
 
     <table class="ttd">
         <tr>
-            <td>{!! $kolom('pj', 'Penanggung Jawab Layanan/Aktivitas', $a['jabatan_pj'] ?? null, $pj) !!}</td>
+            <td>{!! $kolom('pj', 'Penanggungjawab Layanan', $a['jabatan_pj'] ?? null, $pj) !!}</td>
             <td></td>
             <td>{!! $kolom('ppdp', 'Pejabat Pelindung Data Pribadi', $o['jabatan_ppdp'] ?? null, $o['nama_ppdp'] ?? null) !!}</td>
         </tr>
