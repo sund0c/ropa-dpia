@@ -152,5 +152,7 @@ Route::middleware([EnsurePersetujuanRisiko::class, 'cache.headers:no_store;priva
                 ->with('saved', 'Sesi sebelumnya telah diakhiri dan seluruh data dihapus. Setujui pernyataan penggunaan untuk memulai sesi baru.');
         })->name('reset');
 
+        Route::post('/peta/default', [RisikoController::class, 'resetPeta'])->name('peta.default');
+
         Route::post('/{tab}', [RisikoController::class, 'save'])->name('save');   // paling akhir
     });

@@ -60,6 +60,9 @@
         </div>
     </form>
 
+    {{-- Form tombol "Kembalikan ke default" Tab II (di luar form utama: form tidak boleh bersarang) --}}
+    <form id="form-default-peta" method="POST" action="{{ route('risiko.peta.default') }}" hidden>@csrf</form>
+
     {{-- Popup penetapan (di luar form utama: form tidak boleh bersarang) --}}
     @if ($lengkap)
         @php $inf = $risiko['informasi']; @endphp
