@@ -203,4 +203,6 @@
     }
     klas.addEventListener('change', syncKode);
     urut.addEventListener('input', syncKode);
+    syncKode();
+    window.addEventListener('pageshow', () => { syncKelompok(); syncKode(); });
 </script>

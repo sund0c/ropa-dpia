@@ -6,7 +6,7 @@
     $s = $ropa['siklus'];
 
     $yaTidak = fn($v) => $v ? 'Ya' : 'Tidak';
-    $multiline = fn($t) => nl2br(e((string) $t));
+    $multiline = fn($t) => nl2br(str_replace(['≤', '≥'], ['<span class="dv">≤</span>', '<span class="dv">≥</span>'], e((string) $t)));
     $tglIso = fn($iso) => \Carbon\Carbon::parse($iso)
         ->timezone(config('app.timezone'))
         ->locale('id')

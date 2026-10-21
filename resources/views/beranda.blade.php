@@ -208,14 +208,14 @@
                 <span class="panah">→</span>
             </a>
 
-            <div class="tombol nonaktif" aria-disabled="true">
+            <a class="tombol" href="{{ route('risiko.form') }}">
                 <span class="huruf">C</span>
                 <span class="teks">
                     <strong>MANAJEMEN RISIKO</strong>
                     <small>Penyusunan dokumen manajemen risiko aset</small>
                 </span>
-                <span class="lencana">SEGERA</span>
-            </div>
+                <span class="panah">→</span>
+            </a>
         </nav>
     </main>
 </body>

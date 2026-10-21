@@ -24,3 +24,4 @@ margin: 14pt 0 0; }
 .dok-ropa .ttd td.ruang { vertical-align: middle !important; }
 .dok-ropa .ttd .tte { font-size: 8pt; font-style: italic; color: #333; }
 .dok-ropa .ttd .ruang-ttd { height: 60pt; }
+.dv { font-family: "DejaVu Sans", sans-serif; }

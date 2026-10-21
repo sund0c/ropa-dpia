@@ -24,7 +24,9 @@
         (in_array($lv, $MR::TEKS_PUTIH, true) ? '#fff' : '#000');
     $tgl = fn($ymd) => $ymd ? $C::createFromFormat('!Y-m-d', $ymd)->locale('id')->translatedFormat('d F Y') : '-';
     $bulanTh = fn($b, $t) => $C::create((int) $t, (int) $b, 1)->locale('id')->translatedFormat('F Y');
-    $ml = fn($t) => nl2br(e((string) $t));
+    // Helvetica bawaan DomPDF tidak memiliki ≤ ≥; karakter itu dicetak dengan DejaVu Sans
+    $u  = fn($t) => str_replace(['≤', '≥'], ['<span class="dv">≤</span>', '<span class="dv">≥</span>'], e((string) $t));
+    $ml = fn($t) => nl2br($u($t));
     $kotak = fn(bool $on) => '<span class="kotak">
 ' .
         ($on ? '&#9746;' : '&#9744;') .
@@ -542,7 +544,7 @@
             <tr>
                 <td class="c" style="{{ $warnaSel($k) }}">{{ $k }}</td>
                 <td style="{{ $warnaSel($k) }}">{{ $m['kemungkinan'][$k]['nama'] }}</td>
-                <td>{{ $m['kemungkinan'][$k]['periode'] }}</td>
+                <td>{!! $u($m['kemungkinan'][$k]['periode']) !!}</td>
             </tr>
         @endforeach
     </table>
@@ -565,10 +567,10 @@
             <tr>
                 <td style="{{ $warnaSel($x) }}">{{ $m['dampak'][$x]['nama'] }}</td>
                 <td class="c">{{ $x }}</td>
-                <td>{{ $m['dampak'][$x]['finansial'] }}</td>
-                <td>{{ $m['dampak'][$x]['reputasi'] }}</td>
-                <td>{{ $m['dampak'][$x]['kepatuhan'] }}</td>
-                <td>{{ $m['dampak'][$x]['hukum'] }}</td>
+                <td>{!! $u($m['dampak'][$x]['finansial']) !!}</td>
+                <td>{!! $u($m['dampak'][$x]['reputasi']) !!}</td>
+                <td>{!! $u($m['dampak'][$x]['kepatuhan']) !!}</td>
+                <td>{!! $u($m['dampak'][$x]['hukum']) !!}</td>
             </tr>
         @endforeach
     </table>

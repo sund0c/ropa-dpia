@@ -7,6 +7,9 @@ use App\Http\Controllers\DpiaController;
 use App\Http\Controllers\RopaController;
 use App\Http\Middleware\EnsurePersetujuan;
 use App\Http\Middleware\EnsurePersetujuanAset;
+use App\Http\Middleware\EnsurePersetujuanRisiko;
+use App\Http\Controllers\RisikoController;
+use App\Http\Controllers\RisikoDataController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -107,4 +110,47 @@ Route::middleware([EnsurePersetujuanAset::class, 'cache.headers:no_store;private
         })->name('reset');
 
         Route::post('/{tab}', [AsetController::class, 'save'])->name('save');   // paling akhir
+    });
+
+// =====================================================================
+//  MODUL C — Manajemen Risiko
+//  Route statis didaftarkan sebelum /risiko/{tab}
+// =====================================================================
+
+Route::get('/risiko/persetujuan', function () {
+    return session()->has('persetujuan_risiko')
+        ? redirect()->route('risiko.form')
+        : view('risiko.persetujuan');
+})->name('risiko.persetujuan');
+
+Route::post('/risiko/persetujuan', function (Request $request) {
+    $request->validate(
+        ['setuju' => ['accepted']],
+        ['setuju.accepted' => 'Centang pernyataan persetujuan untuk melanjutkan.']
+    );
+
+    $request->session()->regenerate();
+    session(['persetujuan_risiko' => now()->toIso8601String()]);
+
+    return redirect()->route('risiko.form');
+})->name('risiko.persetujuan.setuju');
+
+Route::middleware([EnsurePersetujuanRisiko::class, 'cache.headers:no_store;private'])
+    ->prefix('risiko')->name('risiko.')->group(function () {
+
+        Route::get('/',            [RisikoController::class, 'form'])->name('form');
+        Route::post('/pdf',        [RisikoController::class, 'pdf'])->name('pdf');
+        Route::get('/data/ekspor', [RisikoDataController::class, 'ekspor'])->name('data.ekspor');
+        Route::post('/data/impor', [RisikoDataController::class, 'impor'])->name('data.impor');
+
+        // Sesi baru: SELURUH sesi diakhiri (semua modul) → semua tab lain kedaluwarsa
+        Route::post('/reset', function () {
+            session()->invalidate();
+            session()->regenerateToken();
+
+            return redirect()->route('risiko.persetujuan')
+                ->with('saved', 'Sesi sebelumnya telah diakhiri dan seluruh data dihapus. Setujui pernyataan penggunaan untuk memulai sesi baru.');
+        })->name('reset');
+
+        Route::post('/{tab}', [RisikoController::class, 'save'])->name('save');   // paling akhir
     });
