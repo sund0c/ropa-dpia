@@ -225,6 +225,15 @@
                 </span>
                 <span class="panah">→</span>
             </a>
+
+            <a class="tombol" href="{{ route('pengujian.form') }}">
+                <span class="huruf">E</span>
+                <span class="teks">
+                    <strong>PENGECEKAN KEAMANAN APLIKASI WEB</strong>
+                    <small>Pedoman dan pencatatan hasil pengujian manual berdasarkan OWASP Top 10:2025</small>
+                </span>
+                <span class="panah">→</span>
+            </a>
         </nav>
     </main>
 </body>

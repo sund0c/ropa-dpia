@@ -72,6 +72,9 @@
 
         .hash { font-family: 'DejaVu Sans Mono', monospace; font-size: 6.5pt; }
 
+        .lampiran { width: auto; margin: 0 0 4pt 12pt; }
+        .lampiran td { border: 0; padding: 2pt 6pt 2pt 0; vertical-align: top; }
+
         .catatan-klas { margin-top: 18pt; font-size: 7.5pt; border-top: 0.5pt solid #000; padding-top: 4pt; }
     </style>
 </head>
@@ -127,7 +130,7 @@
     @endif
 
     {{-- ================= 3 ================= --}}
-    <h2>3. INFORMASI INSIDEN</h2>
+    <h2 class="halaman-baru">3. INFORMASI INSIDEN</h2>
     <table class="kv">
         <tr><td class="k">Waktu Kejadian (perkiraan)</td><td>{{ $w('waktu_kejadian') }}</td></tr>
         <tr><td class="k">Waktu Terdeteksi</td><td>{{ $w('waktu_deteksi') }}</td></tr>
@@ -239,7 +242,7 @@
     {{-- ================= 6 ================= --}}
     @if (isset($insiden['analisis']) && array_key_exists('analisis', IC::tabsAktif($insiden)))
         @php $an = $insiden['analisis']; @endphp
-        <h2 class="lepas">6. ANALISIS TEKNIS{{ $sementara ? ' (SEMENTARA)' : '' }}</h2>
+        <h2 class="halaman-baru lepas">6. ANALISIS TEKNIS{{ $sementara ? ' (SEMENTARA)' : '' }}</h2>
         <p class="paragraf">{!! $ml($an['ringkasan_teknis']) !!}</p>
 
         @if (! empty($an['rantai']))
@@ -302,7 +305,7 @@
         $adaBukti = $pn && ! empty($pn['bukti']);
     @endphp
     @if ($pn)
-        <h2 class="lepas">7. TINDAKAN PENANGANAN</h2>
+        <h2 class="halaman-baru lepas">7. TINDAKAN PENANGANAN</h2>
         <p class="paragraf">Penanganan mengikuti fase ISO/IEC 27035: penanggulangan, pemberantasan, dan pemulihan.
             Bukti diamankan sebelum sistem dibersihkan.</p>
 
@@ -331,7 +334,7 @@
     {{-- ================= 8 & 9 ================= --}}
     @if ($pl)
         @php $evIsi = array_filter($pl['evaluasi'], fn ($e) => filled($e['baik']) || filled($e['perbaikan'])); @endphp
-        <h2 class="lepas">8. PELAJARAN YANG DIPETIK</h2>
+        <h2 class="halaman-baru lepas">8. PELAJARAN YANG DIPETIK</h2>
         <table class="grid kronologi">
             <tr><th style="width:16%">Aspek</th><th>Berjalan Baik</th><th>Perlu Perbaikan</th></tr>
             @foreach ($evIsi as $a => $e)
@@ -343,7 +346,7 @@
             @endforeach
         </table>
 
-        <h2 class="lepas">9. REKOMENDASI DAN RENCANA TINDAK LANJUT</h2>
+        <h2 class="halaman-baru lepas">9. REKOMENDASI DAN RENCANA TINDAK LANJUT</h2>
         <table class="grid kronologi">
             <tr>
                 <th style="width:4%">No</th>
@@ -365,6 +368,22 @@
             @endforeach
         </table>
     @endif
+
+    {{-- ================= LAMPIRAN (bab terakhir) ================= --}}
+    @php
+        // Nomor bab mengikuti bab terakhir yang tercetak (Laporan Awal/Perkembangan tidak memuat seluruh bab)
+        $adaAnalisis = isset($insiden['analisis']) && array_key_exists('analisis', IC::tabsAktif($insiden));
+        $babLampiran = $pl ? 10 : ($pn ? 8 : ($adaAnalisis ? 7 : 6));
+    @endphp
+    {{-- Bab 9 sudah membuka halaman baru; bila bab 9 tidak ada, Lampiran membuka halaman baru sendiri --}}
+    <h2 class="{{ $pl ? '' : 'halaman-baru ' }}lepas">{{ $babLampiran }}. LAMPIRAN</h2>
+    <p class="paragraf">Lampiran berikut merupakan bagian yang tidak terpisahkan dari laporan ini:</p>
+    <table class="lampiran">
+        <tr><td style="width:6%">A.</td><td>Daftar Bukti (Chain of Custody)</td></tr>
+        <tr><td>B.</td><td>Bukti Dukung</td></tr>
+        <tr><td>C.</td><td>Surat Perintah Tugas</td></tr>
+        <tr><td>D.</td><td>Non-Disclosure Agreement (Pernyataan Menjaga Kerahasiaan)</td></tr>
+    </table>
 
     {{-- ================= PENGESAHAN ================= --}}
     <div class="blok-pengesahan">
@@ -390,9 +409,14 @@
         @endif
     </div>
 
-    {{-- ================= LAMPIRAN ================= --}}
+    <div class="catatan-klas">
+        Dokumen ini berklasifikasi <b>TERBATAS</b>. Dilarang menggandakan atau menyebarluaskan sebagian maupun seluruh isi
+        dokumen kepada pihak yang tidak berwenang.
+    </div>
+
+    {{-- ================= LAMPIRAN A (dicetak); Lampiran B–D digabung manual ================= --}}
+    <h2 class="halaman-baru lepas">LAMPIRAN A. DAFTAR BUKTI (CHAIN OF CUSTODY)</h2>
     @if ($adaBukti)
-        <h2 class="halaman-baru lepas">LAMPIRAN A. DAFTAR BUKTI (CHAIN OF CUSTODY)</h2>
         <p class="paragraf">Bukti disimpan di luar dokumen ini. Keaslian setiap bukti dapat diperiksa dengan mencocokkan
             nilai hash SHA-256 berikut.</p>
         <table class="grid kronologi">
@@ -416,12 +440,10 @@
                 </tr>
             @endforeach
         </table>
+    @else
+        <p class="paragraf">Belum ada bukti yang dicatat pada laporan ini.</p>
     @endif
 
-    <div class="catatan-klas">
-        Dokumen ini berklasifikasi <b>TERBATAS</b>. Dilarang menggandakan atau menyebarluaskan sebagian maupun seluruh isi
-        dokumen kepada pihak yang tidak berwenang.
-    </div>
 
 </body>
 

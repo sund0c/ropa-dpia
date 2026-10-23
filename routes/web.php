@@ -13,6 +13,9 @@ use App\Http\Controllers\RisikoDataController;
 use App\Http\Controllers\InsidenController;
 use App\Http\Controllers\InsidenDataController;
 use App\Http\Middleware\EnsurePersetujuanInsiden;
+use App\Http\Controllers\PengujianController;
+use App\Http\Controllers\PengujianDataController;
+use App\Http\Middleware\EnsurePersetujuanPengujian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -201,4 +204,47 @@ Route::middleware([EnsurePersetujuanInsiden::class, 'cache.headers:no_store;priv
         })->name('reset');
 
         Route::post('/{tab}', [InsidenController::class, 'save'])->name('save');   // paling akhir
+    });
+
+// =====================================================================
+//  MODUL E — Pengecekan Keamanan Aplikasi Web
+//  Route statis didaftarkan sebelum /pengujian/{tab}
+// =====================================================================
+
+Route::get('/pengujian/persetujuan', function () {
+    return session()->has('persetujuan_pengujian')
+        ? redirect()->route('pengujian.form')
+        : view('pengujian.persetujuan');
+})->name('pengujian.persetujuan');
+
+Route::post('/pengujian/persetujuan', function (Request $request) {
+    $request->validate(
+        ['setuju' => ['accepted']],
+        ['setuju.accepted' => 'Centang pernyataan persetujuan untuk melanjutkan.']
+    );
+
+    $request->session()->regenerate();
+    session(['persetujuan_pengujian' => now()->toIso8601String()]);
+
+    return redirect()->route('pengujian.form');
+})->name('pengujian.persetujuan.setuju');
+
+Route::middleware([EnsurePersetujuanPengujian::class, 'cache.headers:no_store;private'])
+    ->prefix('pengujian')->name('pengujian.')->group(function () {
+
+        Route::get('/',            [PengujianController::class, 'form'])->name('form');
+        Route::post('/pdf',        [PengujianController::class, 'pdf'])->name('pdf');
+        Route::get('/data/ekspor', [PengujianDataController::class, 'ekspor'])->name('data.ekspor');
+        Route::post('/data/impor', [PengujianDataController::class, 'impor'])->name('data.impor');
+
+        // Sesi baru: SELURUH sesi diakhiri (semua modul) → semua tab lain kedaluwarsa
+        Route::post('/reset', function () {
+            session()->invalidate();
+            session()->regenerateToken();
+
+            return redirect()->route('pengujian.persetujuan')
+                ->with('saved', 'Sesi sebelumnya telah diakhiri dan seluruh data dihapus. Setujui pernyataan penggunaan untuk memulai sesi baru.');
+        })->name('reset');
+
+        Route::post('/{tab}', [PengujianController::class, 'save'])->name('save');   // paling akhir
     });
