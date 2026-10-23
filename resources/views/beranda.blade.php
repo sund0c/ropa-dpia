@@ -216,6 +216,15 @@
                 </span>
                 <span class="panah">→</span>
             </a>
+
+            <a class="tombol" href="{{ route('insiden.form') }}">
+                <span class="huruf">D</span>
+                <span class="teks">
+                    <strong>LAPORAN PENANGANAN INSIDEN</strong>
+                    <small>Penyusunan laporan penanganan insiden siber (ISO/IEC 27035, NIST SP 800-61, Peraturan BSSN 1/2024)</small>
+                </span>
+                <span class="panah">→</span>
+            </a>
         </nav>
     </main>
 </body>

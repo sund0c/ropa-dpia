@@ -10,6 +10,9 @@ use App\Http\Middleware\EnsurePersetujuanAset;
 use App\Http\Middleware\EnsurePersetujuanRisiko;
 use App\Http\Controllers\RisikoController;
 use App\Http\Controllers\RisikoDataController;
+use App\Http\Controllers\InsidenController;
+use App\Http\Controllers\InsidenDataController;
+use App\Http\Middleware\EnsurePersetujuanInsiden;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -155,4 +158,47 @@ Route::middleware([EnsurePersetujuanRisiko::class, 'cache.headers:no_store;priva
         Route::post('/peta/default', [RisikoController::class, 'resetPeta'])->name('peta.default');
 
         Route::post('/{tab}', [RisikoController::class, 'save'])->name('save');   // paling akhir
+    });
+
+// =====================================================================
+//  MODUL D — Laporan Penanganan Insiden
+//  Route statis didaftarkan sebelum /insiden/{tab}
+// =====================================================================
+
+Route::get('/insiden/persetujuan', function () {
+    return session()->has('persetujuan_insiden')
+        ? redirect()->route('insiden.form')
+        : view('insiden.persetujuan');
+})->name('insiden.persetujuan');
+
+Route::post('/insiden/persetujuan', function (Request $request) {
+    $request->validate(
+        ['setuju' => ['accepted']],
+        ['setuju.accepted' => 'Centang pernyataan persetujuan untuk melanjutkan.']
+    );
+
+    $request->session()->regenerate();
+    session(['persetujuan_insiden' => now()->toIso8601String()]);
+
+    return redirect()->route('insiden.form');
+})->name('insiden.persetujuan.setuju');
+
+Route::middleware([EnsurePersetujuanInsiden::class, 'cache.headers:no_store;private'])
+    ->prefix('insiden')->name('insiden.')->group(function () {
+
+        Route::get('/',            [InsidenController::class, 'form'])->name('form');
+        Route::post('/pdf',        [InsidenController::class, 'pdf'])->name('pdf');
+        Route::get('/data/ekspor', [InsidenDataController::class, 'ekspor'])->name('data.ekspor');
+        Route::post('/data/impor', [InsidenDataController::class, 'impor'])->name('data.impor');
+
+        // Sesi baru: SELURUH sesi diakhiri (semua modul) → semua tab lain kedaluwarsa
+        Route::post('/reset', function () {
+            session()->invalidate();
+            session()->regenerateToken();
+
+            return redirect()->route('insiden.persetujuan')
+                ->with('saved', 'Sesi sebelumnya telah diakhiri dan seluruh data dihapus. Setujui pernyataan penggunaan untuk memulai sesi baru.');
+        })->name('reset');
+
+        Route::post('/{tab}', [InsidenController::class, 'save'])->name('save');   // paling akhir
     });
