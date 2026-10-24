@@ -22,8 +22,10 @@
         'pelapor'          => 'Operator Situs Dinas XYZ',
         'tim_nama'         => 'Tim Tanggap Insiden Siber (TTIS) Pemerintah Provinsi Bali',
         'ketua_nama'       => 'I Putu Contoh',
-        'ketua_jabatan'    => 'Ketua TTIS',
+        'ketua_jabatan'    => 'Kepala Bidang Persandian',
         'ketua_instansi'   => 'Dinas Kominfos Provinsi Bali',
+        'koordinator_nama'    => 'I Gede Contoh',
+        'koordinator_jabatan' => 'Kepala Dinas Kominfos Provinsi Bali',
     ];
 
     $contoh = [
@@ -132,9 +134,9 @@
 
     <div class="row">
         <x-aset-field name="pimpinan_nama" label="Nama Pimpinan Instansi Pemilik Aset" :value="$d['pimpinan_nama'] ?? null"
-            required maxlength="255" hint="Penandatangan laporan. Contoh: I Made Contoh" />
+            maxlength="255" hint="Opsional, sebagai informasi (tidak menandatangani). Contoh: I Made Contoh" />
         <x-aset-field name="pimpinan_jabatan" label="Jabatan Pimpinan" :value="$d['pimpinan_jabatan'] ?? null"
-            required maxlength="255" hint="Contoh: Kepala Dinas" />
+            maxlength="255" hint="Opsional. Contoh: Kepala Dinas" />
     </div>
 </section>
 
@@ -193,15 +195,22 @@
     <x-aset-field name="tim_nama" label="Nama Tim Penanganan Insiden" :value="$d['tim_nama'] ?? null" required maxlength="255"
         hint="Contoh: Tim Tanggap Insiden Siber (TTIS) Pemerintah Provinsi Bali" />
 
+    <x-aset-field name="ketua_instansi" label="Instansi Tim" :value="$d['ketua_instansi'] ?? null" required maxlength="255"
+        hint="Instansi tempat tim berada. Contoh: Dinas Kominfos Provinsi Bali" />
+
     <div class="row">
         <x-aset-field name="ketua_nama" label="Nama Ketua Tim" :value="$d['ketua_nama'] ?? null" required maxlength="255"
-            hint="Penandatangan laporan. Contoh: I Putu Contoh" />
+            hint="Penandatangan laporan (kiri). Contoh: I Putu Contoh" />
         <x-aset-field name="ketua_jabatan" label="Jabatan Ketua Tim" :value="$d['ketua_jabatan'] ?? null" required maxlength="255"
-            hint="Contoh: Ketua TTIS" />
+            hint="Contoh: Kepala Bidang Persandian" />
     </div>
 
-    <x-aset-field name="ketua_instansi" label="Instansi Ketua Tim" :value="$d['ketua_instansi'] ?? null" required maxlength="255"
-        hint="Contoh: Dinas Kominfos Provinsi Bali" />
+    <div class="row">
+        <x-aset-field name="koordinator_nama" label="Nama Koordinator Tim" :value="$d['koordinator_nama'] ?? null" required maxlength="255"
+            hint="Penandatangan laporan (kanan). Contoh: I Gede Contoh" />
+        <x-aset-field name="koordinator_jabatan" label="Jabatan Koordinator Tim" :value="$d['koordinator_jabatan'] ?? null" required maxlength="255"
+            hint="Contoh: Kepala Dinas Kominfos Provinsi Bali" />
+    </div>
 </section>
 
 {{-- ================= F ================= --}}

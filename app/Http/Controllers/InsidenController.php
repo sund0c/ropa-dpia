@@ -294,6 +294,14 @@ class InsidenController extends Controller
 
     public const FORMAT_WAKTU = 'Y-m-d\TH:i';
 
+    /** Lampiran laporan. Dipilih (dicentang) saat cetak; yang tidak dicentang dicetak dicoret. */
+    public const LAMPIRAN = [
+        'a' => 'Daftar Bukti (Chain of Custody)',
+        'b' => 'Bukti Dukung',
+        'c' => 'Surat Perintah Tugas',
+        'd' => 'Non-Disclosure Agreement (Pernyataan Menjaga Kerahasiaan)',
+    ];
+
     // =====================================================================
     //  Status tab
     // =====================================================================
@@ -657,11 +665,13 @@ class InsidenController extends Controller
         }
 
         // Lokasi, tanggal & pilihan TTE: hanya untuk cetakan ini, tidak disimpan
-        $v = Validator::make($request->only('lokasi', 'tanggal', 'tte'), [
+        $v = Validator::make($request->only('lokasi', 'tanggal', 'tte', 'lampiran'), [
             'lokasi'  => ['required', 'string', 'max:100'],
             'tanggal' => ['required', 'date_format:Y-m-d'],
             'tte'     => ['nullable', 'array'],
-            'tte.*'   => [Rule::in(['ketua', 'pimpinan'])],
+            'tte.*'   => [Rule::in(['ketua', 'koordinator'])],
+            'lampiran'   => ['nullable', 'array'],
+            'lampiran.*' => [Rule::in(array_keys(self::LAMPIRAN))],
         ]);
 
         $kembali = fn (string $pesan) => redirect()
@@ -681,7 +691,8 @@ class InsidenController extends Controller
         $penetapan = [
             'lokasi'  => $input['lokasi'],
             'tanggal' => Carbon::createFromFormat('!Y-m-d', $input['tanggal'])->locale('id')->translatedFormat('d F Y'),
-            'tte'     => $tte,
+            'tte'      => $tte,
+            'lampiran' => array_values(array_intersect(array_keys(self::LAMPIRAN), $input['lampiran'] ?? [])),
             'label'   => $label,
         ];
 
@@ -733,8 +744,8 @@ class InsidenController extends Controller
                 'kode_aset'        => ['nullable', 'regex:/^(DI|PL|PK|SP|PS)-\d{6}$/', 'not_regex:/-0{6}$/'],
                 'lokasi_aset'      => ['required', 'string', 'max:1000'],
                 'pemilik_aset'     => ['required', 'string', 'max:255'],
-                'pimpinan_nama'    => ['required', 'string', 'max:255'],
-                'pimpinan_jabatan' => ['required', 'string', 'max:255'],
+                'pimpinan_nama'    => ['nullable', 'string', 'max:255'],
+                'pimpinan_jabatan' => ['nullable', 'string', 'max:255'],
 
                 // C. Waktu insiden
                 'waktu_kejadian'   => ['required', ...$waktu],
@@ -754,6 +765,8 @@ class InsidenController extends Controller
                 'ketua_nama'       => ['required', 'string', 'max:255'],
                 'ketua_jabatan'    => ['required', 'string', 'max:255'],
                 'ketua_instansi'   => ['required', 'string', 'max:255'],
+                'koordinator_nama'    => ['required', 'string', 'max:255'],
+                'koordinator_jabatan' => ['required', 'string', 'max:255'],
 
                 // F. Ringkasan
                 'ringkasan'        => ['required', 'string', 'max:3000'],
@@ -938,7 +951,9 @@ class InsidenController extends Controller
             'tim_nama'         => 'Nama Tim Penanganan Insiden',
             'ketua_nama'       => 'Nama Ketua Tim',
             'ketua_jabatan'    => 'Jabatan Ketua Tim',
-            'ketua_instansi'   => 'Instansi Ketua Tim',
+            'ketua_instansi'   => 'Instansi Tim',
+            'koordinator_nama'    => 'Nama Koordinator Tim',
+            'koordinator_jabatan' => 'Jabatan Koordinator Tim',
             'ringkasan'        => 'Ringkasan Insiden',
 
             'kategori'           => 'Kategori Insiden',

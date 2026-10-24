@@ -18,6 +18,7 @@
         .ttd-kartu .check { margin-top: .35rem; }
         .ttd-kartu .tte-unggah { display: flex; flex-direction: column; gap: .25rem; margin-top: .25rem; }
         .ttd-kartu .tte-unggah input[type=file] { font-size: .85rem; max-width: 100%; }
+        .lampiran-cek { display: flex; flex-direction: column; gap: .35rem; }
         @media (max-width: 640px) { .ttd-grid { grid-template-columns: 1fr; } }
     </style>
 
@@ -75,12 +76,17 @@
 
     {{-- Popup pengesahan (di luar form utama: form tidak boleh bersarang) --}}
     @if ($lengkap)
-        @php $inf = $insiden['informasi']; @endphp
+        @php
+            $inf = $insiden['informasi'];
+            // Lampiran A (daftar bukti) dicentang otomatis bila Tab V berisi bukti
+            $adaBuktiTab = ! empty($insiden['penanganan']['bukti'] ?? [])
+                && array_key_exists('penanganan', \App\Http\Controllers\InsidenController::tabsAktif($insiden));
+        @endphp
         <dialog id="dialog-pdf" class="dialog dialog-lebar">
             <form method="POST" action="{{ route('insiden.pdf') }}" enctype="multipart/form-data" data-close-on-submit>
                 @csrf
                 <h3 style="margin-top:0">Pengesahan Laporan</h3>
-                <p class="hint">Dokumen dicetak dengan klasifikasi <strong>TERBATAS</strong>. Lokasi, tanggal, pilihan TTE, dan label TTE hanya dipakai untuk cetakan ini dan tidak disimpan.</p>
+                <p class="hint">Dokumen dicetak dengan klasifikasi <strong>TERBATAS</strong>. Lokasi, tanggal, pilihan lampiran, pilihan TTE, dan label TTE hanya dipakai untuk cetakan ini dan tidak disimpan.</p>
 
                 <div class="row">
                     <div class="field">
@@ -118,18 +124,31 @@
                     </div>
 
                     <div class="ttd-kartu" data-tte-item>
-                        <span class="peran">Pimpinan Instansi Pemilik Aset</span>
-                        <strong>{{ $inf['pimpinan_nama'] ?? '-' }}</strong>
-                        <span class="jab">{{ $inf['pimpinan_jabatan'] ?? '' }} {{ $inf['pemilik_aset'] ?? '' }}</span>
+                        <span class="peran">Koordinator Tim Penanganan Insiden</span>
+                        <strong>{{ $inf['koordinator_nama'] ?? '-' }}</strong>
+                        <span class="jab">{{ $inf['koordinator_jabatan'] ?? '' }}</span>
                         <label class="check">
-                            <input type="checkbox" name="tte[]" value="pimpinan" data-tte-cek>
+                            <input type="checkbox" name="tte[]" value="koordinator" data-tte-cek>
                             <span>Menggunakan TTE</span>
                         </label>
                         <div class="tte-unggah" hidden>
-                            <input type="file" name="tte_label[pimpinan]" accept="image/png,image/jpeg" disabled>
+                            <input type="file" name="tte_label[koordinator]" accept="image/png,image/jpeg" disabled>
                             <small class="hint">Label TTE (PNG/JPG)</small>
                         </div>
                     </div>
+                </div>
+
+                <div class="field" style="margin:1rem 0 .25rem">
+                    <strong>Lampiran</strong>
+                    <small class="hint">Centang lampiran yang disertakan. Yang tidak dicentang dicetak dicoret. Lampiran A dicetak otomatis; B–D digabung manual.</small>
+                </div>
+                <div class="lampiran-cek">
+                    @foreach (\App\Http\Controllers\InsidenController::LAMPIRAN as $k => $nama)
+                        <label class="check">
+                            <input type="checkbox" name="lampiran[]" value="{{ $k }}" @checked($k !== 'a' || $adaBuktiTab)>
+                            <span><strong>{{ strtoupper($k) }}.</strong> {{ $nama }}@if ($k === 'a' && ! $adaBuktiTab) <small class="hint">(belum ada bukti di Tab V)</small>@endif</span>
+                        </label>
+                    @endforeach
                 </div>
 
                 <div class="actions">

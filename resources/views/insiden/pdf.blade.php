@@ -24,6 +24,14 @@
 
     $label = (array) ($penetapan['label'] ?? []);
 
+    // Lampiran yang dicentang saat cetak; yang tidak dicentang dicetak dicoret
+    $lampiranDipilih = (array) ($penetapan['lampiran'] ?? []);
+    $pakaiLampiranA  = in_array('a', $lampiranDipilih, true);
+
+    // Instansi tidak dicetak ulang bila sudah tercantum di jabatan (mis. "Kepala Dinas Kominfos Provinsi Bali")
+    $instansiTtd = fn (?string $jabatan) => str_contains(mb_strtolower((string) $jabatan), mb_strtolower((string) ($inf['ketua_instansi'] ?? '')))
+        ? '' : ($inf['ketua_instansi'] ?? '');
+
     // Laporan awal / perkembangan: isi masih sementara
     $sementara = ($inf['jenis_laporan'] ?? null) !== 'akhir';
 @endphp
@@ -74,6 +82,7 @@
 
         .lampiran { width: auto; margin: 0 0 4pt 12pt; }
         .lampiran td { border: 0; padding: 2pt 6pt 2pt 0; vertical-align: top; }
+        .lampiran tr.coret td { text-decoration: line-through; color: #555; }
 
         .catatan-klas { margin-top: 18pt; font-size: 7.5pt; border-top: 0.5pt solid #000; padding-top: 4pt; }
     </style>
@@ -143,7 +152,10 @@
         <tr><td class="k">Pelapor</td><td>{{ $inf['pelapor'] }}</td></tr>
         <tr><td class="k">Tim Penanganan Insiden</td><td>{{ $inf['tim_nama'] }}</td></tr>
         <tr><td class="k">Ketua Tim</td><td>{{ $inf['ketua_nama'] }} — {{ $inf['ketua_jabatan'] }}, {{ $inf['ketua_instansi'] }}</td></tr>
-        <tr><td class="k">Pimpinan Pemilik Aset</td><td>{{ $inf['pimpinan_nama'] }} — {{ $inf['pimpinan_jabatan'] }}, {{ $inf['pemilik_aset'] }}</td></tr>
+        <tr><td class="k">Koordinator Tim</td><td>{{ $inf['koordinator_nama'] ?? '-' }} — {{ $inf['koordinator_jabatan'] ?? '' }}</td></tr>
+        @if (filled($inf['pimpinan_nama'] ?? null))
+            <tr><td class="k">Pimpinan Pemilik Aset</td><td>{{ $inf['pimpinan_nama'] }}@if (filled($inf['pimpinan_jabatan'] ?? null)) — {{ $inf['pimpinan_jabatan'] }}@endif, {{ $inf['pemilik_aset'] }}</td></tr>
+        @endif
         <tr><td class="k">Lokasi &amp; Spesifikasi Aset</td><td>{!! $ml($inf['lokasi_aset']) !!}</td></tr>
         @if (filled($inf['pihak_diberitahu'] ?? null))
             <tr><td class="k">Pihak yang Diberi Tahu</td><td>{!! $ml($inf['pihak_diberitahu']) !!}</td></tr>
@@ -316,7 +328,7 @@
             <h3>7.2 Pengamanan Bukti</h3>
             <p class="paragraf">
                 @if (filled($pn['catatan_bukti'] ?? null)){!! $ml($pn['catatan_bukti']) !!}@endif
-                @if ($adaBukti) {{ count($pn['bukti']) }} bukti tercatat pada Lampiran A (Daftar Bukti).@endif
+                @if ($adaBukti && $pakaiLampiranA) {{ count($pn['bukti']) }} bukti tercatat pada Lampiran A (Daftar Bukti).@endif
             </p>
         @endif
 
@@ -379,10 +391,13 @@
     <h2 class="{{ $pl ? '' : 'halaman-baru ' }}lepas">{{ $babLampiran }}. LAMPIRAN</h2>
     <p class="paragraf">Lampiran berikut merupakan bagian yang tidak terpisahkan dari laporan ini:</p>
     <table class="lampiran">
-        <tr><td style="width:6%">A.</td><td>Daftar Bukti (Chain of Custody)</td></tr>
-        <tr><td>B.</td><td>Bukti Dukung</td></tr>
-        <tr><td>C.</td><td>Surat Perintah Tugas</td></tr>
-        <tr><td>D.</td><td>Non-Disclosure Agreement (Pernyataan Menjaga Kerahasiaan)</td></tr>
+        @foreach (IC::LAMPIRAN as $k => $nama)
+            @php $dipakai = in_array($k, $lampiranDipilih, true); @endphp
+            <tr @if (! $dipakai) class="coret" @endif>
+                <td style="width:6%">{{ strtoupper($k) }}.</td>
+                <td>{{ $nama }}</td>
+            </tr>
+        @endforeach
     </table>
 
     {{-- ================= PENGESAHAN ================= --}}
@@ -394,11 +409,11 @@
         <table class="ttd">
             <tr class="peran">
                 <td>Disusun oleh,<br>Ketua Tim Penanganan Insiden</td>
-                <td>Disetujui oleh,<br>Pimpinan Instansi Pemilik Aset</td>
+                <td>Mengetahui,<br>Koordinator Tim Penanganan Insiden</td>
             </tr>
             <tr>
-                <td>{!! LabelTte::kolom('ketua', $label, 210, '', $inf['ketua_jabatan'] ?? null, $inf['ketua_instansi'] ?? null, $inf['ketua_nama'] ?? null) !!}</td>
-                <td>{!! LabelTte::kolom('pimpinan', $label, 210, '', $inf['pimpinan_jabatan'] ?? null, $inf['pemilik_aset'] ?? null, $inf['pimpinan_nama'] ?? null) !!}</td>
+                <td>{!! LabelTte::kolom('ketua', $label, 210, '', $inf['ketua_jabatan'] ?? null, $instansiTtd($inf['ketua_jabatan'] ?? null), $inf['ketua_nama'] ?? null) !!}</td>
+                <td>{!! LabelTte::kolom('koordinator', $label, 210, '', $inf['koordinator_jabatan'] ?? null, $instansiTtd($inf['koordinator_jabatan'] ?? null), $inf['koordinator_nama'] ?? null) !!}</td>
             </tr>
         </table>
 
@@ -414,7 +429,8 @@
         dokumen kepada pihak yang tidak berwenang.
     </div>
 
-    {{-- ================= LAMPIRAN A (dicetak); Lampiran B–D digabung manual ================= --}}
+    {{-- ================= LAMPIRAN A (dicetak bila dicentang); Lampiran B–D digabung manual ================= --}}
+    @if ($pakaiLampiranA)
     <h2 class="halaman-baru lepas">LAMPIRAN A. DAFTAR BUKTI (CHAIN OF CUSTODY)</h2>
     @if ($adaBukti)
         <p class="paragraf">Bukti disimpan di luar dokumen ini. Keaslian setiap bukti dapat diperiksa dengan mencocokkan
@@ -443,6 +459,8 @@
     @else
         <p class="paragraf">Belum ada bukti yang dicatat pada laporan ini.</p>
     @endif
+    @endif
+
 
 
 </body>
