@@ -22,10 +22,10 @@
         'pelapor'          => 'Operator Situs Dinas XYZ',
         'tim_nama'         => 'Tim Tanggap Insiden Siber (TTIS) Pemerintah Provinsi Bali',
         'ketua_nama'       => 'I Putu Contoh',
-        'ketua_jabatan'    => 'Kepala Bidang Persandian',
+        'ketua_jabatan'    => 'JF Sandiman Ahli Pertama',
         'ketua_instansi'   => 'Dinas Kominfos Provinsi Bali',
         'koordinator_nama'    => 'I Gede Contoh',
-        'koordinator_jabatan' => 'Kepala Dinas Kominfos Provinsi Bali',
+        'koordinator_jabatan' => 'Kepala Bidang Persandian',
     ];
 
     $contoh = [
@@ -202,14 +202,14 @@
         <x-aset-field name="ketua_nama" label="Nama Ketua Tim" :value="$d['ketua_nama'] ?? null" required maxlength="255"
             hint="Penandatangan laporan (kiri). Contoh: I Putu Contoh" />
         <x-aset-field name="ketua_jabatan" label="Jabatan Ketua Tim" :value="$d['ketua_jabatan'] ?? null" required maxlength="255"
-            hint="Contoh: Kepala Bidang Persandian" />
+            hint="Contoh: JF Sandiman Ahli Pertama" />
     </div>
 
     <div class="row">
         <x-aset-field name="koordinator_nama" label="Nama Koordinator Tim" :value="$d['koordinator_nama'] ?? null" required maxlength="255"
             hint="Penandatangan laporan (kanan). Contoh: I Gede Contoh" />
         <x-aset-field name="koordinator_jabatan" label="Jabatan Koordinator Tim" :value="$d['koordinator_jabatan'] ?? null" required maxlength="255"
-            hint="Contoh: Kepala Dinas Kominfos Provinsi Bali" />
+            hint="Contoh: Kepala Bidang Persandian" />
     </div>
 </section>
 

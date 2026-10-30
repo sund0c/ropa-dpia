@@ -408,8 +408,8 @@
 
         <table class="ttd">
             <tr class="peran">
-                <td>Disusun oleh,<br>Ketua Tim Penanganan Insiden</td>
-                <td>Mengetahui,<br>Koordinator Tim Penanganan Insiden</td>
+                <td>Disusun oleh,</td>
+                <td>Mengetahui,</td>
             </tr>
             <tr>
                 <td>{!! LabelTte::kolom('ketua', $label, 210, '', $inf['ketua_jabatan'] ?? null, $instansiTtd($inf['ketua_jabatan'] ?? null), $inf['ketua_nama'] ?? null) !!}</td>
