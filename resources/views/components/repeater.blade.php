@@ -15,7 +15,11 @@
                 <div class="rep-line">
                     <span class="rep-no"></span>
                     <input type="text" name="{{ $name }}[]" value="{{ $value }}" placeholder="{{ $placeholder }}">
-                    <button type="button" class="icon" data-remove aria-label="Hapus baris">✕</button>
+<span class="rep-aksi">
+                        <button type="button" class="urut" data-move="up" title="Naikkan" aria-label="Naikkan">▲</button>
+                        <button type="button" class="urut" data-move="down" title="Turunkan" aria-label="Turunkan">▼</button>
+                        <button type="button" class="icon" data-remove aria-label="Hapus baris">✕</button>
+                    </span>
                 </div>
                 @error("$name.$i") <small class="error">{{ $message }}</small> @enderror
             </div>

@@ -288,14 +288,6 @@
             <td>{{ $a['nama_aktivitas'] }}</td>
         </tr>
         <tr>
-            <td class="k">Unit Kerja</td>
-            <td>{{ $dok['unit_kerja'] }}</td>
-        </tr>
-        <tr>
-            <td class="k">Jabatan Penanggung Jawab</td>
-            <td>{{ $a['jabatan_pj'] ?? '-' }}</td>
-        </tr>
-        <tr>
             <td class="k">Kode Referensi RoPA</td>
             <td>{{ $ropa['nomor'] }}</td>
         </tr>
@@ -336,7 +328,7 @@
     </table>
 
     {{-- ================= A ================= --}}
-    <h2 class="halaman-baru">A. INFORMASI ORGANISASI DAN PENANGGUNG JAWAB</h2>
+    <h2 class="halaman-baru">A. INFORMASI ORGANISASI</h2>
     <table class="kv">
         <tr>
             <td class="k">Nama Instansi / OPD</td>
@@ -395,10 +387,8 @@
     <h3>2. Tujuan Pemrosesan Data Pribadi</h3>
     <div>{!! $ml($a['tujuan']) !!}</div>
 
-    <h3>3. Latar Belakang Pemrosesan Data Pribadi</h3>
-    <div>{!! $ml($ds['latar_belakang']) !!}</div>
 
-    <h3>4. Data Pribadi siapa yang diproses dalam aktivitas ini dan jenis Data Pribadi yang diproses</h3>
+    <h3>3. Data Pribadi siapa yang diproses dalam aktivitas ini dan jenis Data Pribadi yang diproses</h3>
     <table class="kv">
         <tr>
             <td class="k">Kategori Subjek Data Pribadi</td>
@@ -440,7 +430,7 @@
         </ul>
     @endif
 
-    <h3>5. Pihak yang Terlibat dalam Pemrosesan</h3>
+    <h3>4. Pihak yang Terlibat dalam Pemrosesan</h3>
     <table class="grid kecil">
         <tr>
             <th>Pihak</th>
@@ -785,15 +775,17 @@
     <div style="margin-top:8pt"><strong>Catatan tambahan:</strong></div>
     <div class="catatan">{!! filled($ks['catatan'] ?? null) ? $ml($ks['catatan']) : '&nbsp;' !!}</div>
 
+    <h3 class="halaman-baru">3. Ringkasan Publik</h3>
+    <div class="catatan">{!! filled($ks['ringkasan_publik'] ?? null) ? $ml($ks['ringkasan_publik']) : '-' !!}</div>
+
     {{-- ================= TANDA TANGAN ================= --}}
     @php
-        $pj = $a['penanggung_jawab'] ?? null;
         $tte = (array) ($pengesahan['tte'] ?? []);
         $label = (array) ($pengesahan['label'] ?? []);
         $kolom = fn(string $k, string $peran, ?string $jabatan, ?string $nama) => \App\Support\LabelTte::kolom(
             $k,
             $label,
-            150,
+            200,
             $peran,
             $jabatan,
             $o['nama_instansi'] ?? '',
@@ -807,19 +799,8 @@
         </div>
         <table class="ttd">
             <tr>
-                <td>{!! $kolom('pj', 'Penanggungjawab Layanan', $a['jabatan_pj'] ?? null, $pj) !!}</td>
-                <td></td>
-                <td>{!! $kolom('ppdp', 'Pejabat Pelindung Data Pribadi', $o['jabatan_ppdp'] ?? null, $o['nama_ppdp'] ?? null) !!}</td>
-            </tr>
-            <tr>
-                <td></td>
-                <td style="padding-top:22pt">{!! $kolom(
-                    'pengendali',
-                    'Pengendali Data Pribadi',
-                    $o['jabatan_pengendali'] ?? null,
-                    $o['nama_pengendali'] ?? null,
-                ) !!}</td>
-                <td></td>
+                <td style="width:50%">{!! $kolom('ppdp', 'Pejabat Pelindung Data Pribadi', $o['jabatan_ppdp'] ?? null, $o['nama_ppdp'] ?? null) !!}</td>
+                <td style="width:50%">{!! $kolom('pengendali', 'Pengendali Data Pribadi', $o['jabatan_pengendali'] ?? null, $o['nama_pengendali'] ?? null) !!}</td>
             </tr>
         </table>
     </div>

@@ -14,7 +14,6 @@
 
     $kontakInstansi = implode(' / ', array_filter([$o['telepon'] ?? null, $o['email'] ?? null]));
     $kontakPpdp = implode(' / ', array_filter([$o['ppdp_email'] ?? null, $o['ppdp_hp'] ?? null]));
-    $pj = $a['penanggung_jawab'] ?? null;
 @endphp
 
 <h1>
@@ -32,7 +31,7 @@
 </table>
 
 {{-- ============ I ============ --}}
-<h2>I. INFORMASI ORGANISASI &amp; PENANGGUNG JAWAB</h2>
+<h2>I. INFORMASI ORGANISASI</h2>
 <table class="kv">
     <tr>
         <td class="k">Nama Instansi / Organisasi / Perusahaan</td>
@@ -74,14 +73,6 @@
     <tr>
         <td class="k">Nama Aktivitas Pemrosesan</td>
         <td>{{ $a['nama_aktivitas'] }}</td>
-    </tr>
-    <tr>
-        <td class="k">Nama Penanggung Jawab Layanan/Aktivitas</td>
-        <td>{{ $pj ?: '-' }}</td>
-    </tr>
-    <tr>
-        <td class="k">Jabatan Penanggung Jawab Layanan/Aktivitas</td>
-        <td>{{ $a['jabatan_pj'] ?? '-' }}</td>
     </tr>
     <tr>
         <td class="k">Deskripsi Aktivitas Pemrosesan</td>
@@ -318,7 +309,7 @@
 $tte = (array) ($pengesahan['tte'] ?? []);
 $label = (array) ($pengesahan['label'] ?? []);
 $kolom = fn(string $k, string $peran, ?string $jabatan, ?string $nama) =>
-\App\Support\LabelTte::kolom($k, $label, 150, $peran, $jabatan, $o['nama_instansi'] ?? '', $nama);
+\App\Support\LabelTte::kolom($k, $label, 200, $peran, $jabatan, $o['nama_instansi'] ?? '', $nama);
 @endphp
 <div class="blok-pengesahan">
     <div class="pengesahan">
@@ -328,19 +319,8 @@ $kolom = fn(string $k, string $peran, ?string $jabatan, ?string $nama) =>
 
     <table class="ttd">
         <tr>
-            <td>{!! $kolom('pj', 'Penanggungjawab Layanan', $a['jabatan_pj'] ?? null, $pj) !!}</td>
-            <td></td>
-            <td>{!! $kolom('ppdp', 'Pejabat Pelindung Data Pribadi', $o['jabatan_ppdp'] ?? null, $o['nama_ppdp'] ?? null) !!}</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td style="padding-top:22pt">{!! $kolom(
-                'pengendali',
-                'Pengendali Data Pribadi',
-                $o['jabatan_pengendali'] ?? null,
-                $o['nama_pengendali'] ?? null,
-            ) !!}</td>
-            <td></td>
+            <td style="width:50%">{!! $kolom('ppdp', 'Pejabat Pelindung Data Pribadi', $o['jabatan_ppdp'] ?? null, $o['nama_ppdp'] ?? null) !!}</td>
+            <td style="width:50%">{!! $kolom('pengendali', 'Pengendali Data Pribadi', $o['jabatan_pengendali'] ?? null, $o['nama_pengendali'] ?? null) !!}</td>
         </tr>
     </table>
 </div>

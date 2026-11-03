@@ -20,7 +20,7 @@ class DpiaController extends Controller
 {
     public const TABS = [
         'dokumen'      => 'I. Informasi Dokumen',
-        'organisasi'   => 'II. Organisasi dan Penanggung Jawab',
+        'organisasi'   => 'II. Organisasi',
         'risiko'       => 'III. Analisis Potensi Risiko Tinggi',
         'deskripsi'    => 'IV. Deskripsi Pemrosesan Data Pribadi',
         'kebutuhan'    => 'V. Penilaian Kebutuhan dan Proporsionalitas',
@@ -243,7 +243,7 @@ class DpiaController extends Controller
             'lokasi'  => ['required', 'string', 'max:100'],
             'tanggal' => ['required', 'date_format:Y-m-d'],
             'tte'     => ['nullable', 'array'],
-            'tte.*'   => [Rule::in(['pj', 'ppdp', 'pengendali'])],
+            'tte.*'   => [Rule::in(['ppdp', 'pengendali'])],
         ]);
 
         if ($v->fails()) {
@@ -442,6 +442,7 @@ class DpiaController extends Controller
                 'efektivitas'         => ['required', Rule::in(array_keys(self::EFEKTIVITAS))],
                 'keputusan_akhir'     => ['required', Rule::in(array_keys(self::KEPUTUSAN_AKHIR))],
                 'catatan'             => ['nullable', 'string', 'max:3000'],
+                'ringkasan_publik'    => ['nullable', 'string', 'max:5000'],
             ],
         };
     }
@@ -465,7 +466,6 @@ class DpiaController extends Controller
         );
 
         return [
-            'latar_belakang'     => ['required', 'string', 'max:5000'],
             'pihak'              => ['required', 'array', 'max:30'],
             'pihak.*.nama'       => ['required', 'string', 'max:255'],
             'pihak.*.peran'      => ['required', Rule::in(array_keys(RopaController::PERAN_PENERIMA))],
@@ -639,7 +639,6 @@ class DpiaController extends Controller
             'keterangan.*' => 'Keterangan',
 
             // IV
-            'latar_belakang'     => 'Latar belakang pemrosesan',
             'pihak.*.nama'       => 'Nama pihak',
             'pihak.*.peran'      => 'Peran',
             'pihak.*.lokasi'     => 'Dalam/Luar Negeri',
@@ -689,6 +688,7 @@ class DpiaController extends Controller
             'efektivitas'     => 'Efektivitas langkah mitigasi',
             'keputusan_akhir' => 'Keputusan akhir',
             'catatan'         => 'Catatan tambahan',
+            'ringkasan_publik' => 'Ringkasan publik',
         ];
     }
 

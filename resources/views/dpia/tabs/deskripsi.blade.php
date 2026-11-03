@@ -31,12 +31,7 @@
 <small class="hint">Diambil dari RoPA Tab II.</small>
 
 {{-- 3 --}}
-<h3 class="sub">3. Latar Belakang Pemrosesan Data Pribadi</h3>
-<x-field name="latar_belakang" label="Latar Belakang Pemrosesan" type="textarea" rows="10"
-         :value="$d['latar_belakang'] ?? null" required />
-
-{{-- 4 --}}
-<h3 class="sub">4. Data Pribadi yang Diproses</h3>
+<h3 class="sub">3. Data Pribadi yang Diproses</h3>
 <x-readonly label="Kategori Subjek Data Pribadi" :value="implode(', ', $p['kategori_subjek'])" />
 <x-readonly label="Estimasi Jumlah Subjek Data Pribadi"
             :value="number_format($p['estimasi_subjek'], 0, ',', '.') . ' orang'" />
@@ -71,8 +66,8 @@
     <small class="hint">Seluruh isian bagian 4 diambil dari RoPA Tab III dan hanya bisa diubah di sana.</small>
 </fieldset>
 
-{{-- 5 --}}
-<h3 class="sub">5. Pihak yang Terlibat dalam Pemrosesan <span class="req">*</span></h3>
+{{-- 4 --}}
+<h3 class="sub">4. Pihak yang Terlibat dalam Pemrosesan <span class="req">*</span></h3>
 <div class="field repeater" data-repeater>
     <div class="rep-rows" data-rows>
         @foreach ($pihak as $i => $row)

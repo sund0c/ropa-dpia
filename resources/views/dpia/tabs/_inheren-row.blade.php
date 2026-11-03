@@ -5,7 +5,7 @@
     $lv   = $skor ? $MR::level($skor, $m) : null;
 @endphp
 <tr data-inh-row>
-    <td></td>
+    <td><input type="hidden" name="inheren[{{ $s }}][{{ $i }}][id]" value="{{ $row['id'] ?? '' }}"></td>
     <td>
         <textarea name="inheren[{{ $s }}][{{ $i }}][risiko]" rows="3">{{ $row['risiko'] ?? '' }}</textarea>
         @error("inheren.$s.$i.risiko") <small class="error">{{ $message }}</small> @enderror
@@ -30,5 +30,9 @@
     </td>
     <td class="skor" data-inh-skor
         @if ($lv) style="background:{{ $kat[$lv]['warna'] }}; color:{{ $teks($lv) }}" @endif>{{ $skor ?? '–' }}</td>
-    <td><button type="button" class="icon" data-inh-remove aria-label="Hapus risiko">✕</button></td>
+    <td class="inh-aksi">
+        <button type="button" class="urut" data-move="up" title="Naikkan" aria-label="Naikkan">▲</button>
+        <button type="button" class="urut" data-move="down" title="Turunkan" aria-label="Turunkan">▼</button>
+        <button type="button" class="icon" data-inh-remove aria-label="Hapus risiko">✕</button>
+    </td>
 </tr>

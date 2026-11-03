@@ -178,7 +178,7 @@
                     <th style="width:12rem">Kemungkinan</th>
                     <th style="width:12rem">Dampak</th>
                     <th style="width:6.5rem">Skor Risiko Inheren</th>
-                    <th style="width:2.5rem"></th>
+                    <th style="width:4.5rem"></th>
                 </tr>
             </thead>
             @foreach ($MR::SIKLUS as $s => $labelSiklus)

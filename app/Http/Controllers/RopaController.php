@@ -15,7 +15,7 @@ class RopaController extends Controller
 {
     /** Daftar tab RoPA. Tab berikutnya cukup ditambahkan di sini + di rules(). */
     public const TABS = [
-        'organisasi' => 'I. Informasi Organisasi & Penanggung Jawab',
+        'organisasi' => 'I. Informasi Organisasi',
         'aktivitas'  => 'II. Aktivitas & Legalitas Pemrosesan',
         'pemetaan'   => 'III. Pemetaan Aliran Data Pribadi',
         'hak'        => 'IV. Pemenuhan Hak Subjek Data Pribadi',
@@ -215,7 +215,7 @@ class RopaController extends Controller
             'lokasi'  => ['required', 'string', 'max:100'],
             'tanggal' => ['required', 'date_format:Y-m-d'],
             'tte'     => ['nullable', 'array'],
-            'tte.*'   => [Rule::in(['pj', 'ppdp', 'pengendali'])],
+            'tte.*'   => [Rule::in(['ppdp', 'pengendali'])],
         ]);
 
         if ($v->fails()) {
@@ -331,8 +331,6 @@ class RopaController extends Controller
             ],
             'aktivitas' => [
                 'nama_aktivitas'    => ['required', 'string', 'max:255'],
-                'penanggung_jawab'  => ['required', 'string', 'max:255'],
-                'jabatan_pj'        => ['required', 'string', 'max:255'],
                 'tahapan'           => ['required', 'array', 'max:50'],
                 'tahapan.*'         => ['required', 'string', 'max:1000'],
                 'tujuan'            => ['required', 'string', 'max:2000'],
@@ -461,10 +459,8 @@ class RopaController extends Controller
             'pengamanan.*'          => 'Langkah pengamanan',
             'status_siklus'         => 'Status siklus hidup',
             'indikator.*'           => 'Indikator risiko',
-            'penanggung_jawab'  => 'Nama penanggung jawab layanan/aktivitas',
             'jabatan_pengendali' => 'Jabatan Pengendali Data Pribadi',
             'jabatan_ppdp'       => 'Jabatan PPDP',
-            'jabatan_pj'         => 'Jabatan penanggung jawab layanan/aktivitas',
         ];
     }
 

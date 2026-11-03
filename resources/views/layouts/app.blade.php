@@ -36,6 +36,12 @@ body { margin: 0; min-height: 100vh; font-family: system-ui, sans-serif; color: 
 .rep-line input { flex: 1; }
 .rep-no::before { content: counter(rep) "."; display: inline-block; min-width: 1.6rem; color: #6b7280; }
 button.icon { background: transparent; color: #dc2626; padding: .3rem .5rem; font-size: 1rem; }
+.rep-aksi { display: inline-flex; align-items: center; gap: .1rem; flex: none; }
+button.urut { background: transparent; color: #6b7280; padding: .3rem .35rem; font-size: .8rem; line-height: 1; }
+button.urut:hover { color: #1e40af; background: #eff6ff; }
+.rep-rows > [data-row]:first-child [data-move="up"],
+.rep-rows > [data-row]:last-child [data-move="down"] { visibility: hidden; }
+td.inh-aksi { white-space: nowrap; vertical-align: middle; }
 button.small { padding: .35rem .8rem; font-size: .85rem; align-self: flex-start; margin-top: .25rem; }
 
 
@@ -210,6 +216,20 @@ document.addEventListener('click', (e) => {
 
 document.addEventListener('change', (e) => {
     if (e.target.matches('[data-jenis]')) syncTransferData();
+});
+
+// Tombol ▲ ▼: pindahkan baris satu posisi di dalam daftarnya (nomor urut ikut menyesuaikan)
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-move]');
+    if (!btn) return;
+    const row = btn.closest('[data-inh-row], [data-row]');
+    if (!row) return;
+    const jenis = row.matches('[data-inh-row]') ? '[data-inh-row]' : '[data-row]';
+    const naik  = btn.dataset.move === 'up';
+    const lain  = naik ? row.previousElementSibling : row.nextElementSibling;
+    if (!lain || !lain.matches(jenis)) return;
+    naik ? lain.before(row) : lain.after(row);
+    btn.focus();
 });
 
 // Tombol "Centang semua" / "Hapus semua centang"
