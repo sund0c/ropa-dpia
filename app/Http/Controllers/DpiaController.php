@@ -411,7 +411,6 @@ class DpiaController extends Controller
     {
         return match ($tab) {
             'dokumen' => [
-                'unit_kerja'          => ['required', 'string', 'max:255'],
                 'tanggal_penyusunan'  => ['required', 'date_format:Y-m-d'],
                 'tanggal_review'      => ['required', 'date_format:Y-m-d', 'after:tanggal_penyusunan'],
                 'status_dokumen'      => ['required', Rule::in(array_keys(self::STATUS_DOKUMEN))],
@@ -626,7 +625,6 @@ class DpiaController extends Controller
     {
         return [
             // I
-            'unit_kerja'          => 'Unit kerja',
             'tanggal_penyusunan'  => 'Tanggal penyusunan',
             'tanggal_review'      => 'Tanggal review berikutnya',
             'status_dokumen'      => 'Status dokumen',

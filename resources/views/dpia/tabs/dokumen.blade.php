@@ -15,9 +15,6 @@
 
 <x-readonly label="Nama Aktivitas Proses" :value="$ropa['aktivitas']['nama_aktivitas']" hint="Diambil dari RoPA Tab II." />
 
-<x-field name="unit_kerja" label="Unit Kerja/Divisi/Departement" :value="$d['unit_kerja'] ?? null" required
-    placeholder="Unit yang bertanggungjawab terhadap layanan/aktifitas Contoh: Bidang Pelayanan Kesehatan" />
-
 <x-readonly label="Kode Referensi RoPA" :value="$ropa['nomor']" />
 
 <div class="row">
