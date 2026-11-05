@@ -41,19 +41,25 @@ class DataController extends Controller
     public function impor(Request $request)
     {
         // --- 1. Periksa file (sesi yang sedang berjalan belum disentuh) ---
-        $request->validate(
-            ['berkas' => ['required', 'file', 'max:1024', 'extensions:json']],
-            [
-                'berkas.required'   => 'Pilih file JSON yang akan diimpor.',
-                'berkas.max'        => 'Ukuran file maksimal 1 MB.',
-                'berkas.extensions' => 'File harus berekstensi .json.',
-            ]
-        );
-
+        // Pesan dikirim sebagai error 'ropa' agar tampil di atas form (dialog impor tertutup setelah redirect).
         $gagalFile = fn(string $pesan) => redirect()->route('ropa.form')->withErrors(['ropa' => $pesan]);
 
+        $berkas = $request->file('berkas');
+        if (! $berkas) {
+            return $gagalFile('Pilih file JSON yang akan diimpor.');
+        }
+        if (! $berkas->isValid()) {
+            return $gagalFile('File gagal diunggah ke server: ' . $berkas->getErrorMessage());
+        }
+        if ($berkas->getSize() > 1024 * 1024) {
+            return $gagalFile('Ukuran file maksimal 1 MB.');
+        }
+        if (strtolower($berkas->getClientOriginalExtension()) !== 'json') {
+            return $gagalFile('File harus berekstensi .json.');
+        }
+
         try {
-            $in = json_decode(file_get_contents($request->file('berkas')->getRealPath()), true, 32, JSON_THROW_ON_ERROR);
+            $in = json_decode(file_get_contents($berkas->getRealPath()), true, 32, JSON_THROW_ON_ERROR);
         } catch (JsonException) {
             return $gagalFile('File tidak dapat dibaca sebagai JSON yang valid.');
         }

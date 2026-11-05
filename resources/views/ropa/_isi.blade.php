@@ -270,16 +270,23 @@
         <td class="k">Metode Pemusnahan Data</td>
         <td>{!! $multiline($s['metode_pemusnahan']) !!}</td>
     </tr>
-    <tr>
-        <td class="k">Pengamanan Teknis &amp; Organisasional</td>
-        <td>
-            <ol>
-                @foreach ($s['pengamanan'] as $x)
-                    <li>{{ $x }}</li>
-                @endforeach
-            </ol>
-        </td>
-    </tr>
+    @php $pg = \App\Http\Controllers\RopaController::pengamanan($s); @endphp
+    @foreach (\App\Http\Controllers\RopaController::KELOMPOK_PENGAMANAN as $kel => $judul)
+        <tr>
+            <td class="k">{{ $judul }}</td>
+            <td>
+                @if ($pg[$kel])
+                    <ol>
+                        @foreach ($pg[$kel] as $x)
+                            <li>{{ $x }}</li>
+                        @endforeach
+                    </ol>
+                @else
+                    -
+                @endif
+            </td>
+        </tr>
+    @endforeach
     <tr>
         <td class="k">Status Siklus Hidup</td>
         <td>{{ $labels['status_siklus'][$s['status_siklus']] ?? $s['status_siklus'] }}</td>

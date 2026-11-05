@@ -9,11 +9,25 @@
          :value="$d['metode_pemusnahan'] ?? null" required
          placeholder="Contoh: Penghapusan permanen dari basis data dan cadangan, penghancuran dokumen fisik dengan mesin penghancur kertas, disertai berita acara pemusnahan" />
 
-<x-repeater name="pengamanan" label="Pengamanan Teknis & Organisasional"
-            :items="$d['pengamanan'] ?? []" required
-            hint="Satu langkah pengamanan satu isian. Cantumkan langkah teknis maupun organisasional."
-            placeholder="Contoh: Enkripsi data saat disimpan (AES-256) / Kontrol akses berbasis peran / Perjanjian kerahasiaan (NDA) bagi petugas"
-            add-label="+ Tambah pengamanan" />
+@php $pg = \App\Http\Controllers\RopaController::pengamanan($d ?? []); @endphp
+
+<x-repeater name="pengamanan_organisasi" label="Pengamanan Organisasional"
+            :items="$pg['organisasi']"
+            hint="Aturan dan tata kelola: kebijakan, SOP, penetapan peran dan tanggung jawab, perjanjian kerahasiaan (NDA), perjanjian dengan prosesor/pihak ketiga. Satu langkah satu isian; boleh dikosongkan."
+            placeholder="Contoh: SOP Layanan Permohonan Informasi / Perjanjian kerahasiaan (NDA) bagi petugas"
+            add-label="+ Tambah pengamanan organisasional" />
+
+<x-repeater name="pengamanan_operasional" label="Pengamanan Operasional"
+            :items="$pg['operasional']"
+            hint="Pelaksanaan sehari-hari: pelatihan/sosialisasi petugas, backup berkala, pengamanan fisik dokumen dan ruangan, peninjauan log, pemusnahan sesuai prosedur. Satu langkah satu isian; boleh dikosongkan."
+            placeholder="Contoh: Bimtek petugas layanan / Backup harian, mingguan, bulanan / Filing cabinet terkunci"
+            add-label="+ Tambah pengamanan operasional" />
+
+<x-repeater name="pengamanan_teknis" label="Pengamanan Teknis"
+            :items="$pg['teknis']"
+            hint="Pengamanan pada sistem dan perangkat: enkripsi, kontrol akses, autentikasi, log audit, firewall, pembaruan keamanan. Satu langkah satu isian; boleh dikosongkan."
+            placeholder="Contoh: Enkripsi data saat disimpan (AES-256) / Kontrol akses berbasis peran (RBAC) / Log audit trail"
+            add-label="+ Tambah pengamanan teknis" />
 
 <fieldset class="field">
     <legend>Status Siklus Hidup <span class="req">*</span></legend>

@@ -106,7 +106,15 @@ class RopaController extends Controller
     public const INDIKATOR_OTOMATIS = 'data_spesifik';
 
     /** Daftar satu kolom (name[]). Baris kosong dibuang sebelum validasi. */
-    private const LIST_FIELDS = ['tahapan', 'referensi_hukum', 'kategori_subjek', 'pengamanan'];
+    private const LIST_FIELDS = ['tahapan', 'referensi_hukum', 'kategori_subjek',
+        'pengamanan_organisasi', 'pengamanan_operasional', 'pengamanan_teknis'];
+
+    /** Kelompok pengamanan Tab V (semuanya boleh kosong). */
+    public const KELOMPOK_PENGAMANAN = [
+        'organisasi'  => 'Pengamanan Organisasional',
+        'operasional' => 'Pengamanan Operasional',
+        'teknis'      => 'Pengamanan Teknis',
+    ];
 
     /** Daftar multi-kolom (name[i][kolom]). Baris yang semua kolomnya kosong dibuang. */
     private const ROW_FIELDS = [
@@ -118,6 +126,7 @@ class RopaController extends Controller
     private const DEFAULTS = [
         'pemetaan' => ['jenis_umum' => [], 'jenis_spesifik' => [], 'transfer' => []],
         'risiko'   => ['indikator' => []],
+        'siklus'   => ['pengamanan_organisasi' => [], 'pengamanan_operasional' => [], 'pengamanan_teknis' => []],
     ];
 
     public function form(Request $request)
@@ -178,6 +187,7 @@ class RopaController extends Controller
 
         $this->cleanLists($request);
         if ($tab === 'pemetaan') $this->syncDataAnak($request);
+        if ($tab === 'siklus')   $this->pecahPengamananLama($request);
 
         $rules = $this->rules($tab, $request);
         if ($tab === 'organisasi' && $imporLama && blank($request->input('koordinator_nama'))) {
@@ -293,6 +303,57 @@ class RopaController extends Controller
             ->header('Cache-Control', 'no-store, private');
     }
 
+    /**
+     * Pengamanan per kelompok untuk tampilan/PDF. Data lama (satu daftar "pengamanan",
+     * sebelum dipecah) dikelompokkan otomatis menurut kata kuncinya.
+     */
+    public static function pengamanan(array $siklus): array
+    {
+        $ada = false;
+        $hasil = [];
+        foreach (array_keys(self::KELOMPOK_PENGAMANAN) as $k) {
+            $ada = $ada || array_key_exists("pengamanan_$k", $siklus);
+            $hasil[$k] = array_values((array) ($siklus["pengamanan_$k"] ?? []));
+        }
+
+        return $ada ? $hasil : self::kelompokkan((array) ($siklus['pengamanan'] ?? []));
+    }
+
+    /** Tebakan kelompok untuk daftar pengamanan lama; pengguna dapat memindahkannya di Tab V. */
+    private static function kelompokkan(array $daftar): array
+    {
+        $kunci = [
+            'organisasi'  => ['sop', 'kebijakan', 'surat edaran', 'keputusan', 'sk ', 'pernyataan', 'nda',
+                              'perjanjian', 'kerahasiaan', 'pedoman', 'prosedur', 'penunjukan', 'regulasi'],
+            'operasional' => ['bimtek', 'pelatihan', 'sosialisasi', 'backup', 'cadangan', 'filing', 'filling',
+                              'lemari', 'kunci', 'arsip', 'jadwal', 'penghancur', 'pemusnahan', 'peninjauan'],
+        ];
+
+        $hasil = ['organisasi' => [], 'operasional' => [], 'teknis' => []];
+        foreach ($daftar as $x) {
+            if (! is_string($x) || trim($x) === '') continue;
+            $t = mb_strtolower($x);
+            $kel = 'teknis';
+            foreach ($kunci as $k => $kata) {
+                foreach ($kata as $w) {
+                    if (str_contains($t, $w)) { $kel = $k; break 2; }
+                }
+            }
+            $hasil[$kel][] = trim($x);
+        }
+        return $hasil;
+    }
+
+    /** Impor file lama: "pengamanan" (satu daftar) dipecah ke tiga kelompok. */
+    private function pecahPengamananLama(Request $request): void
+    {
+        $baru = array_map(fn($k) => "pengamanan_$k", array_keys(self::KELOMPOK_PENGAMANAN));
+        if (! $request->has('pengamanan') || $request->hasAny($baru)) return;
+
+        $hasil = self::kelompokkan((array) $request->input('pengamanan'));
+        $request->merge(array_combine($baru, array_values($hasil)));
+    }
+
     private function cleanLists(Request $request): void
     {
         foreach (self::LIST_FIELDS as $field) {
@@ -367,8 +428,12 @@ class RopaController extends Controller
             'siklus' => [
                 'masa_retensi'      => ['required', 'string', 'max:255'],
                 'metode_pemusnahan' => ['required', 'string', 'max:2000'],
-                'pengamanan'        => ['required', 'array', 'max:50'],
-                'pengamanan.*'      => ['required', 'string', 'max:500'],
+                'pengamanan_organisasi'    => ['nullable', 'array', 'max:50'],
+                'pengamanan_organisasi.*'  => ['required', 'string', 'max:500'],
+                'pengamanan_operasional'   => ['nullable', 'array', 'max:50'],
+                'pengamanan_operasional.*' => ['required', 'string', 'max:500'],
+                'pengamanan_teknis'        => ['nullable', 'array', 'max:50'],
+                'pengamanan_teknis.*'      => ['required', 'string', 'max:500'],
                 'status_siklus'     => ['required', Rule::in(array_keys(self::STATUS_SIKLUS))],
             ],
             'risiko' => [
@@ -439,8 +504,9 @@ class RopaController extends Controller
             'transfer.max'               => 'Maksimal :max penerima.',
             'transfer.*.data.required'   => 'Pilih minimal satu data pribadi yang dikirim ke penerima ini.',
             'transfer.*.data.*.in'       => 'Data yang dikirim harus termasuk jenis data pribadi yang dicentang di atas.',
-            'pengamanan.required'        => 'Isi minimal satu langkah pengamanan.',
-            'pengamanan.max'             => 'Maksimal :max langkah pengamanan.',
+            'pengamanan_organisasi.max'  => 'Maksimal :max langkah pengamanan organisasional.',
+            'pengamanan_operasional.max' => 'Maksimal :max langkah pengamanan operasional.',
+            'pengamanan_teknis.max'      => 'Maksimal :max langkah pengamanan teknis.',
             'status_siklus.required'     => 'Pilih status siklus hidup.',
         ];
     }
@@ -479,7 +545,9 @@ class RopaController extends Controller
             'hak.required'          => 'Pilih minimal satu hak yang difasilitasi.',
             'masa_retensi'          => 'Masa retensi data',
             'metode_pemusnahan'     => 'Metode pemusnahan data',
-            'pengamanan.*'          => 'Langkah pengamanan',
+            'pengamanan_organisasi.*'  => 'Langkah pengamanan organisasional',
+            'pengamanan_operasional.*' => 'Langkah pengamanan operasional',
+            'pengamanan_teknis.*'      => 'Langkah pengamanan teknis',
             'status_siklus'         => 'Status siklus hidup',
             'indikator.*'           => 'Indikator risiko',
             'jabatan_pengendali' => 'Jabatan Pimpinan Pengendali Data Pribadi',
