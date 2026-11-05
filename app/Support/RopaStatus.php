@@ -17,6 +17,13 @@ class RopaStatus
         return self::tabBelumDisimpan($ropa) === [];
     }
 
+    /** Koordinator PPDP wajib ada untuk cetak PDF (file impor lama bisa belum memilikinya). */
+    public static function koordinatorLengkap(array $ropa): bool
+    {
+        $o = $ropa['organisasi'] ?? [];
+        return filled($o['koordinator_nama'] ?? null) && filled($o['koordinator_jabatan'] ?? null);
+    }
+
     /** Indikator risiko yang terpenuhi: pilihan manual Tab VI + data spesifik dari Tab III. */
     public static function indikatorAktif(array $ropa): array
     {

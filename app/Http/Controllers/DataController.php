@@ -85,7 +85,7 @@ class DataController extends Controller
             if (! is_array($isiTab)) continue;
 
             try {
-                $ropa[$tab] = $ropaCtl->dataTab($tab, $this->permintaan($isiTab));
+                $ropa[$tab] = $ropaCtl->dataTab($tab, $this->permintaan($isiTab), imporLama: true);
             } catch (ValidationException) {
                 $gagal[] = "RoPA $label";
             }

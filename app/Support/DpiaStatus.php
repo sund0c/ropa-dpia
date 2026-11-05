@@ -15,6 +15,10 @@ class DpiaStatus
     {
         $m = [];
 
+        if (! RopaStatus::koordinatorLengkap($ropa)) {
+            $m[] = 'Data Koordinator PPDP di RoPA Tab I belum diisi.';
+        }
+
         // Semua tab (kecuali yang otomatis dari RoPA) sudah pernah disimpan
         foreach (DpiaController::TABS as $key => $label) {
             if (in_array($key, DpiaController::TABS_OTOMATIS, true)) continue;

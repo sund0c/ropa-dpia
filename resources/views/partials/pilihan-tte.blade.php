@@ -1,8 +1,9 @@
 @php
     $orgTte = $ropa['organisasi'] ?? [];
     $penandatangan = [
-        'ppdp'       => ['Pejabat Pelindung Data Pribadi',     $orgTte['nama_ppdp'] ?? null],
-        'pengendali' => ['Pengendali Data Pribadi',            $orgTte['nama_pengendali'] ?? null],
+        'koordinator' => ['Koordinator PPDP',                       $orgTte['koordinator_nama'] ?? null],
+        'ppdp'        => ['Pejabat Pelindung Data Pribadi (PPDP)',  $orgTte['nama_ppdp'] ?? null],
+        'pengendali'  => ['Pimpinan Pengendali Data Pribadi',       $orgTte['nama_pengendali'] ?? null],
     ];
 @endphp
 <fieldset class="field" style="margin-top:.5rem">

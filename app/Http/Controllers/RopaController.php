@@ -164,20 +164,31 @@ class RopaController extends Controller
         return redirect()->route('ropa.form', ['tab' => $next])->with('saved', $pesan);
     }
 
+    /** Field Koordinator PPDP (Tab I). Boleh kosong pada impor file lama, wajib saat disimpan dari form. */
+    public const FIELD_KOORDINATOR = ['koordinator_nama', 'koordinator_jabatan', 'koordinator_email', 'koordinator_hp'];
+
     /**
      * Bersihkan + validasi isian satu tab. Dipakai oleh tombol Simpan dan oleh Impor JSON,
      * sehingga keduanya selalu memakai aturan yang sama. Melempar ValidationException bila gagal.
+     * $imporLama: file ekspor sebelum ada Koordinator PPDP tetap bisa dimuat; datanya dilengkapi kemudian di Tab I.
      */
-    public function dataTab(string $tab, Request $request): array
+    public function dataTab(string $tab, Request $request, bool $imporLama = false): array
     {
         abort_unless(array_key_exists($tab, self::TABS), 404);
 
         $this->cleanLists($request);
         if ($tab === 'pemetaan') $this->syncDataAnak($request);
 
+        $rules = $this->rules($tab, $request);
+        if ($tab === 'organisasi' && $imporLama && blank($request->input('koordinator_nama'))) {
+            foreach (self::FIELD_KOORDINATOR as $f) {
+                $rules[$f] = ['nullable', ...array_filter($rules[$f], fn($r) => ! in_array($r, ['nullable'], true) && ! (is_string($r) && str_starts_with($r, 'required')))];
+            }
+        }
+
         $data = Validator::make(
             $request->all(),
-            $this->rules($tab, $request),
+            $rules,
             $this->messages(),
             $this->attributes()
         )->validate();
@@ -209,13 +220,17 @@ class RopaController extends Controller
             return redirect()->route('ropa.form')
                 ->withErrors(['ropa' => 'Lengkapi seluruh tab RoPA terlebih dahulu.']);
         }
+        if (! RopaStatus::koordinatorLengkap($ropa)) {
+            return redirect()->route('ropa.form', ['tab' => 'organisasi'])
+                ->withErrors(['ropa' => 'Lengkapi data Koordinator PPDP di Tab I terlebih dahulu.']);
+        }
 
         // Lokasi & tanggal pengesahan: hanya untuk cetakan ini, tidak disimpan
         $v = Validator::make($request->only('lokasi', 'tanggal', 'tte'), [
             'lokasi'  => ['required', 'string', 'max:100'],
             'tanggal' => ['required', 'date_format:Y-m-d'],
             'tte'     => ['nullable', 'array'],
-            'tte.*'   => [Rule::in(['ppdp', 'pengendali'])],
+            'tte.*'   => [Rule::in(['koordinator', 'ppdp', 'pengendali'])],
         ]);
 
         if ($v->fails()) {
@@ -328,6 +343,10 @@ class RopaController extends Controller
                 'jabatan_ppdp'       => ['required', 'string', 'max:255'],
                 'ppdp_email'      => ['nullable', 'required_without:ppdp_hp', 'email:rfc', 'max:255'],
                 'ppdp_hp'         => ['nullable', 'required_without:ppdp_email', 'regex:/^(\+62|62|0)8[0-9]{7,12}$/'],
+                'koordinator_nama'    => ['required', 'string', 'max:255'],
+                'koordinator_jabatan' => ['required', 'string', 'max:255'],
+                'koordinator_email'   => ['nullable', 'required_without:koordinator_hp', 'email:rfc', 'max:255'],
+                'koordinator_hp'      => ['nullable', 'required_without:koordinator_email', 'regex:/^(\+62|62|0)8[0-9]{7,12}$/'],
             ],
             'aktivitas' => [
                 'nama_aktivitas'    => ['required', 'string', 'max:255'],
@@ -429,11 +448,15 @@ class RopaController extends Controller
     private function attributes(): array
     {
         return [
-            'nama_instansi'         => 'Nama instansi',
+            'nama_instansi'         => 'Nama Pengendali Data Pribadi (instansi)',
             'alamat'                => 'Alamat kantor',
             'telepon'               => 'Nomor telepon resmi',
             'email'                 => 'Email resmi',
-            'nama_pengendali'       => 'Nama Pengendali Data Pribadi',
+            'nama_pengendali'       => 'Pimpinan Pengendali Data Pribadi',
+            'koordinator_nama'      => 'Nama Koordinator PPDP',
+            'koordinator_jabatan'   => 'Jabatan Koordinator PPDP',
+            'koordinator_email'     => 'Email Koordinator PPDP',
+            'koordinator_hp'        => 'No. HP Koordinator PPDP',
             'nama_ppdp'             => 'Nama PPDP',
             'ppdp_email'            => 'Email PPDP',
             'ppdp_hp'               => 'No. HP PPDP',
@@ -459,7 +482,7 @@ class RopaController extends Controller
             'pengamanan.*'          => 'Langkah pengamanan',
             'status_siklus'         => 'Status siklus hidup',
             'indikator.*'           => 'Indikator risiko',
-            'jabatan_pengendali' => 'Jabatan Pengendali Data Pribadi',
+            'jabatan_pengendali' => 'Jabatan Pimpinan Pengendali Data Pribadi',
             'jabatan_ppdp'       => 'Jabatan PPDP',
         ];
     }

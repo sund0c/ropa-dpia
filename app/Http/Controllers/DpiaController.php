@@ -243,7 +243,7 @@ class DpiaController extends Controller
             'lokasi'  => ['required', 'string', 'max:100'],
             'tanggal' => ['required', 'date_format:Y-m-d'],
             'tte'     => ['nullable', 'array'],
-            'tte.*'   => [Rule::in(['ppdp', 'pengendali'])],
+            'tte.*'   => [Rule::in(['koordinator', 'ppdp', 'pengendali'])],
         ]);
 
         if ($v->fails()) {

@@ -34,7 +34,7 @@
 <h2>I. INFORMASI ORGANISASI</h2>
 <table class="kv">
     <tr>
-        <td class="k">Nama Instansi / Organisasi / Perusahaan</td>
+        <td class="k">Nama Pengendali Data Pribadi</td>
         <td>{{ $o['nama_instansi'] }}</td>
     </tr>
     <tr>
@@ -46,11 +46,11 @@
         <td>{{ $kontakInstansi }}</td>
     </tr>
     <tr>
-        <td class="k">Nama Pengendali Data Pribadi</td>
+        <td class="k">Pimpinan Pengendali Data Pribadi</td>
         <td>{{ $o['nama_pengendali'] }}</td>
     </tr>
     <tr>
-        <td class="k">Jabatan Pengendali Data Pribadi</td>
+        <td class="k">Jabatan Pimpinan Pengendali Data Pribadi</td>
         <td>{{ $o['jabatan_pengendali'] ?? '-' }}</td>
     </tr>
     <tr>
@@ -64,6 +64,18 @@
     <tr>
         <td class="k">Kontak PPDP</td>
         <td>{{ $kontakPpdp }}</td>
+    </tr>
+    <tr>
+        <td class="k">Nama Koordinator PPDP Perangkat Daerah</td>
+        <td>{{ $o['koordinator_nama'] ?? '-' }}</td>
+    </tr>
+    <tr>
+        <td class="k">Jabatan Koordinator PPDP</td>
+        <td>{{ $o['koordinator_jabatan'] ?? '-' }}</td>
+    </tr>
+    <tr>
+        <td class="k">Kontak Koordinator PPDP</td>
+        <td>{{ implode(' / ', array_filter([$o['koordinator_email'] ?? null, $o['koordinator_hp'] ?? null])) ?: '-' }}</td>
     </tr>
 </table>
 
@@ -308,8 +320,8 @@
 @php
 $tte = (array) ($pengesahan['tte'] ?? []);
 $label = (array) ($pengesahan['label'] ?? []);
-$kolom = fn(string $k, string $peran, ?string $jabatan, ?string $nama) =>
-\App\Support\LabelTte::kolom($k, $label, 200, $peran, $jabatan, $o['nama_instansi'] ?? '', $nama);
+$kolom = fn(string $k, string $peran, ?string $jabatan, ?string $instansi, ?string $nama) =>
+\App\Support\LabelTte::kolom($k, $label, 200, $peran, $jabatan, $instansi, $nama);
 @endphp
 <div class="blok-pengesahan">
     <div class="pengesahan">
@@ -319,8 +331,11 @@ $kolom = fn(string $k, string $peran, ?string $jabatan, ?string $nama) =>
 
     <table class="ttd">
         <tr>
-            <td style="width:50%">{!! $kolom('ppdp', 'Pejabat Pelindung Data Pribadi', $o['jabatan_ppdp'] ?? null, $o['nama_ppdp'] ?? null) !!}</td>
-            <td style="width:50%">{!! $kolom('pengendali', 'Pengendali Data Pribadi', $o['jabatan_pengendali'] ?? null, $o['nama_pengendali'] ?? null) !!}</td>
+            <td style="width:50%">{!! $kolom('koordinator', 'Disusun & Diinventarisasi oleh,', 'Koordinator PPDP', $o['nama_instansi'] ?? '', $o['koordinator_nama'] ?? null) !!}</td>
+            <td style="width:50%">{!! $kolom('ppdp', 'Diverifikasi & Direkomendasikan oleh,', 'Pejabat Pelindung Data Pribadi (PPDP)', 'Pemerintah Provinsi Bali', $o['nama_ppdp'] ?? null) !!}</td>
+        </tr>
+        <tr>
+            <td colspan="2" style="width:100%; padding-top:20pt">{!! $kolom('pengendali', 'Disetujui dan Disahkan oleh,', $o['jabatan_pengendali'] ?? '', 'selaku Pengendali Data Pribadi Perangkat Daerah', $o['nama_pengendali'] ?? null) !!}</td>
         </tr>
     </table>
 </div>
