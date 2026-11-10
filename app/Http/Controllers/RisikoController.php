@@ -361,7 +361,7 @@ class RisikoController extends Controller
                 'defaultFont'         => 'Helvetica',
             ]);
 
-        PdfFooter::tambah($pdf, 'Manajemen Risiko ' . $risiko['nomor']);
+        PdfFooter::tambah($pdf);
 
         return $pdf->download('Risiko-' . $risiko['nomor'] . '.pdf')
             ->header('Cache-Control', 'no-store, private');

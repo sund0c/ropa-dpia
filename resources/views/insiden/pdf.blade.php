@@ -42,7 +42,7 @@
     <meta charset="utf-8">
     <title>Laporan Penanganan Insiden {{ $insiden['nomor'] }}</title>
     <style>
-        @page { margin: 1.8cm 1.6cm 2.2cm 1.6cm; }
+        @page { margin: 1.8cm 1.6cm 4cm 1.6cm; }
 
         body { font-family: Helvetica, Arial, sans-serif; font-size: 9.5pt; color: #000; line-height: 1.35; }
 

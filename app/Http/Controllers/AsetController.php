@@ -489,7 +489,7 @@ class AsetController extends Controller
                 'defaultFont'         => 'Helvetica',
             ]);
 
-        PdfFooter::tambah($pdf, $aset['nomor']);
+        PdfFooter::tambah($pdf);
 
         return $pdf->download('Aset-' . $aset['nomor'] . '.pdf')
             ->header('Cache-Control', 'no-store, private');

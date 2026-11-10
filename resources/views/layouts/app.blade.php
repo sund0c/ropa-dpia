@@ -121,6 +121,8 @@ ol.persetujuan { padding-left: 1.3rem; line-height: 1.55; }
 ol.persetujuan li { margin-bottom: .7rem; }
 button.btn-merah { background: #b91c1c; }
 button.btn-merah:hover { background: #991b1b; }
+button.btn-oranye { background: #d97706; }
+button.btn-oranye:hover { background: #b45309; }
 button:disabled { opacity: .5; cursor: not-allowed; }
 
 .status-dpia { margin-top: 1.5rem; padding: .8rem 1rem; border: 1px solid #e5e7eb; border-radius: 8px; background: #f9fafb; }

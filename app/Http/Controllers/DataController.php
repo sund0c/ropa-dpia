@@ -13,6 +13,9 @@ class DataController extends Controller
     private const FORMAT = 'ropa-dpia';
     private const VERSI  = 1;
 
+    /** File contoh data (PPID) untuk latihan/demo, ikut di repo. */
+    private const FILE_CONTOH = 'data/contoh-ropa-dpia.json';
+
     /** Unduh seluruh isian sesi (RoPA + DPIA) sebagai JSON. Tidak ada yang disimpan di server. */
     public function ekspor()
     {
@@ -58,8 +61,27 @@ class DataController extends Controller
             return $gagalFile('File harus berekstensi .json.');
         }
 
+        return $this->muat(file_get_contents($berkas->getRealPath()), 'Data %s berhasil diimpor.');
+    }
+
+    /** Muat contoh data bawaan aplikasi (menggantikan isian RoPA & DPIA di sesi ini). */
+    public function imporContoh()
+    {
+        $path = resource_path(self::FILE_CONTOH);
+        if (! is_file($path)) {
+            return redirect()->route('ropa.form')->withErrors(['ropa' => 'File contoh data tidak ditemukan.']);
+        }
+
+        return $this->muat(file_get_contents($path), 'Contoh data %s berhasil dimuat. Silakan ubah sesuai layanan Anda.');
+    }
+
+    /** Validasi & muat isi JSON ke sesi. $pesanOk memakai %s untuk nomor RoPA. */
+    private function muat(string $json, string $pesanOk)
+    {
+        $gagalFile = fn(string $pesan) => redirect()->route('ropa.form')->withErrors(['ropa' => $pesan]);
+
         try {
-            $in = json_decode(file_get_contents($berkas->getRealPath()), true, 32, JSON_THROW_ON_ERROR);
+            $in = json_decode($json, true, 32, JSON_THROW_ON_ERROR);
         } catch (JsonException) {
             return $gagalFile('File tidak dapat dibaca sebagai JSON yang valid.');
         }
@@ -126,7 +148,7 @@ class DataController extends Controller
         }
 
         $redirect = redirect()->route('ropa.form')
-            ->with('saved', "Data $nomor berhasil diimpor.");
+            ->with('saved', sprintf($pesanOk, $nomor));
 
         return $gagal
             ? $redirect->withErrors(['ropa' => 'Sebagian data tidak dimuat karena tidak lolos validasi: ' . implode('; ', $gagal) . '. Silakan isi ulang bagian tersebut.'])

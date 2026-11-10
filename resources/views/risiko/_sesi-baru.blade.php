@@ -1,4 +1,4 @@
-<button type="button" class="secondary" data-open-dialog="dialog-sesi-baru">Mulai sesi baru</button>
+<button type="button" class="btn-merah" data-open-dialog="dialog-sesi-baru">Mulai sesi baru</button>
 
 <dialog id="dialog-sesi-baru" class="dialog">
     <h3 style="margin-top:0">Mulai Sesi Baru?</h3>

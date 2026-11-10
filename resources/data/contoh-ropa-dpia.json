@@ -1,0 +1,752 @@
+{
+    "format": "ropa-dpia",
+    "versi": 1,
+    "diekspor": "2026-11-10T08:44:00+08:00",
+    "ropa": {
+        "nomor": "ROPA-20261008-YVPPBM",
+        "organisasi": {
+            "nama_instansi": "Dinas Komunikasi, Informatika dan Statistik",
+            "alamat": "Jalan D.I. Panjaitan Nomor 7 Kecamatan Denpasar Selatan, Kota Denpasar, Bali 80235",
+            "telepon": "0361225859",
+            "email": "ppid@baliprov.go.id",
+            "nama_pengendali": "Gede Pramana",
+            "nama_ppdp": "Gede Pramana",
+            "jabatan_pengendali": "Kepala Dinas Kominfos Prov Bali",
+            "jabatan_ppdp": "Kepala Dinas Kominfos Prov Bali",
+            "ppdp_email": "gede.pramana@baliprov.go.id",
+            "ppdp_hp": "0812222222222",
+            "koordinator_nama": "Gusti Ngurah Kama Wijaya",
+            "koordinator_jabatan": "Sekretaris Dinas Kominfos Prov Bali",
+            "koordinator_email": "ngurah.kamawijaya@baliprov.go.id",
+            "koordinator_hp": "0815555555555"
+        },
+        "aktivitas": {
+            "nama_aktivitas": "PPID Pemprov Bali",
+            "tujuan": "Menyediakan informasi publik Pemerintah Provinsi Bali",
+            "tahapan": [
+                "Pengajuan permintaan informasi",
+                "Verifikasi data pribadi dan tujuan",
+                "Pemrosesan permintaan informasi",
+                "Pengelolaan keberatan",
+                "Pengelolaan sengketa setelah keberatan",
+                "Pengisian survey kepuasan",
+                "Unduh informasi lewat email, web atau mendapatkan informasi secara datang langsung",
+                "Laporan pelayanan PPID ke KI Pusat, Kemendagri, Sekda, KI Bali"
+            ],
+            "dasar": [
+                "consent",
+                "legal_obligation",
+                "public_interest"
+            ],
+            "referensi_hukum": [
+                "UU No 14 Tahun 2008 tentang Keterbukaan Informasi Publik",
+                "UU No 27 Tahun 2022 tntang Pelindungan data Pribadi",
+                "Permendagri No 2 Tahun 2026 tentang Pengelolaan PPID di Kementerian dan Lembaga",
+                "PerKI No 1 Tahun 2021 tentang Standard Layanan Informasi Publik",
+                "Pergub Bali No 42 Tahun 2022 tentang PPID Pemprov Bali"
+            ]
+        },
+        "pemetaan": {
+            "jenis_umum": [
+                "nama",
+                "jenis_kelamin",
+                "kewarganegaraan",
+                "agama",
+                "status_perkawinan",
+                "kombinasi"
+            ],
+            "jenis_spesifik": [
+                "anak"
+            ],
+            "transfer": [],
+            "kelompok_rentan": "1",
+            "data_anak": "1",
+            "estimasi_subjek": "2000",
+            "kategori_subjek": [
+                "Warga Negara Indonesia"
+            ],
+            "pengumpulan": [
+                {
+                    "sumber": "Formulir permintaan informasi",
+                    "lokasi": "Filling Cabinet di Bidang IKP Dinas Kominfos Prov Bali"
+                },
+                {
+                    "sumber": "Aplikasi Bali Satu Data (Permohonan Informasi)",
+                    "lokasi": "PDNS"
+                }
+            ]
+        },
+        "hak": {
+            "mekanisme_hak": "Datang langsung atau melalui email ppid@baliprov.go.id",
+            "hak": [
+                "informasi",
+                "perbaikan",
+                "akses",
+                "penghapusan",
+                "tarik_persetujuan",
+                "keberatan_otomatis",
+                "pembatasan",
+                "ganti_rugi",
+                "portabilitas_format",
+                "portabilitas_kirim"
+            ]
+        },
+        "siklus": {
+            "pengamanan_organisasi": [
+                "SOP Permintaan Informasi Publik Online",
+                "SOP Permintaan Informasi Publik Offline",
+                "SOP Penanganan Keberatan",
+                "SOP Penanganan Sengketa"
+            ],
+            "pengamanan_operasional": [
+                "Bimtek Admin PPID Pelaksana",
+                "Filling Cabinet menggungkan kunci",
+                "Backup berkala (harian, mingguan, bulanan, tahunan)"
+            ],
+            "pengamanan_teknis": [
+                "Enkripsi framework Laravel AES-256 untuk NIK, Nama, Email,No Telpon",
+                "Foto KTP private tapi tidak terenkripsi (hanya bisa dibuka di aplikasi)",
+                "Role based Access Control (SSO)",
+                "Manajemen Password (SSO)",
+                "Manajemen Password ketat",
+                "Enkripsi framework Laravel AES-256-CBC",
+                "Log Audit Trail"
+            ],
+            "masa_retensi": "Selama dibutuhkan",
+            "metode_pemusnahan": "Manual di sistem atau papershreder",
+            "status_siklus": "aktif"
+        },
+        "risiko": {
+            "indikator": [
+                "skala_besar"
+            ]
+        },
+        "diperbarui": "2026-11-10T08:42:39+08:00"
+    },
+    "dpia": {
+        "dokumen": {
+            "tanggal_penyusunan": "2026-11-03",
+            "tanggal_review": "2027-02-03",
+            "status_dokumen": "draf",
+            "riwayat": [
+                {
+                    "versi": "1.0",
+                    "tanggal": "2026-11-03",
+                    "deskripsi": "Penyusunan awal",
+                    "oleh": "Ina Ayu"
+                }
+            ]
+        },
+        "risiko": {
+            "keterangan": {
+                "skala_besar": "Estimasi jumlah subjek data 2.000 orang.",
+                "data_spesifik": "Data anak"
+            }
+        },
+        "deskripsi": {
+            "pihak": [
+                {
+                    "nama": "PPID Pelaksana",
+                    "peran": "prosesor",
+                    "lokasi": "dalam_negeri",
+                    "data": [
+                        "nama",
+                        "jenis_kelamin",
+                        "kewarganegaraan",
+                        "agama",
+                        "status_perkawinan",
+                        "kombinasi",
+                        "anak"
+                    ],
+                    "dasar": "Keputusan Gubernur Bali No 801/03-E/HK/2022",
+                    "keterangan": "-"
+                }
+            ]
+        },
+        "kebutuhan": {
+            "jawaban": {
+                "diperlukan": "ya",
+                "tanpa_data": "ya",
+                "dampak_hak": "ya",
+                "transparansi": "ya"
+            },
+            "alasan": {
+                "diperlukan": "Pengumpulan identitas pemohon (nama, NIK, alamat, kontak, dan salinan KTP) diwajibkan oleh PerKI No. 1 Tahun 2021 Pasal 27 ayat (2)–(3) serta Pasal 29 ayat (5) dan Pasal 30 ayat (1). Identitas diperlukan untuk memastikan pemohon adalah Warga Negara Indonesia/badan hukum Indonesia yang berhak atas informasi publik, mencatat permohonan dalam register, menyampaikan jawaban, serta menangani keberatan dan sengketa informasi.",
+                "tanpa_data": "Tanpa identitas, PPID tidak dapat memverifikasi kedudukan pemohon, mengirimkan tanggapan, menghitung jangka waktu layanan per pemohon, maupun menindaklanjuti keberatan ke atasan PPID dan sengketa ke Komisi Informasi, yang semuanya mensyaratkan identitas pemohon yang jelas. Permohonan anonim tidak dapat diproses menurut standar layanan informasi publik.",
+                "dampak_hak": "Dampak utama adalah penyalahgunaan salinan KTP (penipuan, pinjaman daring ilegal, pembuatan akun palsu) bila bocor. Salinan KTP juga memuat data yang tidak dibutuhkan layanan (agama, status perkawinan, pekerjaan). Langkah yang diterapkan: data yang dicatat dibatasi pada nama, NIK, alamat, dan kontak; akses ke berkas KTP dibatasi pada petugas PPID; salinan KTP disimpan sesuai jadwal retensi lalu dimusnahkan; register permohonan yang dipublikasikan tidak memuat NIK maupun salinan KTP.",
+                "transparansi": "Pemohon mendapatkan informasi mengenai pemrosesan data pribadinya melalui laman PPID dan secara langsung saat mengajukan permohonan manual di meja layanan. Informasi yang disampaikan mencakup tujuan pengumpulan identitas (verifikasi pemohon, pencatatan register, penyampaian tanggapan, serta penanganan keberatan dan sengketa), dasar hukumnya (PerKI No. 1 Tahun 2021 Pasal 27), lama penyimpanan, pihak yang dapat mengakses, dan hak pemohon atas data pribadinya."
+            }
+        },
+        "penilaian": {
+            "metodologi": {
+                "kemungkinan": {
+                    "1": {
+                        "periode": "Kemungkinan terjadi > 1 tahun"
+                    },
+                    "2": {
+                        "periode": "Kemungkinan terjadi > 3 bulan dan ≤ 1 tahun"
+                    },
+                    "3": {
+                        "periode": "Kemungkinan terjadi > 1 bulan dan ≤ 3 bulan"
+                    },
+                    "4": {
+                        "periode": "Kemungkinan terjadi > 1 hari dan ≤ 1 bulan"
+                    },
+                    "5": {
+                        "periode": "Kemungkinan terjadi ≤ 1 hari"
+                    }
+                },
+                "dampak": {
+                    "1": {
+                        "finansial": "< 100 jt",
+                        "reputasi": "Pemberitaan negatif yang sempat muncul pada salah satu media utama/medsos namun hanya sesaat sehingga respons publik sangat terbatas",
+                        "kepatuhan": "Tindakan regulator berdampak kecil kepada organisasi/institusi/perusahaan, seperti peringatan secara verbal",
+                        "hukum": "Adanya tindakan hukum terhadap organisasi/institusi/perusahaan  namun kecil kemungkinan organisasi/institusi/perusahaan akan kalah"
+                    },
+                    "2": {
+                        "finansial": "100 jt s.d. < 300 jt",
+                        "reputasi": "Pemberitaan negatif yang muncul pada salah satu media utama/medsos. Respons publik sudah mulai meningkat",
+                        "kepatuhan": "Berpotensi teguran tertulis dari regulator",
+                        "hukum": "Adanya tindakan hukum terhadap organisasi/institusi/perusahaan dan ada kemungkinan organisasi/institusi/perusahaan akan kalah, namun penyelesaian di luar pengadilan dimungkinkan"
+                    },
+                    "3": {
+                        "finansial": "300 jt s.d. 1 miliar",
+                        "reputasi": "Pemberitaan negatif yang muncul pada beberapa media utama maupun medsos. Respons publik tinggi",
+                        "kepatuhan": "Berpotensi teguran tertulis dari regulator dan diikuti dengan suspend kegiatan bisnis/operasional organisasi/institusi/perusahaan",
+                        "hukum": "Adanya tindakan hukum terhadap organisasi/institusi/perusahaan atas pelanggaran besar dan ada kemungkinan organisasi/institusi/perusahaan akan kalah, serta penyelesaian di luar pengadilan kecil kemungkinan, juga melibatkan investigasi oleh penegak hukum"
+                    },
+                    "4": {
+                        "finansial": "> 1 miliar s.d. 5 miliar",
+                        "reputasi": "Pemberitaan negatif sudah menyebar ke semua media utama maupun beberapa medsos dan mendapat respons yang masif dari publik. Berdampak pada tingkat kepercayaan publik",
+                        "kepatuhan": "Berpotensi teguran tertulis dari regulator, diikuti dengan suspend kegiatan bisnis/operasional organisasi/institusi/perusahaan serta dimungkinkan akan diikuti pencabutan izin usaha",
+                        "hukum": "Adanya proses peradilan class action terhadap organisasi/institusi/perusahaan atas pelanggaran sangat besar. Kemungkinan besar organisasi/institusi/perusahaan akan kalah tanpa banyak potensi alternatif lainnya"
+                    },
+                    "5": {
+                        "finansial": "> 5 miliar",
+                        "reputasi": "Pemberitaan negatif yang masif dan berkelanjutan di seluruh media nasional/internasional serta media sosial, memicu krisis kepercayaan publik yang akut secara luas, boikot layanan, hingga kecaman terbuka dari lembaga tertentu",
+                        "kepatuhan": "Tindakan penegakan hukum dan sanksi administratif terberat dari lembaga seperti pencabutan izin operasional/kegiatan bisnis institusi secara permanen, denda administratif maksimum berskala nasional, serta audit kepatuhan khusus secara menyeluruh oleh instansi berwenang",
+                        "hukum": "Adanya proses peradilan gugatan massal (class action) berskala besar atau gugatan perdata bertubi-tubi dari para subjek data (pasien/keluarga), serta investigasi hukum pidana mendalam oleh aparat penegak hukum terhadap manajemen atau penanggung jawab institusi atas kelalaian fatal pelindungan data spesifik"
+                    }
+                },
+                "kategori_batas": {
+                    "1": "5",
+                    "2": "10",
+                    "3": "15",
+                    "4": "20"
+                }
+            },
+            "inheren": {
+                "pemerolehan": [
+                    {
+                        "id": "wsyeismmju",
+                        "risiko": "Data yang dikumpulkan melebihi kebutuhan: salinan KTP memuat agama, status perkawinan, dan pekerjaan yang tidak diperlukan layanan, atau pemohon diminta dokumen tambahan (misalnya foto diri dengan KTP).",
+                        "kemungkinan": "3",
+                        "dampak": "3"
+                    },
+                    {
+                        "id": "2ydkzbewsb",
+                        "risiko": "Formulir dan salinan KTP diterima melalui kanal tidak resmi (WhatsApp atau email pribadi petugas), atau berkas fisik tertinggal di meja layanan sehingga dapat dilihat orang lain.",
+                        "kemungkinan": "3",
+                        "dampak": "4"
+                    }
+                ],
+                "pengolahan": [
+                    {
+                        "id": "clv5umnsal",
+                        "risiko": "Petugas mengakses atau menggunakan identitas pemohon di luar keperluan layanan, misalnya membagikan identitas pemohon ke unit yang informasinya dimohon sehingga pemohon dapat mengalami tekanan atau intimidasi.",
+                        "kemungkinan": "2",
+                        "dampak": "4"
+                    },
+                    {
+                        "id": "p9duqsbw4b",
+                        "risiko": "Kesalahan verifikasi identitas sehingga informasi diberikan kepada pihak yang memakai identitas orang lain.",
+                        "kemungkinan": "2",
+                        "dampak": "3"
+                    }
+                ],
+                "penyimpanan": [
+                    {
+                        "id": "ornkuqi2ky",
+                        "risiko": "Akses tidak sah ke basis data atau berkas unggahan salinan KTP pada aplikasi akibat serangan siber, celah aplikasi, atau kredensial admin yang bocor; berkas KTP tersimpan tanpa enkripsi.",
+                        "kemungkinan": "3",
+                        "dampak": "5"
+                    },
+                    {
+                        "id": "zvtvr9glod",
+                        "risiko": "Formulir dan fotokopi KTP fisik hilang, rusak, atau diakses pihak tidak berwenang; data disimpan melebihi masa retensi.",
+                        "kemungkinan": "2",
+                        "dampak": "4"
+                    }
+                ],
+                "perbaikan": [
+                    {
+                        "id": "7obd4t9z3q",
+                        "risiko": "Akun pemohon pada aplikasi diambil alih (kata sandi lemah atau proses reset tidak aman) sehingga data identitas diubah atau dilihat pihak lain.",
+                        "kemungkinan": "2",
+                        "dampak": "4"
+                    },
+                    {
+                        "id": "i3ukwtu1wz",
+                        "risiko": "Data pemohon diubah petugas tanpa jejak, atau pemohon tidak memiliki cara untuk memperbaiki data yang keliru.",
+                        "kemungkinan": "2",
+                        "dampak": "3"
+                    }
+                ],
+                "penampilan": [
+                    {
+                        "id": "y3eukhsxqw",
+                        "risiko": "Identitas pemohon (NIK, alamat, kontak) ikut terpublikasi dalam register permohonan atau laporan layanan PPID, atau ikut terkirim saat permohonan diteruskan ke perangkat daerah pengelola informasi.",
+                        "kemungkinan": "4",
+                        "dampak": "5"
+                    },
+                    {
+                        "id": "9rue0kmyni",
+                        "risiko": "Jawaban atau dokumen informasi dikirim ke alamat email atau alamat surat yang salah, atau laporan ke KI Pusat, Kemendagri, Sekda, dan KI Bali memuat identitas pemohon yang tidak diperlukan.",
+                        "kemungkinan": "3",
+                        "dampak": "3"
+                    }
+                ],
+                "penghapusan": [
+                    {
+                        "id": "bswzcl7goy",
+                        "risiko": "Data pemohon (termasuk di cadangan/backup) tidak dihapus setelah masa retensi berakhir.",
+                        "kemungkinan": "2",
+                        "dampak": "2"
+                    },
+                    {
+                        "id": "gtz2eveskh",
+                        "risiko": "Pemusnahan berkas fisik tidak aman, misalnya dibuang utuh atau dijual sebagai kertas bekas tanpa dihancurkan.",
+                        "kemungkinan": "2",
+                        "dampak": "4"
+                    }
+                ]
+            }
+        },
+        "pengendalian": {
+            "kontrol": {
+                "wsyeismmju": [
+                    {
+                        "langkah": "SOP Permintaan Informasi Publik Online dan Offline",
+                        "status": "aktif",
+                        "bukti": "Dokumen SOP",
+                        "jenis": "organisasi"
+                    },
+                    {
+                        "langkah": "SOP Permintaan Informasi Publik Offline",
+                        "status": "aktif",
+                        "bukti": "Dokumen SOP",
+                        "jenis": "organisasi"
+                    }
+                ],
+                "2ydkzbewsb": [
+                    {
+                        "langkah": "SOP Permintaan Informasi Publik Online dan Offline",
+                        "status": "aktif",
+                        "bukti": "Dokumen SOP",
+                        "jenis": "organisasi"
+                    },
+                    {
+                        "langkah": "Bimtek Admin PPID Pelaksana",
+                        "status": "aktif",
+                        "bukti": "Daftar hadir/materi Bimtek",
+                        "jenis": "operasional"
+                    }
+                ],
+                "clv5umnsal": [
+                    {
+                        "langkah": "Role Based Access Control (SSO)",
+                        "status": "aktif",
+                        "bukti": "Screenshot modul hak akses aplikasi",
+                        "jenis": "teknis"
+                    },
+                    {
+                        "langkah": "Log Audit Trail",
+                        "status": "aktif",
+                        "bukti": "Screenshot log aplikasi",
+                        "jenis": "teknis"
+                    },
+                    {
+                        "langkah": "Bimtek Admin PPID Pelaksana",
+                        "status": "aktif",
+                        "bukti": "Daftar hadir/materi Bimtek",
+                        "jenis": "operasional"
+                    }
+                ],
+                "p9duqsbw4b": [
+                    {
+                        "langkah": "SOP Permintaan Informasi Publik Online dan Offline (tahap verifikasi identitas)",
+                        "status": "aktif",
+                        "bukti": "Dokumen SOP",
+                        "jenis": "organisasi"
+                    },
+                    {
+                        "langkah": "Bimtek Admin PPID Pelaksana",
+                        "status": "aktif",
+                        "bukti": "Daftar hadir/materi Bimtek",
+                        "jenis": "operasional"
+                    }
+                ],
+                "ornkuqi2ky": [
+                    {
+                        "langkah": "Enkripsi AES-256-CBC (Laravel) untuk NIK, nama, email, nomor telepon",
+                        "status": "aktif",
+                        "bukti": "Screenshot konfigurasi enkripsi aplikasi",
+                        "jenis": "teknis"
+                    },
+                    {
+                        "langkah": "Role Based Access Control dan manajemen kata sandi (SSO)",
+                        "status": "aktif",
+                        "bukti": "Screenshot modul hak akses SSO",
+                        "jenis": "teknis"
+                    },
+                    {
+                        "langkah": "Berkas KTP disimpan di lokasi privat, hanya dapat dibuka melalui aplikasi",
+                        "status": "aktif",
+                        "bukti": "Screenshot konfigurasi penyimpanan berkas",
+                        "jenis": "teknis"
+                    },
+                    {
+                        "langkah": "Log Audit Trail",
+                        "status": "aktif",
+                        "bukti": "Screenshot log aplikasi",
+                        "jenis": "teknis"
+                    }
+                ],
+                "zvtvr9glod": [
+                    {
+                        "langkah": "Filing cabinet menggunakan kunci",
+                        "status": "aktif",
+                        "bukti": "Foto filing cabinet",
+                        "jenis": "operasional"
+                    },
+                    {
+                        "langkah": "SOP Permintaan Informasi Publik Offline",
+                        "status": "aktif",
+                        "bukti": "Dokumen SOP",
+                        "jenis": "organisasi"
+                    }
+                ],
+                "7obd4t9z3q": [
+                    {
+                        "langkah": "Manajemen kata sandi ketat (SSO)",
+                        "status": "aktif",
+                        "bukti": "Screenshot kebijakan kata sandi SSO",
+                        "jenis": "teknis"
+                    },
+                    {
+                        "langkah": "Log Audit Trail",
+                        "status": "aktif",
+                        "bukti": "Screenshot log aplikasi",
+                        "jenis": "teknis"
+                    }
+                ],
+                "i3ukwtu1wz": [
+                    {
+                        "langkah": "Log Audit Trail",
+                        "status": "aktif",
+                        "bukti": "Screenshot log aplikasi",
+                        "jenis": "teknis"
+                    },
+                    {
+                        "langkah": "SOP Penanganan Keberatan (jalur koreksi data pemohon)",
+                        "status": "aktif",
+                        "bukti": "Dokumen SOP",
+                        "jenis": "organisasi"
+                    }
+                ],
+                "y3eukhsxqw": [
+                    {
+                        "langkah": "SOP Permintaan Informasi Publik Online dan Offline — bukti: dokumen SOP",
+                        "status": "aktif",
+                        "bukti": "SK Kadiskominfos Prov Bali Nomor 279 Tahun 2026  Sub-bab 4.1 dan 5.2",
+                        "jenis": "organisasi"
+                    },
+                    {
+                        "langkah": "Role Based Access Control (SSO) — bukti: modul hak akses",
+                        "status": "aktif",
+                        "bukti": "SK Kadiskominfos Prov Bali Nomor 279 Tahun 2026  Sub-bab 5.1; dokumen izin keamanan perangkat",
+                        "jenis": "teknis"
+                    },
+                    {
+                        "langkah": "Bimtek Admin PPID Pelaksana — bukti: daftar hadir bimtek",
+                        "status": "aktif",
+                        "bukti": "SK Kadiskominfos Prov Bali Nomor 279 Tahun 2026  Sub-bab 5.3",
+                        "jenis": "teknis"
+                    }
+                ],
+                "9rue0kmyni": [
+                    {
+                        "langkah": "SOP Permintaan Informasi Publik Online dan Offline — bukti: dokumen SOP",
+                        "status": "aktif",
+                        "bukti": "SK Kadiskominfos Prov Bali Nomor 279 Tahun 2026 Sub-bab 2.4 huruf o–p; dokumen NDA dan BAST",
+                        "jenis": "operasional"
+                    },
+                    {
+                        "langkah": "Bimtek Admin PPID Pelaksana — bukti: daftar hadir bimtek",
+                        "status": "aktif",
+                        "bukti": "SK Kadiskominfos Prov Bali Nomor 279 Tahun 2026 Sub-bab 5.4 huruf c; dokumen KAK",
+                        "jenis": "organisasi"
+                    }
+                ],
+                "bswzcl7goy": [
+                    {
+                        "langkah": "Backup berkala (harian, mingguan, bulanan, tahunan) — bukti: jadwal backup",
+                        "status": "aktif",
+                        "bukti": "SK Kadiskominfos Prov Bali Nomor 279 Tahun 2026 Bab VI",
+                        "jenis": "operasional"
+                    }
+                ],
+                "gtz2eveskh": [
+                    {
+                        "langkah": "Filing cabinet menggunakan kunci — bukti: foto filing cabinet",
+                        "status": "aktif",
+                        "bukti": "SK Kadiskominfos Prov Bali Nomor 279 Tahun 2026 Bab VI; log pemusnahan aplikasi",
+                        "jenis": "teknis"
+                    }
+                ]
+            },
+            "residual": {
+                "wsyeismmju": [
+                    {
+                        "risiko": "Salinan KTP tetap memuat data yang tidak diperlukan layanan (agama, status perkawinan, pekerjaan)",
+                        "langkah": "Menambahkan ketentuan di SOP bahwa yang diminta hanya salinan KTP sesuai PerKI 1/2021 Pasal 27 (tanpa dokumen atau foto tambahan), dan menganjurkan pemohon menutup kolom yang tidak diperlukan",
+                        "kemungkinan": "2",
+                        "dampak": "3",
+                        "keputusan": "mitigasi",
+                        "penanganan": [
+                            {
+                                "langkah": "Merevisi SOP Permintaan Informasi Publik Online dan Offline: persyaratan identitas hanya salinan KTP sesuai PerKI 1/2021 Pasal 27, tanpa dokumen atau foto tambahan",
+                                "pj": "Pengelola Layanan PPID",
+                                "bulan": "12",
+                                "tahun": "2026",
+                                "status": "belum"
+                            },
+                            {
+                                "langkah": "Menambahkan anjuran pada formulir dan laman PPID agar pemohon menutup kolom KTP yang tidak diperlukan (agama, status perkawinan, pekerjaan)",
+                                "pj": "Pengelola Layanan PPID",
+                                "bulan": "12",
+                                "tahun": "2026",
+                                "status": "belum"
+                            }
+                        ]
+                    }
+                ],
+                "2ydkzbewsb": [
+                    {
+                        "risiko": "Petugas masih dapat menerima berkas lewat WhatsApp/email pribadi, dan berkas fisik dapat tertinggal di meja layanan.",
+                        "langkah": "Larangan tertulis penerimaan berkas melalui kanal pribadi; berkas fisik langsung disimpan di filing cabinet terkunci setelah diterima.",
+                        "kemungkinan": "2",
+                        "dampak": "4",
+                        "keputusan": "mitigasi",
+                        "penanganan": [
+                            {
+                                "langkah": "Menerbitkan larangan tertulis penerimaan berkas permohonan melalui WhatsApp atau email pribadi petugas; seluruh permohonan hanya melalui aplikasi, email resmi PPID, atau meja layanan",
+                                "pj": "Pengelola Layanan PPID",
+                                "bulan": "12",
+                                "tahun": "2026",
+                                "status": "belum"
+                            },
+                            {
+                                "langkah": "Menambahkan langkah di SOP Offline: berkas fisik langsung disimpan di filing cabinet terkunci setelah diterima",
+                                "pj": "Pengelola Layanan PPID",
+                                "bulan": "12",
+                                "tahun": "2026",
+                                "status": "belum"
+                            }
+                        ]
+                    }
+                ],
+                "clv5umnsal": [
+                    {
+                        "risiko": "Petugas berwenang tetap dapat melihat identitas pemohon saat memproses permohonan.",
+                        "langkah": "Identitas pemohon tidak disertakan saat permohonan diteruskan ke unit pengelola informasi, kecuali diperlukan.",
+                        "kemungkinan": "1",
+                        "dampak": "4",
+                        "keputusan": "diterima",
+                        "penanganan": []
+                    }
+                ],
+                "p9duqsbw4b": [
+                    {
+                        "risiko": "Salinan KTP palsu atau milik orang lain masih mungkin lolos verifikasi visual",
+                        "langkah": "-",
+                        "kemungkinan": "1",
+                        "dampak": "3",
+                        "keputusan": "diterima",
+                        "penanganan": []
+                    }
+                ],
+                "ornkuqi2ky": [
+                    {
+                        "risiko": "Berkas foto/salinan KTP tidak terenkripsi saat disimpan, sehingga dapat terbaca bila server atau penyimpanan berhasil diakses langsung",
+                        "langkah": "Enkripsi berkas KTP saat disimpan (encryption at rest) dan pengujian keamanan aplikasi berkala",
+                        "kemungkinan": "2",
+                        "dampak": "5",
+                        "keputusan": "mitigasi",
+                        "penanganan": [
+                            {
+                                "langkah": "Menerapkan enkripsi berkas salinan KTP saat disimpan (encryption at rest) pada aplikasi PPID",
+                                "pj": "Pengelola Layanan PPID",
+                                "bulan": "1",
+                                "tahun": "2027",
+                                "status": "belum"
+                            },
+                            {
+                                "langkah": "Melakukan pengujian keamanan aplikasi PPID secara berkala (minimal setahun sekali)",
+                                "pj": "Pengelola Layanan PPID",
+                                "bulan": "3",
+                                "tahun": "2027",
+                                "status": "belum"
+                            }
+                        ]
+                    }
+                ],
+                "zvtvr9glod": [
+                    {
+                        "risiko": "Belum ada jadwal retensi tertulis untuk formulir dan fotokopi KTP fisik",
+                        "langkah": "Menetapkan jadwal retensi arsip permohonan informasi sesuai JRA",
+                        "kemungkinan": "1",
+                        "dampak": "4",
+                        "keputusan": "mitigasi",
+                        "penanganan": [
+                            {
+                                "langkah": "Menetapkan jadwal retensi formulir dan fotokopi KTP pemohon sesuai Jadwal Retensi Arsip (JRA)",
+                                "pj": "Pengelola Layanan PPID",
+                                "bulan": "2",
+                                "tahun": "2027",
+                                "status": "belum"
+                            }
+                        ]
+                    }
+                ],
+                "7obd4t9z3q": [
+                    {
+                        "risiko": "Akun pemohon belum menggunakan autentikasi dua faktor",
+                        "langkah": "Menerapkan verifikasi OTP email pada reset kata sandi dan login dari perangkat baru",
+                        "kemungkinan": "1",
+                        "dampak": "4",
+                        "keputusan": "mitigasi",
+                        "penanganan": [
+                            {
+                                "langkah": "Menerapkan verifikasi OTP melalui email pada reset kata sandi dan login dari perangkat baru",
+                                "pj": "Pengelola Layanan PPID",
+                                "bulan": "3",
+                                "tahun": "2027",
+                                "status": "belum"
+                            }
+                        ]
+                    }
+                ],
+                "i3ukwtu1wz": [
+                    {
+                        "risiko": "Prosedur koreksi data pribadi oleh pemohon belum dijelaskan secara khusus.",
+                        "langkah": "-",
+                        "kemungkinan": "1",
+                        "dampak": "3",
+                        "keputusan": "diterima",
+                        "penanganan": []
+                    }
+                ],
+                "y3eukhsxqw": [
+                    {
+                        "risiko": "Register dan laporan layanan masih berpotensi memuat identitas pemohon yang tidak diperlukan",
+                        "langkah": "Register publik dan laporan ke KI/Kemendagri hanya memuat nama (atau inisial) tanpa NIK, alamat, dan kontak; identitas tidak ikut diteruskan ke OPD pengelola informasi.",
+                        "kemungkinan": "2",
+                        "dampak": "4",
+                        "keputusan": "diterima",
+                        "penanganan": []
+                    }
+                ],
+                "9rue0kmyni": [
+                    {
+                        "risiko": "Kesalahan pengiriman karena salah ketik alamat email/surat masih mungkin terjadi.",
+                        "langkah": "Pemeriksaan ulang alamat tujuan sebelum pengiriman (dua orang untuk dokumen yang memuat data pribadi)",
+                        "kemungkinan": "2",
+                        "dampak": "3",
+                        "keputusan": "mitigasi",
+                        "penanganan": [
+                            {
+                                "langkah": "Menambahkan langkah pemeriksaan ulang alamat email/surat tujuan sebelum jawaban atau dokumen informasi dikirim (diperiksa dua orang untuk dokumen yang memuat data pribadi) dalam SOP Permintaan Informasi Publik Online dan Offline",
+                                "pj": "Pengelola Layanan PPID",
+                                "bulan": "12",
+                                "tahun": "2026",
+                                "status": "belum"
+                            },
+                            {
+                                "langkah": "Menyesuaikan format laporan layanan PPID ke KI Pusat, Kemendagri, Sekda, dan KI Bali agar hanya memuat data statistik/rekap tanpa identitas pemohon",
+                                "pj": "Pengelola Layanan PPID",
+                                "bulan": "12",
+                                "tahun": "2026",
+                                "status": "belum"
+                            }
+                        ]
+                    }
+                ],
+                "bswzcl7goy": [
+                    {
+                        "risiko": "Belum ada prosedur penghapusan data elektronik dan cadangan setelah masa retensi berakhir",
+                        "langkah": "Menyusun prosedur penghapusan data pemohon (termasuk di cadangan) sesuai jadwal retensi.",
+                        "kemungkinan": "3",
+                        "dampak": "3",
+                        "keputusan": "mitigasi",
+                        "penanganan": [
+                            {
+                                "langkah": "Menyusun prosedur penghapusan data pemohon pada aplikasi dan cadangan (backup) setelah masa retensi berakhir",
+                                "pj": "Pengelola Layanan PPID",
+                                "bulan": "3",
+                                "tahun": "2027",
+                                "status": "belum"
+                            },
+                            {
+                                "langkah": "Melaksanakan penghapusan data pertama sesuai prosedur dan mencatatnya dalam berita acara",
+                                "pj": "Pengelola Layanan PPID",
+                                "bulan": "6",
+                                "tahun": "2027",
+                                "status": "belum"
+                            }
+                        ]
+                    }
+                ],
+                "gtz2eveskh": [
+                    {
+                        "risiko": "Belum ada prosedur pemusnahan berkas fisik (penghancuran dokumen dan berita acara).",
+                        "langkah": "Pemusnahan dengan mesin penghancur kertas disertai berita acara pemusnahan",
+                        "kemungkinan": "2",
+                        "dampak": "4",
+                        "keputusan": "mitigasi",
+                        "penanganan": [
+                            {
+                                "langkah": "Menyusun prosedur pemusnahan berkas fisik dengan mesin penghancur kertas disertai berita acara pemusnahan",
+                                "pj": "Pengelola Layanan PPID",
+                                "bulan": "2",
+                                "tahun": "2027",
+                                "status": "belum"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "rekomendasi": {
+            "ppdp_tanggal": "2026-10-20",
+            "ppdp_saran": "1. Memprioritaskan penanganan R3.1 dengan menerapkan enkripsi berkas salinan KTP saat disimpan pada aplikasi, serta melaksanakan pengujian keamanan aplikasi secara berkala dan setiap kali ada perubahan besar.\r\n2. Memastikan register permohonan, laporan layanan kepada KI Pusat, Kemendagri, Sekretariat Daerah, dan KI Bali, serta permohonan yang diteruskan ke perangkat daerah pengelola informasi tidak memuat NIK, alamat, kontak, maupun salinan KTP pemohon.\r\n3. Menetapkan jadwal retensi tertulis untuk formulir, salinan KTP, dan data pemohon pada aplikasi (termasuk cadangan) mengacu pada JRA, berikut tata cara pemusnahan yang aman dan berita acaranya.\r\n4. Memperbarui SOP Permintaan Informasi Publik agar memuat larangan penerimaan berkas melalui kanal pribadi petugas, pembatasan dokumen yang diminta hanya sesuai PerKI No. 1 Tahun 2021 Pasal 27, dan prosedur koreksi data oleh pemohon.\r\n5. Melakukan peninjauan ulang DPIA setiap terjadi perubahan aplikasi, alur layanan, atau peraturan, dan paling lambat pada tanggal review berikutnya.",
+            "ppdp_tindak_lanjut": "Saran PPDP diterima dan dituangkan dalam Langkah Penanganan Risiko pada bagian F.3 dengan target penyelesaian Desember 2026 sampai dengan Juni 2027:\r\n1. Enkripsi berkas KTP dan pengujian keamanan aplikasi (R3.1) dijadwalkan bersama pengelola aplikasi.\r\n2. Format register dan laporan layanan disesuaikan agar hanya memuat nama atau inisial pemohon (R5.1, R5.2).\r\n3. Jadwal retensi dan prosedur pemusnahan disusun bersama pengelola arsip (R3.2, R6.1, R6.2).\r\n4. Revisi SOP Permintaan Informasi Publik dan sosialisasinya kepada Admin PPID Pelaksana melalui bimtek (R1.1, R1.2, R4.2).\r\n5. Verifikasi OTP pada reset kata sandi dan login dari perangkat baru (R4.1).\r\nKemajuan pelaksanaan dipantau oleh PPDP dan dilaporkan kepada Pengendali Data Pribadi pada saat review DPIA berikutnya.",
+            "lembaga_konsultasi": "tidak",
+            "lembaga_tanggal": null,
+            "lembaga_saran": null,
+            "lembaga_tindak_lanjut": null
+        },
+        "kesimpulan": {
+            "ringkasan": {
+                "kebutuhan": "Pemrosesan dinilai diperlukan dan proporsional; seluruh aspek kebutuhan dan proporsionalitas terpenuhi.",
+                "inheren": "Skor 20 (Tinggi) pada R5.1: Identitas pemohon (NIK, alamat, kontak) ikut terpublikasi dalam register permohonan atau laporan layanan PPID, atau ikut terkirim saat permohonan diteruskan ke perangkat daerah pengelola informasi.",
+                "residual": "Skor 10 (Rendah) pada R3.1: Berkas foto/salinan KTP tidak terenkripsi saat disimpan, sehingga dapat terbaca bila server atau penyimpanan berhasil diakses langsung"
+            },
+            "efektivitas": "efektif",
+            "keputusan_akhir": "lanjut",
+            "catatan": "-",
+            "ringkasan_publik": "Pejabat Pengelola Informasi dan Dokumentasi (PPID) Pemerintah Provinsi Bali, yang dikelola oleh Dinas Komunikasi, Informatika dan Statistik Provinsi Bali, melayani permohonan informasi publik sebagaimana diatur dalam Undang-Undang Nomor 14 Tahun 2008 tentang Keterbukaan Informasi Publik.\r\n\r\nData pribadi yang dikumpulkan\r\nUntuk mengajukan permohonan informasi, pemohon diminta memberikan nama, Nomor Induk Kependudukan (NIK), alamat, nomor telepon dan/atau email, serta salinan KTP. Persyaratan ini ditetapkan oleh Peraturan Komisi Informasi Nomor 1 Tahun 2021 tentang Standar Layanan Informasi Publik. Permohonan dapat diajukan secara langsung di meja layanan maupun secara daring.\r\n\r\nTujuan penggunaan\r\nData pribadi pemohon hanya digunakan untuk:\r\n- memastikan pemohon berhak mengajukan permohonan informasi publik;\r\n- mencatat permohonan dalam register layanan;\r\n- menyampaikan tanggapan dan informasi yang dimohon;\r\n- menangani keberatan dan sengketa informasi;\r\n- menyusun laporan layanan informasi publik dalam bentuk rekapitulasi.\r\n\r\nPihak yang dapat mengakses\r\nData pribadi hanya dapat diakses oleh petugas PPID yang berwenang. Register permohonan dan laporan layanan yang disampaikan kepada instansi terkait tidak memuat NIK, alamat, kontak, maupun salinan KTP pemohon. Data pribadi pemohon tidak dijual dan tidak diberikan kepada pihak lain di luar keperluan layanan, kecuali diwajibkan oleh peraturan perundang-undangan.\r\n\r\nPenyimpanan\r\nData pribadi disimpan selama diperlukan untuk layanan dan sesuai jadwal retensi arsip yang berlaku, kemudian dimusnahkan.\r\n\r\nHak pemohon\r\nPemohon berhak memperoleh informasi tentang pemrosesan data pribadinya, mengakses dan memperbaiki data yang keliru, meminta penghapusan sesuai ketentuan peraturan perundang-undangan, serta mengajukan keberatan sebagaimana diatur dalam Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi.\r\n\r\nKontak\r\nPermohonan terkait hak atas data pribadi dapat disampaikan melalui email ppid@baliprov.go.id atau secara langsung di Dinas Komunikasi, Informatika dan Statistik Provinsi Bali, Jalan D.I. Panjaitan Nomor 7, Denpasar.\r\n\r\nPemerintah Provinsi Bali berkomitmen melindungi data pribadi pemohon informasi sesuai dengan ketentuan peraturan perundang-undangan."
+        },
+        "diperbarui": "2026-11-10T08:43:52+08:00"
+    }
+}

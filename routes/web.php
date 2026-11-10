@@ -64,6 +64,7 @@ Route::middleware([EnsurePersetujuan::class, 'cache.headers:no_store;private'])-
     // Ekspor / impor data RoPA & DPIA (JSON)
     Route::get('/data/ekspor', [DataController::class, 'ekspor'])->name('data.ekspor');
     Route::post('/data/impor', [DataController::class, 'impor'])->name('data.impor');
+    Route::post('/data/impor-contoh', [DataController::class, 'imporContoh'])->name('data.impor-contoh');
 
     // Sesi baru: SELURUH sesi diakhiri (Aset, RoPA, DPIA, persetujuan) → semua tab lain kedaluwarsa
     Route::post('/reset', function () {

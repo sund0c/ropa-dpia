@@ -10,6 +10,7 @@ use Illuminate\Validation\Rule;
 use App\Support\RopaStatus;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Support\LabelTte;
+use App\Support\PdfFooter;
 
 class RopaController extends Controller
 {
@@ -279,25 +280,8 @@ class RopaController extends Controller
                 'defaultFont'         => 'Helvetica',
             ]);
 
-        // Render dulu agar jumlah halaman diketahui, lalu gambar footer di setiap halaman
-        $pdf->render();
-
-        $dompdf  = $pdf->getDomPDF();
-        $canvas  = $dompdf->getCanvas();
-        $metrics = $dompdf->getFontMetrics();
-        $font    = $metrics->getFont('Helvetica');
-        $size    = 7.5;
-        $hitam   = [0, 0, 0];
-
-        $kiri   = 45;
-        $kanan  = $canvas->get_width() - 45;
-        $yGaris = $canvas->get_height() - 50;
-
-        $canvas->page_line($kiri, $yGaris, $kanan, $yGaris, $hitam, 0.75);
-        $canvas->page_text($kiri, $yGaris + 4, $ropa['nomor'], $font, $size, $hitam);
-
-        $lebar = $metrics->getTextWidth('Halaman 99 dari 99', $font, $size);
-        $canvas->page_text($kanan - $lebar, $yGaris + 4, 'Halaman {PAGE_NUM} dari {PAGE_COUNT}', $font, $size, $hitam);
+        // Nomor halaman di atas area footer TTE (lihat PdfFooter)
+        PdfFooter::tambah($pdf);
 
         return $pdf->download('RoPA-' . $ropa['nomor'] . '.pdf')
             ->header('Cache-Control', 'no-store, private');

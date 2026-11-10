@@ -708,7 +708,7 @@ class InsidenController extends Controller
                 'defaultFont'         => 'Helvetica',
             ]);
 
-        PdfFooter::tambah($pdf, 'TERBATAS — Laporan Penanganan Insiden ' . $insiden['nomor']);
+        PdfFooter::tambah($pdf);
 
         return $pdf->download('Insiden-' . self::namaBerkas($insiden['nomor']) . '.pdf')
             ->header('Cache-Control', 'no-store, private');

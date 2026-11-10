@@ -297,7 +297,7 @@ class DpiaController extends Controller
                 'isJavascriptEnabled' => false,
                 'defaultFont'         => 'Helvetica',
             ]);
-        PdfFooter::tambah($pdf, $kode . ' / ' . $ropa['nomor']);
+        PdfFooter::tambah($pdf);
 
         return $pdf->download($kode . '.pdf')->header('Cache-Control', 'no-store, private');
     }

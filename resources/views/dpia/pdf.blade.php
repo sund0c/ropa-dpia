@@ -68,7 +68,7 @@
     <title>{{ $kode }}</title>
     <style>
         @page {
-            margin: 1.8cm 1.6cm 2.2cm 1.6cm;
+            margin: 1.8cm 1.6cm 4cm 1.6cm;
         }
 
         body {

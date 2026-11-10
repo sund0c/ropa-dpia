@@ -3,6 +3,7 @@
         <a class="btn-garis" href="{{ route('data.ekspor') }}">⬇ Ekspor data (JSON)</a>
     @endif
     <button type="button" class="secondary" data-open-dialog="dialog-impor">⬆ Impor data (JSON)</button>
+    <button type="button" class="btn-oranye" data-open-dialog="dialog-contoh">⬆ Impor contoh data</button>
 </div>
 <small class="hint">
     Simpan file ekspor untuk melanjutkan pengisian di lain waktu. File tidak terenkripsi, jadi simpan di tempat yang aman.
@@ -23,6 +24,22 @@
         <div class="actions">
             <button type="button" class="secondary" data-close-dialog>Batal</button>
             <button type="submit">Impor</button>
+        </div>
+    </form>
+</dialog>
+
+<dialog id="dialog-contoh" class="dialog">
+    <form method="POST" action="{{ route('data.impor-contoh') }}">
+        @csrf
+        <h3 style="margin-top:0">Impor Contoh Data</h3>
+        <p>
+            Memuat contoh RoPA &amp; DPIA lengkap (layanan PPID Pemprov Bali) untuk melihat cara pengisian setiap tab.
+            <strong>Seluruh data di sesi ini akan digantikan</strong> oleh contoh tersebut.
+        </p>
+        <p class="hint">Ekspor dulu data Anda bila masih diperlukan. Contoh dapat diubah dan disesuaikan dengan layanan Anda.</p>
+        <div class="actions">
+            <button type="button" class="secondary" data-close-dialog>Batal</button>
+            <button type="submit" class="btn-oranye">Muat contoh</button>
         </div>
     </form>
 </dialog>

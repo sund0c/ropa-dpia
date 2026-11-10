@@ -303,7 +303,7 @@ class PengujianController extends Controller
                 'defaultFont'         => 'Helvetica',
             ]);
 
-        PdfFooter::tambah($pdf, 'TERBATAS — Laporan Pengujian Keamanan Aplikasi Web ' . $uji['nomor']);
+        PdfFooter::tambah($pdf);
 
         return $pdf->download('Pengujian-' . self::namaBerkas($uji['nomor']) . '.pdf')
             ->header('Cache-Control', 'no-store, private');
