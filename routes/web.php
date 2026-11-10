@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AsetController;
 use App\Http\Controllers\AsetDataController;
+use App\Http\Controllers\AsetRegisterController;
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\DpiaController;
 use App\Http\Controllers\RopaController;
@@ -106,6 +107,8 @@ Route::middleware([EnsurePersetujuanAset::class, 'cache.headers:no_store;private
         Route::post('/pdf',        [AsetController::class, 'pdf'])->name('pdf');
         Route::get('/data/ekspor', [AsetDataController::class, 'ekspor'])->name('data.ekspor');
         Route::post('/data/impor', [AsetDataController::class, 'impor'])->name('data.impor');
+        Route::post('/data/impor-contoh', [AsetDataController::class, 'imporContoh'])->name('data.impor-contoh');
+        Route::post('/register/pdf', [AsetRegisterController::class, 'pdf'])->name('register.pdf');
 
         // Sesi baru: SELURUH sesi diakhiri (Aset, RoPA, DPIA, persetujuan) → semua tab lain kedaluwarsa
         Route::post('/reset', function () {

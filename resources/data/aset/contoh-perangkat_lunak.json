@@ -1,0 +1,66 @@
+{
+    "format": "manajemenaset",
+    "versi": 1,
+    "diekspor": "2026-11-10T19:48:20+08:00",
+    "aset": {
+        "informasi": {
+            "nama_aset": "Web Aduan BALIPROV CSIRT",
+            "klasifikasi": "perangkat_lunak",
+            "nomor_urut": "1",
+            "pemilik_aset": "Dinas Kominfos Provinsi Bali",
+            "pimpinan_nama": "Gede Pramana",
+            "pimpinan_jabatan": "Kepala Dinas",
+            "pj_nama": "I Putu Sundika",
+            "pj_jabatan": "Kepala Bidang Persandian",
+            "keterangan": "Website untuk memfasilitasi laporan/notifikasi ke BALIPROV-CSIRT",
+            "url": "https://aduancsirt.baliprov.go.id",
+            "versi": "1",
+            "lisensi": "opensource",
+            "tgl_lisensi_berakhir": null,
+            "vendor": "pihak_ketiga",
+            "platform": "web",
+            "lead_developer": "OSTicket",
+            "lokasi_hosting": "pdn"
+        },
+        "nomor": "PL-000001",
+        "diperbarui": "2026-11-10T19:47:42+08:00",
+        "kritikalitas": {
+            "c": "sedang",
+            "i": "rendah",
+            "a": "rendah",
+            "kritikalitas": "sedang"
+        },
+        "iiv": {
+            "ops": "minor",
+            "data": "minor",
+            "fin": "minor",
+            "umum": "minor",
+            "ketergantungan": "minor",
+            "status_iiv": "bukan"
+        },
+        "kse": {
+            "kse_1": "c",
+            "ket_1": "opensource di tempatkan pada PDNS",
+            "kse_2": "c",
+            "ket_2": "Pemeliharaan oleh SDM internal Bidang Persandian",
+            "kse_3": "b",
+            "ket_3": "Pedoman MKI Provinsi Bali",
+            "kse_4": "b",
+            "ket_4": "Menggunakan SSL dan SANDIKAMI",
+            "kse_5": "c",
+            "ket_5": null,
+            "kse_6": "b",
+            "ket_6": "NIK, Nama, Email",
+            "kse_7": "b",
+            "ket_7": null,
+            "kse_8": "c",
+            "ket_8": null,
+            "kse_9": "c",
+            "ket_9": null,
+            "kse_10": "c",
+            "ket_10": null,
+            "skor": 14,
+            "kategori": "rendah"
+        }
+    }
+}

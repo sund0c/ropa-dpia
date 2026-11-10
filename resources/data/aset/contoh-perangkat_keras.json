@@ -1,0 +1,43 @@
+{
+    "format": "manajemenaset",
+    "versi": 1,
+    "diekspor": "2026-11-10T19:50:50+08:00",
+    "aset": {
+        "informasi": {
+            "nama_aset": "Macbook M1 Kabid Persandian",
+            "klasifikasi": "perangkat_keras",
+            "nomor_urut": "1",
+            "pemilik_aset": "Dinas Kominfos Provinsi Bali",
+            "pimpinan_nama": "Gede Pramana",
+            "pimpinan_jabatan": "Kepala Dinas",
+            "pj_nama": "I Putu Sundika",
+            "pj_jabatan": "Kepala Bidang Persandian",
+            "keterangan": "Macbook M1 yang dibawa oleh Kabid Persandian",
+            "merk": "Macbook",
+            "model": "M1 2023",
+            "serial_number": "123456789",
+            "kapasitas": "500 Gb",
+            "tahun_perolehan": "2023",
+            "kondisi": "baik",
+            "lokasi_fisik": "Lemari Kabid Persandian",
+            "spesifikasi": "Macbook M1 2023",
+            "ip_address": null
+        },
+        "nomor": "PK-000001",
+        "diperbarui": "2026-11-10T19:50:25+08:00",
+        "kritikalitas": {
+            "c": "sedang",
+            "i": "rendah",
+            "a": "rendah",
+            "kritikalitas": "sedang"
+        },
+        "iiv": {
+            "ops": "minor",
+            "data": "minor",
+            "fin": "minor",
+            "umum": "minor",
+            "ketergantungan": "minor",
+            "status_iiv": "bukan"
+        }
+    }
+}

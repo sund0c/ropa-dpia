@@ -1,0 +1,39 @@
+{
+    "format": "manajemenaset",
+    "versi": 1,
+    "diekspor": "2026-11-10T19:43:10+08:00",
+    "aset": {
+        "informasi": {
+            "nama_aset": "SOP Tindaklanjut Notifikasi Keamanan",
+            "klasifikasi": "data",
+            "nomor_urut": "1",
+            "pemilik_aset": "Dinas Kominfos Provinsi Bali",
+            "pimpinan_nama": "Gede Pramana",
+            "pimpinan_jabatan": "Kepala Dinas",
+            "pj_nama": "I Putu Sundika",
+            "pj_jabatan": "Kepala Bidang Persandian",
+            "keterangan": "SOP untuk menindaklanjuti semua notifikasi keamanan yang masuk melalui csirt@baliprov.go.id dan platform aduancsirt.baliprov.go.id",
+            "bentuk_informasi": "elektronik",
+            "format": "PDF",
+            "klasifikasi_data": "publik",
+            "retensi": "1 Tahun",
+            "enkripsi": "tidak"
+        },
+        "nomor": "DI-000001",
+        "diperbarui": "2026-11-10T19:42:51+08:00",
+        "kritikalitas": {
+            "c": "rendah",
+            "i": "rendah",
+            "a": "rendah",
+            "kritikalitas": "rendah"
+        },
+        "iiv": {
+            "ops": "minor",
+            "data": "minor",
+            "fin": "minor",
+            "umum": "minor",
+            "ketergantungan": "minor",
+            "status_iiv": "bukan"
+        }
+    }
+}

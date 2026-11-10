@@ -1,0 +1,43 @@
+{
+    "format": "manajemenaset",
+    "versi": 1,
+    "diekspor": "2026-11-10T19:55:51+08:00",
+    "aset": {
+        "informasi": {
+            "nama_aset": "APAR",
+            "klasifikasi": "sarana_penunjang",
+            "nomor_urut": "1",
+            "pemilik_aset": "Dinas Kominfos Provinsi Bali",
+            "pimpinan_nama": "Gede Pramana",
+            "pimpinan_jabatan": "Kepala Dinas",
+            "pj_nama": "I Putu Sundika",
+            "pj_jabatan": "Kepala Bidang Persandian",
+            "keterangan": "Alat pemadam api ringan",
+            "merk": "ABC Dry Chemical Powder",
+            "model": "SYS - CT 6",
+            "serial_number": "123456789",
+            "kapasitas": "500 Gb",
+            "tahun_perolehan": "2023",
+            "kondisi": "baik",
+            "lokasi_fisik": "Ruang Bidang Persandian",
+            "spesifikasi": "APAR 6 Kg Nitrogen Expellend Catridge – SYS – CT 6",
+            "ip_address": null
+        },
+        "nomor": "SP-000001",
+        "diperbarui": "2026-11-10T19:55:25+08:00",
+        "kritikalitas": {
+            "c": "sedang",
+            "i": "sedang",
+            "a": "rendah",
+            "kritikalitas": "sedang"
+        },
+        "iiv": {
+            "ops": "minor",
+            "data": "minor",
+            "fin": "minor",
+            "umum": "minor",
+            "ketergantungan": "minor",
+            "status_iiv": "bukan"
+        }
+    }
+}

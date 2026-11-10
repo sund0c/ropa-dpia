@@ -146,6 +146,14 @@
             background: #991b1b;
         }
 
+        button.btn-oranye {
+            background: #d97706;
+        }
+
+        button.btn-oranye:hover {
+            background: #b45309;
+        }
+
         button:disabled {
             opacity: .5;
             cursor: not-allowed;

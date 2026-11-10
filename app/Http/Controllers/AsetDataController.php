@@ -12,6 +12,22 @@ class AsetDataController extends Controller
     private const FORMAT = 'manajemenaset';
     private const VERSI  = 1;
 
+    /** Contoh data per klasifikasi: resources/data/aset/contoh-{klasifikasi}.json */
+    private const FOLDER_CONTOH = 'data/aset';
+
+    /** Daftar contoh untuk popup: klasifikasi => nama aset contoh (hanya file yang ada). */
+    public static function daftarContoh(): array
+    {
+        $daftar = [];
+        foreach (AsetController::KLASIFIKASI as $k => $label) {
+            $path = resource_path(self::FOLDER_CONTOH . "/contoh-$k.json");
+            if (! is_file($path)) continue;
+            $isi = json_decode((string) file_get_contents($path), true);
+            $daftar[$k] = (string) ($isi['aset']['informasi']['nama_aset'] ?? '');
+        }
+        return $daftar;
+    }
+
     /** Unduh isian aset di sesi ini sebagai JSON. Tidak ada yang disimpan di server. */
     public function ekspor()
     {
@@ -38,19 +54,59 @@ class AsetDataController extends Controller
     /** Muat kembali file JSON hasil ekspor. Setiap tab divalidasi ulang dengan aturan form. */
     public function impor(Request $request)
     {
-        $request->validate(
-            ['berkas' => ['required', 'file', 'max:1024', 'extensions:json']],
-            [
-                'berkas.required'   => 'Pilih file JSON yang akan diimpor.',
-                'berkas.max'        => 'Ukuran file maksimal 1 MB.',
-                'berkas.extensions' => 'File harus berekstensi .json.',
-            ]
-        );
+        // Pesan dikirim sebagai error 'aset' agar tampil di atas form (dialog impor tertutup setelah redirect)
+        $gagalFile = fn(string $pesan) => redirect()->route('aset.form')->withErrors(['aset' => $pesan]);
 
+        $berkas = $request->file('berkas');
+        if (! $berkas) {
+            return $gagalFile('Pilih file JSON yang akan diimpor.');
+        }
+        if (! $berkas->isValid()) {
+            return $gagalFile('File gagal diunggah ke server: ' . $berkas->getErrorMessage());
+        }
+        if ($berkas->getSize() > 1024 * 1024) {
+            return $gagalFile('Ukuran file maksimal 1 MB.');
+        }
+        if (strtolower($berkas->getClientOriginalExtension()) !== 'json') {
+            return $gagalFile('File harus berekstensi .json.');
+        }
+
+        return $this->muat(file_get_contents($berkas->getRealPath()), 'Data %s berhasil diimpor.');
+    }
+
+    /** Muat contoh data bawaan untuk klasifikasi yang dipilih (menggantikan data aset di sesi ini). */
+    public function imporContoh(Request $request)
+    {
+        $gagal = fn(string $pesan) => redirect()->route('aset.form')->withErrors(['aset' => $pesan]);
+
+        $k = (string) $request->input('klasifikasi');
+        if (! array_key_exists($k, AsetController::KLASIFIKASI)) {
+            return $gagal('Pilih klasifikasi aset untuk contoh data yang akan dimuat.');
+        }
+
+        $label = AsetController::KLASIFIKASI[$k];
+        $path  = resource_path(self::FOLDER_CONTOH . "/contoh-$k.json");
+        if (! is_file($path)) {
+            return $gagal("Contoh data untuk klasifikasi $label belum tersedia.");
+        }
+
+        return $this->muat(
+            file_get_contents($path),
+            "Contoh data $label (%s) berhasil dimuat. Silakan ubah sesuai aset Anda.",
+            $k,
+        );
+    }
+
+    /**
+     * Validasi & muat isi JSON ke sesi. $pesanOk memakai %s untuk nomor aset.
+     * $klasifikasi (contoh data): isi file harus sesuai klasifikasi yang dipilih.
+     */
+    private function muat(string $json, string $pesanOk, ?string $klasifikasi = null)
+    {
         $gagalFile = fn(string $pesan) => redirect()->route('aset.form')->withErrors(['aset' => $pesan]);
 
         try {
-            $in = json_decode(file_get_contents($request->file('berkas')->getRealPath()), true, 32, JSON_THROW_ON_ERROR);
+            $in = json_decode($json, true, 32, JSON_THROW_ON_ERROR);
         } catch (JsonException) {
             return $gagalFile('File tidak dapat dibaca sebagai JSON yang valid.');
         }
@@ -60,6 +116,9 @@ class AsetDataController extends Controller
         }
         if ((int) ($in['versi'] ?? 0) !== self::VERSI) {
             return $gagalFile('Versi format file tidak didukung.');
+        }
+        if ($klasifikasi !== null && ($in['aset']['informasi']['klasifikasi'] ?? null) !== $klasifikasi) {
+            return $gagalFile('Contoh data tidak sesuai dengan klasifikasi ' . AsetController::KLASIFIKASI[$klasifikasi] . '. Hubungi pengelola aplikasi.');
         }
 
         // Hanya data aset yang dikosongkan; data RoPA & DPIA di sesi yang sama tetap
@@ -85,7 +144,7 @@ class AsetDataController extends Controller
         $aset['diperbarui'] = $this->waktu($in['aset']['diperbarui'] ?? null);
         session(['aset' => $aset]);
 
-        $redirect = redirect()->route('aset.form')->with('saved', 'Data ' . ($aset['nomor'] ?? 'aset') . ' berhasil diimpor.');
+        $redirect = redirect()->route('aset.form')->with('saved', sprintf($pesanOk, $aset['nomor'] ?? 'aset'));
 
         return $gagal
             ? $redirect->withErrors(['aset' => 'Sebagian data tidak dimuat karena tidak lolos validasi: ' . implode('; ', $gagal) . '. Silakan isi ulang bagian tersebut.'])
