@@ -18,6 +18,9 @@ use App\Support\LabelTte;
 
 class DpiaController extends Controller
 {
+    /** Peran/Kategori pihak yang terlibat (Tab IV.4). "Pihak Internal" = unit/pegawai di dalam instansi pengendali. */
+    public const PERAN_PIHAK = ['internal' => 'Pihak Internal'] + RopaController::PERAN_PENERIMA;
+
     public const TABS = [
         'dokumen'      => 'I. Informasi Dokumen',
         'organisasi'   => 'II. Organisasi',
@@ -119,7 +122,7 @@ class DpiaController extends Controller
             'options'  => [
                 'status'            => self::STATUS_DOKUMEN,
                 'risiko'            => RopaController::INDIKATOR_RISIKO,
-                'peran'             => RopaController::PERAN_PENERIMA,
+                'peran'             => self::PERAN_PIHAK,
                 'lokasi'            => self::LOKASI_PIHAK,
                 'jenis_umum'        => RopaController::JENIS_DATA_UMUM,
                 'jenis_spesifik'    => RopaController::JENIS_DATA_SPESIFIK,
@@ -270,7 +273,7 @@ class DpiaController extends Controller
             'labels'     => [
                 'status'            => self::STATUS_DOKUMEN,
                 'risiko'            => RopaController::INDIKATOR_RISIKO,
-                'peran'             => RopaController::PERAN_PENERIMA,
+                'peran'             => self::PERAN_PIHAK,
                 'lokasi'            => self::LOKASI_PIHAK,
                 'jenis_umum'        => RopaController::JENIS_DATA_UMUM,
                 'jenis_spesifik'    => RopaController::JENIS_DATA_SPESIFIK,
@@ -467,7 +470,7 @@ class DpiaController extends Controller
         return [
             'pihak'              => ['required', 'array', 'max:30'],
             'pihak.*.nama'       => ['required', 'string', 'max:255'],
-            'pihak.*.peran'      => ['required', Rule::in(array_keys(RopaController::PERAN_PENERIMA))],
+            'pihak.*.peran'      => ['required', Rule::in(array_keys(self::PERAN_PIHAK))],
             'pihak.*.lokasi'     => ['required', Rule::in(array_keys(self::LOKASI_PIHAK))],
             'pihak.*.data'       => ['required', 'array'],
             'pihak.*.data.*'     => ['string', Rule::in($jenis)],
@@ -638,7 +641,7 @@ class DpiaController extends Controller
 
             // IV
             'pihak.*.nama'       => 'Nama pihak',
-            'pihak.*.peran'      => 'Peran',
+            'pihak.*.peran'      => 'Peran/Kategori Pihak',
             'pihak.*.lokasi'     => 'Dalam/Luar Negeri',
             'pihak.*.dasar'      => 'Dasar keterlibatan',
             'pihak.*.keterangan' => 'Keterangan',

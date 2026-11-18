@@ -442,7 +442,7 @@
     <table class="grid kecil">
         <tr>
             <th>Pihak</th>
-            <th>Peran (Pengendali/Pengendali Bersama/Prosesor)</th>
+            <th>Peran/Kategori Pihak</th>
             <th>Dalam Negeri/Luar Negeri</th>
             <th>Data yang Diakses</th>
             <th>Dasar Keterlibatan</th>

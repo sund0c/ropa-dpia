@@ -195,8 +195,9 @@
     @endforeach
 </table>
 
-<h3>Transfer Data Pribadi</h3>
-@forelse ($p['transfer'] as $i => $t)
+@php $penerima = \App\Http\Controllers\RopaController::penerima($p); @endphp
+<h3>Transfer Data Pribadi ke Luar Wilayah Hukum Indonesia</h3>
+@forelse ($penerima['transfer'] as $i => $t)
     <table class="kv penerima">
         <tr>
             <td class="k" colspan="2" style="background:#f2f2f2">Penerima #{{ $i + 1 }}</td>
@@ -206,8 +207,8 @@
             <td>{{ $t['organisasi'] }}</td>
         </tr>
         <tr>
-            <td class="k">Peran</td>
-            <td>{{ $labels['peran'][$t['peran']] ?? $t['peran'] }}</td>
+            <td class="k">Negara Tujuan</td>
+            <td>{{ \App\Support\Negara::nama($t['negara'] ?? null) }}</td>
         </tr>
         <tr>
             <td class="k">Kontak / PIC Penerima</td>
@@ -225,7 +226,7 @@
             <td class="k">Data Pribadi yang Dikirim</td>
             <td>
                 <ul>
-                    @foreach ($t['data'] as $k)
+                    @foreach ((array) $t['data'] as $k)
                         <li>{{ $labels['jenis'][$k] ?? $k }}</li>
                     @endforeach
                 </ul>
@@ -235,7 +236,48 @@
 @empty
     <table class="kv">
         <tr>
-            <td>Tidak ada transfer Data Pribadi ke pihak lain.</td>
+            <td>Tidak ada transfer Data Pribadi ke luar wilayah hukum Indonesia.</td>
+        </tr>
+    </table>
+@endforelse
+
+<h3>Pengungkapan/Penyampaian Data Pribadi kepada Pihak Lain</h3>
+@forelse ($penerima['pengungkapan'] as $i => $t)
+    <table class="kv penerima">
+        <tr>
+            <td class="k" colspan="2" style="background:#f2f2f2">Penerima #{{ $i + 1 }}</td>
+        </tr>
+        <tr>
+            <td class="k">Organisasi Penerima</td>
+            <td>{{ $t['organisasi'] }}</td>
+        </tr>
+        <tr>
+            <td class="k">Kontak / PIC Penerima</td>
+            <td>{{ $t['kontak'] }}</td>
+        </tr>
+        <tr>
+            <td class="k">Tujuan Pengiriman</td>
+            <td>{!! $multiline($t['tujuan']) !!}</td>
+        </tr>
+        <tr>
+            <td class="k">Mekanisme Pengiriman</td>
+            <td>{!! $multiline($t['mekanisme']) !!}</td>
+        </tr>
+        <tr>
+            <td class="k">Data Pribadi yang Dikirim</td>
+            <td>
+                <ul>
+                    @foreach ((array) $t['data'] as $k)
+                        <li>{{ $labels['jenis'][$k] ?? $k }}</li>
+                    @endforeach
+                </ul>
+            </td>
+        </tr>
+    </table>
+@empty
+    <table class="kv">
+        <tr>
+            <td>Tidak ada pengungkapan/penyampaian Data Pribadi kepada pihak lain.</td>
         </tr>
     </table>
 @endforelse

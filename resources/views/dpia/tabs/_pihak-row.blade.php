@@ -13,11 +13,11 @@
 
     <div class="row">
         <label class="field">
-            <span>Peran <span class="req">*</span></span>
+            <span>Peran/Kategori Pihak <span class="req">*</span></span>
             <select name="pihak[{{ $i }}][peran]">
-                <option value="">— Pilih peran —</option>
                 @foreach ($options['peran'] as $key => $label)
-                    <option value="{{ $key }}" @selected(($row['peran'] ?? '') === $key)>{{ $label }}</option>
+                    {{-- Pihak baru/kosong: default Pihak Internal --}}
+                    <option value="{{ $key }}" @selected(($row['peran'] ?? null ?: 'internal') === $key)>{{ $label }}</option>
                 @endforeach
             </select>
             @error("pihak.$i.peran") <small class="error">{{ $message }}</small> @enderror

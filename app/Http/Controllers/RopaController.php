@@ -120,12 +120,13 @@ class RopaController extends Controller
     /** Daftar multi-kolom (name[i][kolom]). Baris yang semua kolomnya kosong dibuang. */
     private const ROW_FIELDS = [
         'pengumpulan' => ['sumber', 'lokasi'],
-        'transfer'    => ['organisasi', 'peran', 'kontak', 'tujuan', 'mekanisme', 'data'],
+        'transfer'     => ['organisasi', 'negara', 'kontak', 'tujuan', 'mekanisme', 'data'],
+        'pengungkapan' => ['organisasi', 'kontak', 'tujuan', 'mekanisme', 'data'],
     ];
 
     /** Nilai default untuk field opsional yang bisa tidak terkirim sama sekali. */
     private const DEFAULTS = [
-        'pemetaan' => ['jenis_umum' => [], 'jenis_spesifik' => [], 'transfer' => []],
+        'pemetaan' => ['jenis_umum' => [], 'jenis_spesifik' => [], 'transfer' => [], 'pengungkapan' => []],
         'risiko'   => ['indikator' => []],
         'siklus'   => ['pengamanan_organisasi' => [], 'pengamanan_operasional' => [], 'pengamanan_teknis' => []],
     ];
@@ -186,6 +187,7 @@ class RopaController extends Controller
     {
         abort_unless(array_key_exists($tab, self::TABS), 404);
 
+        if ($tab === 'pemetaan') $this->pindahTransferLama($request);
         $this->cleanLists($request);
         if ($tab === 'pemetaan') $this->syncDataAnak($request);
         if ($tab === 'siklus')   $this->pecahPengamananLama($request);
@@ -362,6 +364,37 @@ class RopaController extends Controller
         }
     }
 
+    /**
+     * Penerima Data Pribadi untuk tampilan/PDF. Data lama (sebelum dipisah) menyimpan semua penerima
+     * di "transfer" dengan kolom "peran" tanpa "negara": baris seperti itu dipindah ke "pengungkapan".
+     */
+    public static function penerima(array $p): array
+    {
+        $transfer = [];
+        $pengungkapan = array_values((array) ($p['pengungkapan'] ?? []));
+        foreach ((array) ($p['transfer'] ?? []) as $row) {
+            if (! is_array($row)) continue;
+            if (array_key_exists('negara', $row)) {
+                $transfer[] = $row;
+            } else {
+                unset($row['peran']);
+                $pengungkapan[] = $row;
+            }
+        }
+
+        return ['transfer' => $transfer, 'pengungkapan' => $pengungkapan];
+    }
+
+    /** Impor file lama: penerima tanpa "negara" dipindah ke Pengungkapan (lihat penerima()). */
+    private function pindahTransferLama(Request $request): void
+    {
+        if (! $request->has('transfer')) return;
+        $request->merge(self::penerima([
+            'transfer'     => $request->input('transfer'),
+            'pengungkapan' => $request->input('pengungkapan', []),
+        ]));
+    }
+
     /** "Data anak" (data spesifik) selalu mengikuti isian "Pemrosesan melibatkan Data Pribadi Anak". */
     private function syncDataAnak(Request $request): void
     {
@@ -452,12 +485,19 @@ class RopaController extends Controller
             'pengumpulan.*.lokasi'    => ['required', 'string', 'max:255'],
             'transfer'                => ['nullable', 'array', 'max:30'],
             'transfer.*.organisasi'   => ['required', 'string', 'max:255'],
-            'transfer.*.peran'        => ['required', Rule::in(array_keys(self::PERAN_PENERIMA))],
+            'transfer.*.negara'       => ['required', Rule::in(array_keys(\App\Support\Negara::DAFTAR))],
             'transfer.*.kontak'       => ['required', 'string', 'max:255'],
             'transfer.*.tujuan'       => ['required', 'string', 'max:2000'],
             'transfer.*.mekanisme'    => ['required', 'string', 'max:2000'],
             'transfer.*.data'         => ['required', 'array'],
             'transfer.*.data.*'       => ['string', Rule::in($dipilih)],
+            'pengungkapan'                => ['nullable', 'array', 'max:30'],
+            'pengungkapan.*.organisasi'   => ['required', 'string', 'max:255'],
+            'pengungkapan.*.kontak'       => ['required', 'string', 'max:255'],
+            'pengungkapan.*.tujuan'       => ['required', 'string', 'max:2000'],
+            'pengungkapan.*.mekanisme'    => ['required', 'string', 'max:2000'],
+            'pengungkapan.*.data'         => ['required', 'array'],
+            'pengungkapan.*.data.*'       => ['string', Rule::in($dipilih)],
         ];
     }
 
@@ -488,6 +528,9 @@ class RopaController extends Controller
             'transfer.max'               => 'Maksimal :max penerima.',
             'transfer.*.data.required'   => 'Pilih minimal satu data pribadi yang dikirim ke penerima ini.',
             'transfer.*.data.*.in'       => 'Data yang dikirim harus termasuk jenis data pribadi yang dicentang di atas.',
+            'pengungkapan.max'               => 'Maksimal :max penerima.',
+            'pengungkapan.*.data.required'   => 'Pilih minimal satu data pribadi yang dikirim ke penerima ini.',
+            'pengungkapan.*.data.*.in'       => 'Data yang dikirim harus termasuk jenis data pribadi yang dicentang di atas.',
             'pengamanan_organisasi.max'  => 'Maksimal :max langkah pengamanan organisasional.',
             'pengamanan_operasional.max' => 'Maksimal :max langkah pengamanan operasional.',
             'pengamanan_teknis.max'      => 'Maksimal :max langkah pengamanan teknis.',
@@ -522,7 +565,11 @@ class RopaController extends Controller
             'pengumpulan.*.sumber'  => 'Sumber pengumpulan',
             'pengumpulan.*.lokasi'  => 'Lokasi penyimpanan',
             'transfer.*.organisasi' => 'Organisasi penerima',
-            'transfer.*.peran'      => 'Peran penerima',
+            'transfer.*.negara'    => 'Negara tujuan',
+            'pengungkapan.*.organisasi' => 'Organisasi penerima',
+            'pengungkapan.*.kontak'     => 'Kontak/PIC penerima',
+            'pengungkapan.*.tujuan'     => 'Tujuan pengiriman',
+            'pengungkapan.*.mekanisme'  => 'Mekanisme pengiriman',
             'transfer.*.kontak'     => 'Kontak/PIC penerima',
             'transfer.*.tujuan'     => 'Tujuan pengiriman',
             'transfer.*.mekanisme'  => 'Mekanisme pengiriman',

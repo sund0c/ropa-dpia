@@ -6,7 +6,11 @@
     $jenisUmum = (array) $pick('jenis_umum');
     $jenisSpesifik = (array) $pick('jenis_spesifik');
     $pengumpulan = $pick('pengumpulan') ?: [['sumber' => '', 'lokasi' => '']];
-    $transfer = (array) $pick('transfer');
+    // Data lama (sebelum dipisah) otomatis dipindah ke Pengungkapan, lihat RopaController::penerima()
+    ['transfer' => $transfer, 'pengungkapan' => $pengungkapan] = \App\Http\Controllers\RopaController::penerima([
+        'transfer'     => (array) $pick('transfer'),
+        'pengungkapan' => (array) $pick('pengungkapan'),
+    ]);
     $semuaJenis = $options['jenis_umum'] + $options['jenis_spesifik'];
     $dataAnak = (bool) $pick('data_anak', false);
 @endphp
@@ -93,24 +97,44 @@
     @enderror
 </div>
 
-{{-- Transfer data (opsional, bisa banyak penerima) --}}
+{{-- Transfer ke luar wilayah hukum Indonesia (opsional, bisa banyak penerima) --}}
 <div class="field repeater" data-repeater data-min="0">
-    <label>Transfer Data Pribadi</label>
-    <small class="hint">Isi jika data pribadi dikirim atau dibagikan ke pihak lain. Biarkan kosong jika tidak
-        ada.</small>
+    <label>Transfer Data Pribadi ke Luar Wilayah Hukum Indonesia</label>
+    <small class="hint">Isi jika Data Pribadi dikirim ke penerima yang berada di luar wilayah hukum Negara Republik Indonesia. Kosongkan jika tidak ada.</small>
 
     <div class="rep-rows" data-rows>
         @foreach ($transfer as $i => $row)
-            @include('ropa.tabs._transfer-row', ['i' => $i, 'row' => $row])
+            @include('ropa.tabs._transfer-row', ['f' => 'transfer', 'i' => $i, 'row' => $row])
         @endforeach
     </div>
-    <p class="hint" data-empty @if (count($transfer)) hidden @endif>Belum ada penerima.</p>
+    <p class="hint" data-empty @if (count($transfer)) hidden @endif>Belum ada penerima di luar negeri.</p>
     <template data-template>
-        @include('ropa.tabs._transfer-row', ['i' => '__i__', 'row' => []])
+        @include('ropa.tabs._transfer-row', ['f' => 'transfer', 'i' => '__i__', 'row' => []])
     </template>
 
     <button type="button" class="secondary small" data-add>+ Tambah penerima</button>
     @error('transfer')
+        <small class="error">{{ $message }}</small>
+    @enderror
+</div>
+
+{{-- Pengungkapan/penyampaian kepada pihak lain (opsional, bisa banyak penerima) --}}
+<div class="field repeater" data-repeater data-min="0">
+    <label>Pengungkapan/Penyampaian Data Pribadi kepada Pihak Lain</label>
+    <small class="hint">Isi jika Data Pribadi diungkapkan, diberikan, atau dikirimkan kepada pihak lain, baik di dalam maupun di luar wilayah hukum Negara Republik Indonesia. Kosongkan jika tidak ada.</small>
+
+    <div class="rep-rows" data-rows>
+        @foreach ($pengungkapan as $i => $row)
+            @include('ropa.tabs._transfer-row', ['f' => 'pengungkapan', 'i' => $i, 'row' => $row])
+        @endforeach
+    </div>
+    <p class="hint" data-empty @if (count($pengungkapan)) hidden @endif>Belum ada penerima.</p>
+    <template data-template>
+        @include('ropa.tabs._transfer-row', ['f' => 'pengungkapan', 'i' => '__i__', 'row' => []])
+    </template>
+
+    <button type="button" class="secondary small" data-add>+ Tambah penerima</button>
+    @error('pengungkapan')
         <small class="error">{{ $message }}</small>
     @enderror
 </div>

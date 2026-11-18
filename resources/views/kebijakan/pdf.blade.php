@@ -13,7 +13,12 @@
     $persetujuan  = in_array('consent', $dasar, true);
     $umum         = (array) ($p['jenis_umum'] ?? []);
     $spesifik     = (array) ($p['jenis_spesifik'] ?? []);
-    $transfer     = (array) ($p['transfer'] ?? []);
+    // Penerima: transfer ke luar negeri + pengungkapan kepada pihak lain
+    $pn           = \App\Http\Controllers\RopaController::penerima($p);
+    $transfer     = array_merge(
+        array_map(fn($t) => $t + ['lokasi' => \App\Support\Negara::nama($t['negara'] ?? null)], $pn['transfer']),
+        array_map(fn($t) => $t + ['lokasi' => '-'], $pn['pengungkapan']),
+    );
     $anak         = (bool) ($p['data_anak'] ?? false);
     $rentan       = (bool) ($p['kelompok_rentan'] ?? false);
     $kontak       = array_filter(['Telepon' => $o['telepon'] ?? null, 'Surel' => $o['email'] ?? null]);
@@ -137,11 +142,11 @@
 @if ($transfer)
     <p>Data hanya dapat diakses oleh pihak berikut, sebatas yang diperlukan untuk tujuannya:</p>
     <table>
-        <tr><th style="width:26%">Penerima</th><th style="width:14%">Peran</th><th style="width:32%">Tujuan</th><th>Data yang diterima</th></tr>
+        <tr><th style="width:26%">Penerima</th><th style="width:14%">Negara (bila di luar Indonesia)</th><th style="width:32%">Tujuan</th><th>Data yang diterima</th></tr>
         @foreach ($transfer as $t)
             <tr>
                 <td>{{ $t['organisasi'] }}</td>
-                <td>{{ $labels['peran'][$t['peran']] ?? $t['peran'] }}</td>
+                <td>{{ $t['lokasi'] }}</td>
                 <td>{!! $ml($t['tujuan']) !!}</td>
                 <td>{{ implode(', ', array_map(fn($k) => $labels['jenis'][$k] ?? $k, (array) $t['data'])) }}</td>
             </tr>
