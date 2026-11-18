@@ -39,7 +39,7 @@
 <div class="field">
     <div class="checks ro">
         <label class="check"><input type="checkbox" disabled @checked($p['data_anak'])> Pemrosesan melibatkan Data Pribadi Anak</label>
-        <label class="check"><input type="checkbox" disabled @checked($p['kelompok_rentan'])> Pemrosesan melibatkan kelompok rentan (disabilitas, lansia, minoritas)</label>
+        <label class="check"><input type="checkbox" disabled @checked($p['kelompok_rentan'])> Pemrosesan melibatkan kelompok rentan (disabilitas, lansia dan lainnya)</label>
     </div>
 </div>
 

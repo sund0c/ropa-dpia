@@ -138,7 +138,7 @@
         </td>
     </tr>
     <tr>
-        <td class="k">Melibatkan kelompok rentan (disabilitas, lansia, minoritas)</td>
+        <td class="k">Melibatkan kelompok rentan (disabilitas, lansia dan lainnya)</td>
         <td>{{ $yaTidak($p['kelompok_rentan']) }}</td>
     </tr>
     <tr>

@@ -22,7 +22,7 @@
     <label class="check">
         <input type="hidden" name="kelompok_rentan" value="0">
         <input type="checkbox" name="kelompok_rentan" value="1" @checked($pick('kelompok_rentan', false))>
-        Pemrosesan melibatkan kelompok rentan (disabilitas, lansia, minoritas)
+        Pemrosesan melibatkan kelompok rentan (disabilitas, lansia dan lainnya)
     </label>
     <label class="check">
         <input type="hidden" name="data_anak" value="0">
@@ -121,7 +121,7 @@
 {{-- Pengungkapan/penyampaian kepada pihak lain (opsional, bisa banyak penerima) --}}
 <div class="field repeater" data-repeater data-min="0">
     <label>Pengungkapan/Penyampaian Data Pribadi kepada Pihak Lain</label>
-    <small class="hint">Isi jika Data Pribadi diungkapkan, diberikan, atau dikirimkan kepada pihak lain, baik di dalam maupun di luar wilayah hukum Negara Republik Indonesia. Kosongkan jika tidak ada.</small>
+    <small class="hint">Isi jika Data Pribadi diungkapkan, diberikan, atau dikirimkan kepada pihak lain. Kosongkan jika tidak ada.</small>
 
     <div class="rep-rows" data-rows>
         @foreach ($pengungkapan as $i => $row)

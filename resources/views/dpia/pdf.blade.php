@@ -411,7 +411,7 @@
             <td>{!! $kotak((bool) $p['data_anak']) !!} Ya &nbsp;&nbsp; {!! $kotak(!$p['data_anak']) !!} Tidak</td>
         </tr>
         <tr>
-            <td class="k">Pemrosesan melibatkan kelompok rentan (disabilitas, lansia, minoritas)</td>
+            <td class="k">Pemrosesan melibatkan kelompok rentan (disabilitas, lansia dan lainnya)</td>
             <td>{!! $kotak((bool) $p['kelompok_rentan']) !!} Ya &nbsp;&nbsp; {!! $kotak(!$p['kelompok_rentan']) !!} Tidak</td>
         </tr>
     </table>
