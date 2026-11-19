@@ -139,11 +139,11 @@
     </tr>
     <tr>
         <td class="k">Melibatkan kelompok rentan (disabilitas, lansia dan lainnya)</td>
-        <td>{{ $yaTidak($p['kelompok_rentan']) }}</td>
+        <td>{{ $yaTidak($p['kelompok_rentan']) }}@if ($p['kelompok_rentan'] && filled($p['kelompok_rentan_keterangan'] ?? null)). {!! $multiline($p['kelompok_rentan_keterangan']) !!}@endif</td>
     </tr>
     <tr>
         <td class="k">Melibatkan Data Pribadi Anak</td>
-        <td>{{ $yaTidak($p['data_anak']) }}</td>
+        <td>{{ $yaTidak($p['data_anak']) }}@if ($p['data_anak'] && filled($p['data_anak_keterangan'] ?? null)). {!! $multiline($p['data_anak_keterangan']) !!}@endif</td>
     </tr>
     <tr>
         <td class="k">Estimasi Jumlah Subjek Data</td>
@@ -350,6 +350,8 @@
                         <li>{{ $labels['risiko'][$k] ?? $k }}
                             @if ($k === \App\Http\Controllers\RopaController::INDIKATOR_OTOMATIS)
                                 <em>(berdasarkan jenis data pada bagian III)</em>
+                            @elseif ($k === \App\Http\Controllers\RopaController::INDIKATOR_HAK)
+                                <em>(berdasarkan hak subjek yang tidak difasilitasi pada bagian IV)</em>
                             @endif
                         </li>
                     @endforeach

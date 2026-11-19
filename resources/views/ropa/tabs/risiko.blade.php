@@ -4,6 +4,8 @@
     $tab3Ada     = isset($ropa['pemetaan']);
     $adaSpesifik = ! empty($ropa['pemetaan']['jenis_spesifik']);
     $estimasi    = $ropa['pemetaan']['estimasi_subjek'] ?? null;
+    $tab4Ada     = isset($ropa['hak']);
+    $hakKurang   = \App\Support\RopaStatus::hakTidakDifasilitasi($ropa);
 @endphp
 
 <div class="alert warn">
@@ -26,6 +28,18 @@
                             (otomatis dari Tab III:
                             {{ ! $tab3Ada ? 'Tab III belum disimpan'
                                : ($adaSpesifik ? 'terdapat data pribadi spesifik' : 'tidak ada data pribadi spesifik') }})
+                        </small>
+                    </span>
+                </label>
+            @elseif ($key === \App\Http\Controllers\RopaController::INDIKATOR_HAK)
+                <label class="check">
+                    <input type="checkbox" disabled @checked($hakKurang !== [])>
+                    <span>
+                        {{ $label }}
+                        <small class="hint">
+                            (otomatis dari Tab IV:
+                            {{ ! $tab4Ada ? 'Tab IV belum disimpan'
+                               : ($hakKurang ? count($hakKurang) . ' hak subjek tidak difasilitasi' : 'seluruh hak subjek difasilitasi') }})
                         </small>
                     </span>
                 </label>

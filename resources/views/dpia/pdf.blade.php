@@ -408,11 +408,19 @@
         </tr>
         <tr>
             <td class="k">Pemrosesan melibatkan Data Pribadi Anak</td>
-            <td>{!! $kotak((bool) $p['data_anak']) !!} Ya &nbsp;&nbsp; {!! $kotak(!$p['data_anak']) !!} Tidak</td>
+            <td>{!! $kotak((bool) $p['data_anak']) !!} Ya &nbsp;&nbsp; {!! $kotak(!$p['data_anak']) !!} Tidak
+                @if ($p['data_anak'] && filled($p['data_anak_keterangan'] ?? null))
+                    <br>{!! $ml($p['data_anak_keterangan']) !!}
+                @endif
+            </td>
         </tr>
         <tr>
             <td class="k">Pemrosesan melibatkan kelompok rentan (disabilitas, lansia dan lainnya)</td>
-            <td>{!! $kotak((bool) $p['kelompok_rentan']) !!} Ya &nbsp;&nbsp; {!! $kotak(!$p['kelompok_rentan']) !!} Tidak</td>
+            <td>{!! $kotak((bool) $p['kelompok_rentan']) !!} Ya &nbsp;&nbsp; {!! $kotak(!$p['kelompok_rentan']) !!} Tidak
+                @if ($p['kelompok_rentan'] && filled($p['kelompok_rentan_keterangan'] ?? null))
+                    <br>{!! $ml($p['kelompok_rentan_keterangan']) !!}
+                @endif
+            </td>
         </tr>
     </table>
 
@@ -625,7 +633,7 @@
             <tr>
                 <th class="c" style="width:5%">No.</th>
                 <th class="c" style="width:8%">No. Risiko</th>
-                <th>Langkah Mitigasi</th>
+                <th>Kontrol Saat Ini</th>
                 <th style="width:10%">Status</th>
                 <th style="width:22%">Bukti Dukung</th>
                 <th style="width:16%">Keterangan (Organisasi/ Operasional/ Teknis)</th>
@@ -647,7 +655,7 @@
     <table class="grid kecil">
         <tr>
             <th class="c" style="width:7%">No.</th>
-            <th>Risiko</th>
+            <th>Risiko (Residual)</th>
             <th class="c" style="width:8%">Skor Risiko Inheren</th>
             <th>Langkah Mitigasi</th>
             <th class="c" style="width:9%">Kemungkinan (Residual)</th>

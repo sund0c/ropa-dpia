@@ -661,7 +661,7 @@ class DpiaController extends Controller
             'inheren.*.*.dampak'               => 'Dampak',
 
             // VII
-            'kontrol.*.*.langkah'      => 'Langkah mitigasi',
+            'kontrol.*.*.langkah'      => 'Kontrol saat ini',
             'kontrol.*.*.status'       => 'Status',
             'kontrol.*.*.bukti'        => 'Bukti dukung',
             'kontrol.*.*.jenis'        => 'Keterangan',

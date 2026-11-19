@@ -8,7 +8,13 @@
     $spesifik = collect($ropa['pemetaan']['jenis_spesifik'] ?? [])
         ->map(fn ($k) => \App\Http\Controllers\RopaController::JENIS_DATA_SPESIFIK[$k] ?? $k)
         ->implode(', ');
+    // Isian awal untuk indikator pembatasan hak: daftar hak yang tidak dicentang di RoPA Tab IV
+    $hakKurang = collect(\App\Support\RopaStatus::hakTidakDifasilitasi($ropa))
+        ->map(fn ($k) => \App\Http\Controllers\RopaController::HAK_SINGKAT[$k] ?? $k);
     $isianAwal = array_filter([
+        'pembatasan_hak' => $hakKurang->isNotEmpty()
+            ? 'Berikan alasan kenapa hak-hak berikut ini tidak difasilitasi: ' . $hakKurang->implode('; ') . '.'
+            : null,
         'data_spesifik' => $spesifik,
         'skala_besar'   => $estimasi !== null
             ? 'Estimasi jumlah subjek data ' . number_format($estimasi, 0, ',', '.') . ' orang.'
@@ -28,7 +34,7 @@
 @if ($isianAwal)
     <p class="hint" style="margin-top:0">
         <strong>Kembalikan ke default</strong> mengisi ulang keterangan yang punya isian otomatis dari RoPA
-        (data spesifik dan estimasi jumlah subjek). Keterangan lain tidak diubah. Klik <strong>Simpan</strong> setelahnya.
+        (data spesifik, estimasi jumlah subjek, dan hak subjek yang tidak difasilitasi). Keterangan lain tidak diubah. Klik <strong>Simpan</strong> setelahnya.
     </p>
 @endif
 

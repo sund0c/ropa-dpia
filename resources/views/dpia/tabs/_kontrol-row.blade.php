@@ -5,7 +5,7 @@
     </div>
 
     <label class="field">
-        <span>Langkah Mitigasi <span class="req">*</span></span>
+        <span>Kontrol Saat Ini <span class="req">*</span></span>
         <textarea name="kontrol[{{ $rid }}][{{ $i }}][langkah]" rows="3"
             placeholder="Contoh: Role-Based Access Control pada aplikasi">{{ $row['langkah'] ?? '' }}</textarea>
         @error("kontrol.$rid.$i.langkah")

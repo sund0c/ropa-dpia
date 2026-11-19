@@ -106,6 +106,23 @@ class RopaController extends Controller
     /** Indikator yang nilainya diturunkan dari Tab III, bukan dipilih manual. */
     public const INDIKATOR_OTOMATIS = 'data_spesifik';
 
+    /** Indikator yang otomatis Ya bila ada hak subjek (Tab IV) yang tidak difasilitasi. */
+    public const INDIKATOR_HAK = 'pembatasan_hak';
+
+    /** Nama singkat hak subjek, untuk keterangan otomatis di DPIA. */
+    public const HAK_SINGKAT = [
+        'informasi'           => 'hak mendapatkan informasi (Pasal 5)',
+        'perbaikan'           => 'hak memperbaiki Data Pribadi (Pasal 6)',
+        'akses'               => 'hak akses dan memperoleh salinan Data Pribadi (Pasal 7)',
+        'penghapusan'         => 'hak mengakhiri pemrosesan, menghapus, dan/atau memusnahkan Data Pribadi (Pasal 8)',
+        'tarik_persetujuan'   => 'hak menarik kembali persetujuan (Pasal 9)',
+        'keberatan_otomatis'  => 'hak mengajukan keberatan atas keputusan otomatis (Pasal 10 ayat 1)',
+        'pembatasan'          => 'hak menunda atau membatasi pemrosesan (Pasal 11)',
+        'ganti_rugi'          => 'hak menggugat dan menerima ganti rugi (Pasal 12 ayat 1)',
+        'portabilitas_format' => 'hak mendapatkan Data Pribadi dalam format yang dapat dibaca sistem elektronik (Pasal 13 ayat 1)',
+        'portabilitas_kirim'  => 'hak mengirimkan Data Pribadi ke Pengendali lain (Pasal 13 ayat 2)',
+    ];
+
     /** Daftar satu kolom (name[]). Baris kosong dibuang sebelum validasi. */
     private const LIST_FIELDS = ['tahapan', 'referensi_hukum', 'kategori_subjek',
         'pengamanan_organisasi', 'pengamanan_operasional', 'pengamanan_teknis'];
@@ -191,6 +208,13 @@ class RopaController extends Controller
         $this->cleanLists($request);
         if ($tab === 'pemetaan') $this->syncDataAnak($request);
         if ($tab === 'siklus')   $this->pecahPengamananLama($request);
+        if ($tab === 'risiko') {
+            // Indikator otomatis tidak disimpan dari pilihan manual (data lama/impor bisa memuatnya)
+            $request->merge(['indikator' => array_values(array_diff(
+                (array) $request->input('indikator', []),
+                [self::INDIKATOR_OTOMATIS, self::INDIKATOR_HAK]
+            ))]);
+        }
 
         $rules = $this->rules($tab, $request);
         if ($tab === 'organisasi' && $imporLama && blank($request->input('koordinator_nama'))) {
@@ -456,7 +480,7 @@ class RopaController extends Controller
             'risiko' => [
                 'indikator'   => ['nullable', 'array'],
                 'indikator.*' => ['string', Rule::in(array_keys(
-                    array_diff_key(self::INDIKATOR_RISIKO, [self::INDIKATOR_OTOMATIS => true])
+                    array_diff_key(self::INDIKATOR_RISIKO, [self::INDIKATOR_OTOMATIS => true, self::INDIKATOR_HAK => true])
                 ))],
             ],
         };
@@ -475,6 +499,9 @@ class RopaController extends Controller
             'kategori_subjek.*'       => ['required', 'string', 'max:255'],
             'kelompok_rentan'         => ['required', 'boolean'],
             'data_anak'               => ['required', 'boolean'],
+            // Keterangan hanya disimpan bila kotaknya dicentang
+            'kelompok_rentan_keterangan' => ['exclude_unless:kelompok_rentan,1', 'nullable', 'string', 'max:2000'],
+            'data_anak_keterangan'       => ['exclude_unless:data_anak,1', 'nullable', 'string', 'max:2000'],
             'estimasi_subjek'         => ['required', 'integer', 'min:0', 'max:999999999'],
             'jenis_umum'              => ['nullable', 'array', 'required_without:jenis_spesifik'],
             'jenis_umum.*'            => ['string', Rule::in(array_keys(self::JENIS_DATA_UMUM))],
@@ -566,6 +593,8 @@ class RopaController extends Controller
             'pengumpulan.*.lokasi'  => 'Lokasi penyimpanan',
             'transfer.*.organisasi' => 'Organisasi penerima',
             'transfer.*.negara'    => 'Negara tujuan',
+            'kelompok_rentan_keterangan' => 'Mekanisme/Keterangan kelompok rentan',
+            'data_anak_keterangan'       => 'Mekanisme/Keterangan data anak',
             'pengungkapan.*.organisasi' => 'Organisasi penerima',
             'pengungkapan.*.kontak'     => 'Kontak/PIC penerima',
             'pengungkapan.*.tujuan'     => 'Tujuan pengiriman',

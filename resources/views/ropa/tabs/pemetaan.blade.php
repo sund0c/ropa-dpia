@@ -21,13 +21,23 @@
 <div class="field">
     <label class="check">
         <input type="hidden" name="kelompok_rentan" value="0">
-        <input type="checkbox" name="kelompok_rentan" value="1" @checked($pick('kelompok_rentan', false))>
+        <input type="checkbox" name="kelompok_rentan" value="1" data-ket-toggle="kelompok_rentan" @checked($pick('kelompok_rentan', false))>
         Pemrosesan melibatkan kelompok rentan (disabilitas, lansia dan lainnya)
+    </label>
+    <label class="field" data-ket-for="kelompok_rentan" style="margin:.2rem 0 .6rem 1.6rem" @if (! (bool) $pick('kelompok_rentan', false)) hidden @endif>
+        <span>Mekanisme/Keterangan</span>
+        <textarea name="kelompok_rentan_keterangan" rows="3" maxlength="2000" placeholder="Contoh: Mempunyai fitur web accessibility di website, yaitu pembaca layar/Text-to-Speech, teks alternatif (alt text), pengaturan tampilan & teks.">{{ $pick('kelompok_rentan_keterangan', '') }}</textarea>
+        @error('kelompok_rentan_keterangan') <small class="error">{{ $message }}</small> @enderror
     </label>
     <label class="check">
         <input type="hidden" name="data_anak" value="0">
-        <input type="checkbox" name="data_anak" value="1" data-anak-toggle @checked($dataAnak)> Pemrosesan
+        <input type="checkbox" name="data_anak" value="1" data-anak-toggle data-ket-toggle="data_anak" @checked($dataAnak)> Pemrosesan
         melibatkan Data Pribadi Anak
+    </label>
+    <label class="field" data-ket-for="data_anak" style="margin:.2rem 0 .6rem 1.6rem" @if (! (bool) $pick('data_anak', false)) hidden @endif>
+        <span>Mekanisme/Keterangan</span>
+        <textarea name="data_anak_keterangan" rows="3" maxlength="2000" placeholder="Contoh: Data anak hanya diproses dengan persetujuan orang tua/wali yang diverifikasi melalui Kartu Keluarga.">{{ $pick('data_anak_keterangan', '') }}</textarea>
+        @error('data_anak_keterangan') <small class="error">{{ $message }}</small> @enderror
     </label>
 </div>
 
@@ -139,6 +149,14 @@
     @enderror
 </div>
 <script>
+    // Mekanisme/Keterangan muncul bila kotak kelompok rentan / data anak dicentang
+    document.querySelectorAll('[data-ket-toggle]').forEach(cb => {
+        const box = document.querySelector(`[data-ket-for="${cb.dataset.ketToggle}"]`);
+        const sync = () => { if (box) box.hidden = ! cb.checked; };
+        cb.addEventListener('change', sync);
+        sync();
+    });
+
     (function() {
         const toggle = document.querySelector('[data-anak-toggle]');
         const anak = document.querySelector('[data-anak-otomatis]');
