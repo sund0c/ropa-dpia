@@ -4,11 +4,11 @@
     $ket      = $hasOld ? (array) old('keterangan', []) : ($d['keterangan'] ?? []);
     $estimasi = $ropa['pemetaan']['estimasi_subjek'] ?? null;
 
-    // Isian awal untuk indikator data spesifik: daftar jenis data spesifik dari RoPA Tab III
+    // Isian awal untuk indikator data spesifik: daftar jenis data spesifik dari RoPA Tab IV
     $spesifik = collect($ropa['pemetaan']['jenis_spesifik'] ?? [])
         ->map(fn ($k) => \App\Http\Controllers\RopaController::JENIS_DATA_SPESIFIK[$k] ?? $k)
         ->implode(', ');
-    // Isian awal untuk indikator pembatasan hak: daftar hak yang tidak dicentang di RoPA Tab IV
+    // Isian awal untuk indikator pembatasan hak: daftar hak yang tidak dicentang di RoPA Tab V
     $hakKurang = collect(\App\Support\RopaStatus::hakTidakDifasilitasi($ropa))
         ->map(fn ($k) => \App\Http\Controllers\RopaController::HAK_SINGKAT[$k] ?? $k);
     $isianAwal = array_filter([
@@ -24,7 +24,7 @@
 
 <div class="bar-default">
     <p class="hint" style="margin:0; flex:1">
-        Status Ya/Tidak diambil dari <a href="{{ route('ropa.form', ['tab' => 'risiko']) }}">RoPA Tab VI</a>
+        Status Ya/Tidak diambil dari <a href="{{ route('ropa.form', ['tab' => 'risiko']) }}">RoPA Tab VII</a>
         dan hanya bisa diubah di sana. Keterangan wajib diisi untuk setiap potensi risiko yang bernilai <strong>Ya</strong>.
     </p>
     @if ($isianAwal)

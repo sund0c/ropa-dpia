@@ -242,7 +242,8 @@ class DpiaController extends Controller
         }
 
         // Lokasi, tanggal, dan penandatangan kiri: hanya untuk cetakan ini, tidak disimpan
-        $v = Validator::make($request->only('lokasi', 'tanggal', 'tte'), [
+        $v = Validator::make($request->only('lokasi', 'tanggal', 'tte', 'cakupan'), [
+            'cakupan' => ['required', Rule::in(['ropa', 'dpia', 'keduanya'])],
             'lokasi'  => ['required', 'string', 'max:100'],
             'tanggal' => ['required', 'date_format:Y-m-d'],
             'tte'     => ['nullable', 'array'],
@@ -251,7 +252,7 @@ class DpiaController extends Controller
 
         if ($v->fails()) {
             return redirect()->route('dpia.form', ['tab' => 'kesimpulan'])
-                ->withErrors(['dpia' => 'Lokasi dan tanggal pengesahan wajib diisi dengan benar sebelum mencetak PDF.']);
+                ->withErrors(['dpia' => 'Pilih dokumen yang dicetak, lalu isi lokasi dan tanggal pengesahan dengan benar sebelum mencetak PDF.']);
         }
 
         $in   = $v->validated();
@@ -261,9 +262,11 @@ class DpiaController extends Controller
             return redirect()->route('dpia.form', ['tab' => 'kesimpulan'])->withErrors(['dpia' => $galat]);
         }
 
-        $kode = self::kodeDokumen($ropa);
+        $kode    = self::kodeDokumen($ropa);
+        $cakupan = $in['cakupan'];
 
         $pdf = Pdf::loadView('dpia.pdf', [
+            'cakupan'    => $cakupan,
             'ropa'       => $ropa,
             'dpia'       => $dpia,
             'kode'       => $kode,
@@ -302,7 +305,13 @@ class DpiaController extends Controller
             ]);
         PdfFooter::tambah($pdf);
 
-        return $pdf->download($kode . '.pdf')->header('Cache-Control', 'no-store, private');
+        $namaFile = match ($cakupan) {
+            'ropa'     => $ropa['nomor'],
+            'dpia'     => $kode,
+            'keduanya' => $ropa['nomor'] . '_' . $kode,
+        };
+
+        return $pdf->download($namaFile . '.pdf')->header('Cache-Control', 'no-store, private');
     }
 
 

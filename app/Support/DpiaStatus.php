@@ -16,7 +16,7 @@ class DpiaStatus
         $m = [];
 
         if (! RopaStatus::koordinatorLengkap($ropa)) {
-            $m[] = 'Data Koordinator PPDP di RoPA Tab I belum diisi.';
+            $m[] = 'Data Koordinator PPDP di RoPA Tab II belum diisi.';
         }
 
         // Semua tab (kecuali yang otomatis dari RoPA) sudah pernah disimpan

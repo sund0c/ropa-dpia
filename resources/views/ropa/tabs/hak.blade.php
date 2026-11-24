@@ -2,7 +2,7 @@
     $hasOld  = session()->hasOldInput();
     $dipilih = (array) ($hasOld ? old('hak', []) : ($d['hak'] ?? []));
 
-    // Pengingat konsistensi: Consent di Tab II → idealnya hak tarik persetujuan difasilitasi
+    // Pengingat konsistensi: Consent di Tab III → idealnya hak tarik persetujuan difasilitasi
     $pakaiConsent = in_array('consent', $ropa['aktivitas']['dasar'] ?? [], true);
 @endphp
 
@@ -26,7 +26,7 @@
 
     @if ($pakaiConsent && ! in_array('tarik_persetujuan', $dipilih, true))
         <div class="alert warn" style="margin-top:.75rem">
-            Tab II mencantumkan <strong>persetujuan (consent)</strong> sebagai dasar pemrosesan. Subjek data yang
+            Tab III mencantumkan <strong>persetujuan (consent)</strong> sebagai dasar pemrosesan. Subjek data yang
             memberi persetujuan berhak menariknya kembali (Pasal 9 UU PDP), sehingga hak ini sebaiknya ikut difasilitasi.
         </div>
     @endif

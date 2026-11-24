@@ -25,8 +25,8 @@ class RopaStatus
     }
 
     /**
-     * Indikator risiko yang terpenuhi: pilihan manual Tab VI + data spesifik dari Tab III
-     * + pembatasan hak bila ada hak subjek di Tab IV yang tidak difasilitasi. Urutan mengikuti INDIKATOR_RISIKO.
+     * Indikator risiko yang terpenuhi: pilihan manual Tab VII + data spesifik dari Tab IV
+     * + pembatasan hak bila ada hak subjek di Tab V yang tidak difasilitasi. Urutan mengikuti INDIKATOR_RISIKO.
      */
     public static function indikatorAktif(array $ropa): array
     {
@@ -45,7 +45,7 @@ class RopaStatus
         return array_values(array_intersect(array_keys(RopaController::INDIKATOR_RISIKO), $indikator));
     }
 
-    /** Kunci hak subjek yang tidak dicentang di Tab IV (kosong bila Tab IV belum disimpan). */
+    /** Kunci hak subjek yang tidak dicentang di Tab V (kosong bila Tab V belum disimpan). */
     public static function hakTidakDifasilitasi(array $ropa): array
     {
         if (! isset($ropa['hak'])) return [];

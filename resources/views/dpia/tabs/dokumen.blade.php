@@ -13,9 +13,10 @@
 
 <x-readonly label="Kode Dokumen" :value="$kode" hint="Dibuat otomatis mengikuti Nomor RoPA sesi ini." />
 
-<x-readonly label="Nama Aktivitas Proses" :value="$ropa['aktivitas']['nama_aktivitas']" hint="Diambil dari RoPA Tab II." />
+<x-readonly label="Nama Aktivitas Proses" :value="$ropa['aktivitas']['nama_aktivitas']" hint="Diambil dari RoPA Tab III." />
 
-<x-readonly label="Kode Referensi RoPA" :value="$ropa['nomor']" />
+<x-readonly label="Kode Referensi RoPA" :value="\App\Http\Controllers\RopaController::referensi($ropa)"
+    hint="Diambil otomatis dari RoPA Tab I (Nomor RoPA dan versi terakhir pada Riwayat Perubahan Dokumen)." />
 
 <div class="row">
     <x-field name="tanggal_penyusunan" label="Tanggal Penyusunan" type="date" :value="$d['tanggal_penyusunan'] ?? now()->format('Y-m-d')" required />

@@ -13,16 +13,36 @@
         ->translatedFormat('d F Y, H:i') . ' WITA';
 
     $kontakInstansi = implode(' / ', array_filter([$o['telepon'] ?? null, $o['email'] ?? null]));
+    $dok = (array) ($ropa['dokumen'] ?? []);
+    $tglDok = fn($ymd) => filled($ymd) ? \Carbon\Carbon::parse($ymd)->locale('id')->translatedFormat('d F Y') : '-';
     $kontakPpdp = implode(' / ', array_filter([$o['ppdp_email'] ?? null, $o['ppdp_hp'] ?? null]));
 @endphp
 
 <h1>
     RECORD OF PROCESSING ACTIVITIES (RoPA)</h1>
 
-<table class="meta">
+{{-- ============ I ============ --}}
+<h2>I. INFORMASI DOKUMEN</h2>
+<table class="kv">
     <tr>
-        <td class="k">Nomor RoPA</td>
+        <td class="k">Kode Dokumen (Nomor RoPA)</td>
         <td>{{ $ropa['nomor'] }}</td>
+    </tr>
+    <tr>
+        <td class="k">Versi Terakhir</td>
+        <td>{{ \App\Http\Controllers\RopaController::versiTerakhir($ropa) ?? '-' }}</td>
+    </tr>
+    <tr>
+        <td class="k">Tanggal Penyusunan</td>
+        <td>{{ $tglDok($dok['tanggal_penyusunan'] ?? null) }}</td>
+    </tr>
+    <tr>
+        <td class="k">Tanggal Review Berikutnya</td>
+        <td>{{ $tglDok($dok['tanggal_review'] ?? null) }}</td>
+    </tr>
+    <tr>
+        <td class="k">Status Dokumen</td>
+        <td>{{ $labels['status_dokumen'][$dok['status_dokumen'] ?? ''] ?? '-' }}</td>
     </tr>
     <tr>
         <td class="k">Tanggal Terakhir Diperbarui</td>
@@ -30,8 +50,28 @@
     </tr>
 </table>
 
-{{-- ============ I ============ --}}
-<h2>I. INFORMASI ORGANISASI</h2>
+<h3>Riwayat Perubahan Dokumen</h3>
+<table class="grid">
+    <tr>
+        <th style="width:12%">Versi</th>
+        <th style="width:22%">Tanggal</th>
+        <th>Deskripsi Perubahan</th>
+        <th style="width:26%">Disusun/Direvisi oleh</th>
+    </tr>
+    @forelse ((array) ($dok['riwayat'] ?? []) as $rw)
+        <tr>
+            <td class="c">{{ $rw['versi'] }}</td>
+            <td>{{ $tglDok($rw['tanggal'] ?? null) }}</td>
+            <td>{{ filled($rw['deskripsi'] ?? null) ? $rw['deskripsi'] : '-' }}</td>
+            <td>{{ filled($rw['oleh'] ?? null) ? $rw['oleh'] : '-' }}</td>
+        </tr>
+    @empty
+        <tr><td colspan="4">-</td></tr>
+    @endforelse
+</table>
+
+{{-- ============ II ============ --}}
+<h2 class="halaman-baru">II. INFORMASI ORGANISASI</h2>
 <table class="kv">
     <tr>
         <td class="k">Nama Pengendali Data Pribadi</td>
@@ -80,7 +120,7 @@
 </table>
 
 {{-- ============ II ============ --}}
-<h2 class="halaman-baru">II. AKTIVITAS &amp; LEGALITAS PEMROSESAN</h2>
+<h2 class="halaman-baru">III. AKTIVITAS &amp; LEGALITAS PEMROSESAN</h2>
 <table class="kv">
     <tr>
         <td class="k">Nama Aktivitas Pemrosesan</td>
@@ -125,7 +165,7 @@
 </table>
 
 {{-- ============ III ============ --}}
-<h2 class="halaman-baru">III. PEMETAAN ALIRAN DATA PRIBADI</h2>
+<h2 class="halaman-baru">IV. PEMETAAN ALIRAN DATA PRIBADI</h2>
 <table class="kv">
     <tr>
         <td class="k">Kategori Subjek Data</td>
@@ -283,7 +323,7 @@
 @endforelse
 
 {{-- ============ IV ============ --}}
-<h2 class="halaman-baru">IV. PEMENUHAN HAK SUBJEK DATA PRIBADI</h2>
+<h2 class="halaman-baru">V. PEMENUHAN HAK SUBJEK DATA PRIBADI</h2>
 <table class="kv">
     <tr>
         <td class="k">Jenis Hak yang Difasilitasi</td>
@@ -302,7 +342,7 @@
 </table>
 
 {{-- ============ V ============ --}}
-<h2 class="halaman-baru">V. SIKLUS HIDUP &amp; KEAMANAN DATA</h2>
+<h2 class="halaman-baru">VI. SIKLUS HIDUP &amp; KEAMANAN DATA</h2>
 <table class="kv">
     <tr>
         <td class="k">Masa Retensi Data</td>
@@ -336,7 +376,7 @@
 </table>
 
 {{-- ============ VI ============ --}}
-<h2 class="halaman-baru">VI. INDIKATOR RISIKO TINGGI</h2>
+<h2 class="halaman-baru">VII. INDIKATOR RISIKO TINGGI</h2>
 <table class="kv">
     <tr>
         <td class="k">Indikator yang Terpenuhi<br><span style="font-weight:normal">(Pasal 34 ayat (2) UU
@@ -349,9 +389,9 @@
                     @foreach ($indikator as $k)
                         <li>{{ $labels['risiko'][$k] ?? $k }}
                             @if ($k === \App\Http\Controllers\RopaController::INDIKATOR_OTOMATIS)
-                                <em>(berdasarkan jenis data pada bagian III)</em>
+                                <em>(berdasarkan jenis data pada bagian IV)</em>
                             @elseif ($k === \App\Http\Controllers\RopaController::INDIKATOR_HAK)
-                                <em>(berdasarkan hak subjek yang tidak difasilitasi pada bagian IV)</em>
+                                <em>(berdasarkan hak subjek yang tidak difasilitasi pada bagian V)</em>
                             @endif
                         </li>
                     @endforeach

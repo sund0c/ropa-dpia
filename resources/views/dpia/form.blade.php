@@ -7,7 +7,7 @@
 
     <div class="meta">
         <strong>Kode Dokumen:</strong> {{ $kode }}<br>
-        <strong>Referensi RoPA:</strong> {{ $ropa['nomor'] }}<br>
+        <strong>Referensi RoPA:</strong> {{ \App\Http\Controllers\RopaController::referensi($ropa) }}<br>
         <strong>Terakhir diperbarui:</strong>
         {{ isset($dpia['diperbarui'])
             ? \Carbon\Carbon::parse($dpia['diperbarui'])->timezone(config('app.timezone'))->translatedFormat('d F Y, H:i') .
@@ -32,7 +32,7 @@
     @if ($otomatis)
         <div class="alert ok">
             Seluruh isian bagian ini diambil otomatis dari RoPA. Untuk mengubahnya, edit di
-            <a href="{{ route('ropa.form', ['tab' => 'organisasi']) }}">RoPA Tab I</a>.
+            <a href="{{ route('ropa.form', ['tab' => 'organisasi']) }}">RoPA Tab II</a>.
         </div>
         @include('dpia.tabs.' . $tab)
     @else
@@ -59,7 +59,7 @@
 
     <div class="status-dpia">
         @if (empty($masalahDpia))
-            <span style="display:inline-flex;gap:.5rem;flex-wrap:wrap"><a class="btn-garis" href="{{ route('ropa.kebijakan') }}" target="_blank" rel="noopener">Kebijakan Privasi</a><button type="button" class="btn-hijau" data-open-dialog="dialog-pdf-dpia">Export PDF DPIA</button></span>
+            <span style="display:inline-flex;gap:.5rem;flex-wrap:wrap"><a class="btn-garis" href="{{ route('ropa.kebijakan') }}" target="_blank" rel="noopener">Kebijakan Privasi</a><button type="button" class="btn-hijau" data-open-dialog="dialog-pdf-dpia">Export PDF RoPA / DPIA</button></span>
         @else
             <strong>DPIA belum dapat diekspor:</strong>
             <ul>
@@ -74,8 +74,18 @@
         <dialog id="dialog-pdf-dpia" class="dialog">
             <form method="POST" action="{{ route('dpia.pdf') }}" enctype="multipart/form-data" data-close-on-submit>
                 @csrf
-                <h3 style="margin-top:0">Pengesahan Dokumen DPIA</h3>
+                <h3 style="margin-top:0">Pengesahan Dokumen</h3>
                 <p class="hint">Data ini hanya dipakai untuk cetakan ini dan tidak disimpan.</p>
+
+                <fieldset class="field">
+                    <legend>Dokumen yang dicetak <span class="req">*</span></legend>
+                    <div class="radios">
+                        <label class="check"><input type="radio" name="cakupan" value="ropa" required> RoPA saja</label>
+                        <label class="check"><input type="radio" name="cakupan" value="dpia"> DPIA saja</label>
+                        <label class="check"><input type="radio" name="cakupan" value="keduanya" checked> RoPA dan DPIA</label>
+                    </div>
+                    <small class="hint">RoPA dan DPIA: RoPA dicetak lebih dulu, disusul DPIA dalam satu file PDF.</small>
+                </fieldset>
 
                 <div class="field">
                     <label for="dpia-lokasi">Lokasi <span class="req">*</span></label>

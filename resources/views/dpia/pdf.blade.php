@@ -65,7 +65,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>{{ $kode }}</title>
+    <title>{{ $cakupan === 'ropa' ? $ropa['nomor'] : $kode }}</title>
     <style>
         @page {
             margin: 1.8cm 1.6cm 4cm 1.6cm;
@@ -271,6 +271,24 @@
 
     <header><span>TERBATAS</span></header>
 
+    {{-- ================= DOKUMEN RoPA (didahulukan bila dicetak bersama DPIA) ================= --}}
+    @if ($cakupan !== 'dpia')
+        <div class="dok-ropa">
+            @include('ropa._isi', [
+                'ropa' => $ropa,
+                'labels' => $labelsRopa,
+                'indikator' => $indikator,
+                'wajibDpia' => true,
+                'pengesahan' => $pengesahan,
+            ])
+        </div>
+    @endif
+
+    @if ($cakupan !== 'ropa')
+    @if ($cakupan === 'keduanya')
+        <div style="page-break-before: always;"></div>
+    @endif
+
     {{-- ================= SAMPUL & INFORMASI DOKUMEN ================= --}}
     <div class="sampul">
         <div class="judul">DATA PROTECTION IMPACT ASSESSMENT (DPIA)</div>
@@ -289,7 +307,7 @@
         </tr>
         <tr>
             <td class="k">Kode Referensi RoPA</td>
-            <td>{{ $ropa['nomor'] }}</td>
+            <td>{{ \App\Http\Controllers\RopaController::referensi($ropa) }}</td>
         </tr>
         <tr>
             <td class="k">Tanggal Penyusunan</td>
@@ -824,16 +842,7 @@
         </table>
     </div>
 
-    {{-- ================= DOKUMEN RoPA (halaman baru) ================= --}}
-    <div class="dok-ropa" style="page-break-before: always;">
-        @include('ropa._isi', [
-            'ropa' => $ropa,
-            'labels' => $labelsRopa,
-            'indikator' => $indikator,
-            'wajibDpia' => true,
-            'pengesahan' => $pengesahan,
-        ])
-    </div>
+    @endif
 
 </body>
 

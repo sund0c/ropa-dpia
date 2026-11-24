@@ -23,12 +23,12 @@
         @endforeach
     </ol>
 </div>
-<small class="hint">Diambil dari RoPA Tab II.</small>
+<small class="hint">Diambil dari RoPA Tab III.</small>
 
 {{-- 2 --}}
 <h3 class="sub">2. Tujuan Pemrosesan Data Pribadi</h3>
 <div class="ro-box">{!! nl2br(e($a['tujuan'])) !!}</div>
-<small class="hint">Diambil dari RoPA Tab II.</small>
+<small class="hint">Diambil dari RoPA Tab III.</small>
 
 {{-- 3 --}}
 <h3 class="sub">3. Data Pribadi yang Diproses</h3>
@@ -63,7 +63,7 @@
             </label>
         @endforeach
     </div>
-    <small class="hint">Seluruh isian bagian 4 diambil dari RoPA Tab III dan hanya bisa diubah di sana.</small>
+    <small class="hint">Seluruh isian bagian 4 diambil dari RoPA Tab IV dan hanya bisa diubah di sana.</small>
 </fieldset>
 
 {{-- 4 --}}

@@ -25,8 +25,8 @@
                     <span>
                         {{ $label }}
                         <small class="hint">
-                            (otomatis dari Tab III:
-                            {{ ! $tab3Ada ? 'Tab III belum disimpan'
+                            (otomatis dari Tab IV:
+                            {{ ! $tab3Ada ? 'Tab IV belum disimpan'
                                : ($adaSpesifik ? 'terdapat data pribadi spesifik' : 'tidak ada data pribadi spesifik') }})
                         </small>
                     </span>
@@ -37,8 +37,8 @@
                     <span>
                         {{ $label }}
                         <small class="hint">
-                            (otomatis dari Tab IV:
-                            {{ ! $tab4Ada ? 'Tab IV belum disimpan'
+                            (otomatis dari Tab V:
+                            {{ ! $tab4Ada ? 'Tab V belum disimpan'
                                : ($hakKurang ? count($hakKurang) . ' hak subjek tidak difasilitasi' : 'seluruh hak subjek difasilitasi') }})
                         </small>
                     </span>
@@ -49,7 +49,7 @@
                     <span>
                         {{ $label }}
                         @if ($key === 'skala_besar' && $estimasi !== null)
-                            <small class="hint">(estimasi subjek data di Tab III: {{ number_format($estimasi, 0, ',', '.') }} orang)</small>
+                            <small class="hint">(estimasi subjek data di Tab IV: {{ number_format($estimasi, 0, ',', '.') }} orang)</small>
                         @endif
                     </span>
                 </label>

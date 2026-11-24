@@ -108,6 +108,13 @@ class DataController extends Controller
         // RoPA: berurutan, karena tab tertentu bergantung pada tab sebelumnya
         $ropaCtl = app(RopaController::class);
         $ropa    = ['nomor' => $nomor];
+
+        // File lama belum punya Informasi Dokumen RoPA: isi default (versi 1.0), bisa diubah di Tab I
+        $dokumenOtomatis = false;
+        if (! is_array($in['ropa']['dokumen'] ?? null)) {
+            $in['ropa']['dokumen'] = RopaController::dokumenDefault((array) $in['ropa']);
+            $dokumenOtomatis = true;
+        }
         foreach (RopaController::TABS as $tab => $label) {
             $isiTab = $in['ropa'][$tab] ?? null;
             if (! is_array($isiTab)) continue;
@@ -148,7 +155,8 @@ class DataController extends Controller
         }
 
         $redirect = redirect()->route('ropa.form')
-            ->with('saved', sprintf($pesanOk, $nomor));
+            ->with('saved', sprintf($pesanOk, $nomor)
+                . ($dokumenOtomatis ? ' Informasi Dokumen RoPA (Tab I) diisi otomatis versi 1.0; periksa dan sesuaikan.' : ''));
 
         return $gagal
             ? $redirect->withErrors(['ropa' => 'Sebagian data tidak dimuat karena tidak lolos validasi: ' . implode('; ', $gagal) . '. Silakan isi ulang bagian tersebut.'])

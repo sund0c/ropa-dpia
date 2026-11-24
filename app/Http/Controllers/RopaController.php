@@ -16,12 +16,13 @@ class RopaController extends Controller
 {
     /** Daftar tab RoPA. Tab berikutnya cukup ditambahkan di sini + di rules(). */
     public const TABS = [
-        'organisasi' => 'I. Informasi Organisasi',
-        'aktivitas'  => 'II. Aktivitas & Legalitas Pemrosesan',
-        'pemetaan'   => 'III. Pemetaan Aliran Data Pribadi',
-        'hak'        => 'IV. Pemenuhan Hak Subjek Data Pribadi',
-        'siklus'     => 'V. Siklus Hidup & Keamanan Data',
-        'risiko'     => 'VI. Indikator Risiko Tinggi',
+        'dokumen'    => 'I. Informasi Dokumen',
+        'organisasi' => 'II. Informasi Organisasi',
+        'aktivitas'  => 'III. Aktivitas & Legalitas Pemrosesan',
+        'pemetaan'   => 'IV. Pemetaan Aliran Data Pribadi',
+        'hak'        => 'V. Pemenuhan Hak Subjek Data Pribadi',
+        'siklus'     => 'VI. Siklus Hidup & Keamanan Data',
+        'risiko'     => 'VII. Indikator Risiko Tinggi',
 
     ];
 
@@ -137,6 +138,7 @@ class RopaController extends Controller
     /** Daftar multi-kolom (name[i][kolom]). Baris yang semua kolomnya kosong dibuang. */
     private const ROW_FIELDS = [
         'pengumpulan' => ['sumber', 'lokasi'],
+        'riwayat'     => ['versi', 'tanggal', 'deskripsi', 'oleh'],
         'transfer'     => ['organisasi', 'negara', 'kontak', 'tujuan', 'mekanisme', 'data'],
         'pengungkapan' => ['organisasi', 'kontak', 'tujuan', 'mekanisme', 'data'],
     ];
@@ -165,6 +167,7 @@ class RopaController extends Controller
                 'hak'            => self::HAK_SUBJEK,
                 'status_siklus'  => self::STATUS_SIKLUS,
                 'risiko'         => self::INDIKATOR_RISIKO,
+                'status'         => DpiaController::STATUS_DOKUMEN,
             ],
         ]);
     }
@@ -192,13 +195,66 @@ class RopaController extends Controller
         return redirect()->route('ropa.form', ['tab' => $next])->with('saved', $pesan);
     }
 
-    /** Field Koordinator PPDP (Tab I). Boleh kosong pada impor file lama, wajib saat disimpan dari form. */
+    /**
+     * Versi terakhir RoPA: baris riwayat dengan tanggal paling akhir (bila sama, baris paling bawah).
+     * Null bila Informasi Dokumen belum diisi.
+     */
+    public static function versiTerakhir(array $ropa): ?string
+    {
+        $akhir = null;
+        foreach ((array) ($ropa['dokumen']['riwayat'] ?? []) as $rw) {
+            if (! is_array($rw) || blank($rw['versi'] ?? null)) continue;
+            if ($akhir === null || (string) ($rw['tanggal'] ?? '') >= (string) ($akhir['tanggal'] ?? '')) {
+                $akhir = $rw;
+            }
+        }
+        return $akhir['versi'] ?? null;
+    }
+
+    /** Kode referensi RoPA untuk DPIA, misalnya "ROPA-20261008-YVPPBM (Versi 1.1)". */
+    public static function referensi(array $ropa): string
+    {
+        $versi = self::versiTerakhir($ropa);
+        return ($ropa['nomor'] ?? '-') . ($versi !== null ? " (Versi $versi)" : '');
+    }
+
+    /**
+     * Informasi Dokumen pengganti untuk file ekspor lama (sebelum tab ini ada): versi 1.0,
+     * tanggal dari nomor RoPA, review satu tahun kemudian. Pengguna dapat mengubahnya di Tab I.
+     */
+    public static function dokumenDefault(array $ropaJson): array
+    {
+        $nomor = (string) ($ropaJson['nomor'] ?? '');
+        try {
+            $tgl = preg_match('/^ROPA-(\d{8})-/', $nomor, $m)
+                ? Carbon::createFromFormat('!Ymd', $m[1])
+                : now()->startOfDay();
+        } catch (\Throwable) {
+            $tgl = now()->startOfDay();
+        }
+        $o = (array) ($ropaJson['organisasi'] ?? []);
+        $oleh = $o['koordinator_nama'] ?? $o['nama_ppdp'] ?? null;
+
+        return [
+            'tanggal_penyusunan' => $tgl->format('Y-m-d'),
+            'tanggal_review'     => $tgl->copy()->addYear()->format('Y-m-d'),
+            'status_dokumen'     => 'draf',
+            'riwayat'            => [[
+                'versi'     => '1.0',
+                'tanggal'   => $tgl->format('Y-m-d'),
+                'deskripsi' => 'Penyusunan awal',
+                'oleh'      => filled($oleh) ? $oleh : 'Penyusun',
+            ]],
+        ];
+    }
+
+    /** Field Koordinator PPDP (Tab II). Boleh kosong pada impor file lama, wajib saat disimpan dari form. */
     public const FIELD_KOORDINATOR = ['koordinator_nama', 'koordinator_jabatan', 'koordinator_email', 'koordinator_hp'];
 
     /**
      * Bersihkan + validasi isian satu tab. Dipakai oleh tombol Simpan dan oleh Impor JSON,
      * sehingga keduanya selalu memakai aturan yang sama. Melempar ValidationException bila gagal.
-     * $imporLama: file ekspor sebelum ada Koordinator PPDP tetap bisa dimuat; datanya dilengkapi kemudian di Tab I.
+     * $imporLama: file ekspor sebelum ada Koordinator PPDP tetap bisa dimuat; datanya dilengkapi kemudian di Tab II.
      */
     public function dataTab(string $tab, Request $request, bool $imporLama = false): array
     {
@@ -246,6 +302,7 @@ class RopaController extends Controller
             'hak'            => self::HAK_SUBJEK,
             'status_siklus'  => self::STATUS_SIKLUS,
             'risiko'         => self::INDIKATOR_RISIKO,
+            'status_dokumen' => DpiaController::STATUS_DOKUMEN,
         ];
     }
 
@@ -259,7 +316,7 @@ class RopaController extends Controller
         }
         if (! RopaStatus::koordinatorLengkap($ropa)) {
             return redirect()->route('ropa.form', ['tab' => 'organisasi'])
-                ->withErrors(['ropa' => 'Lengkapi data Koordinator PPDP di Tab I terlebih dahulu.']);
+                ->withErrors(['ropa' => 'Lengkapi data Koordinator PPDP di Tab II terlebih dahulu.']);
         }
 
         // Lokasi & tanggal pengesahan: hanya untuk cetakan ini, tidak disimpan
@@ -434,6 +491,16 @@ class RopaController extends Controller
     private function rules(string $tab, Request $request): array
     {
         return match ($tab) {
+            'dokumen' => [
+                'tanggal_penyusunan'  => ['required', 'date_format:Y-m-d'],
+                'tanggal_review'      => ['required', 'date_format:Y-m-d', 'after:tanggal_penyusunan'],
+                'status_dokumen'      => ['required', Rule::in(array_keys(DpiaController::STATUS_DOKUMEN))],
+                'riwayat'             => ['required', 'array', 'max:30'],
+                'riwayat.*.versi'     => ['required', 'string', 'max:20'],
+                'riwayat.*.tanggal'   => ['required', 'date_format:Y-m-d', 'after_or_equal:tanggal_penyusunan'],
+                'riwayat.*.deskripsi' => ['required', 'string', 'max:1000'],
+                'riwayat.*.oleh'      => ['required', 'string', 'max:255'],
+            ],
             'organisasi' => [
                 'nama_instansi'   => ['required', 'string', 'max:255'],
                 'alamat'          => ['required', 'string', 'max:1000'],
@@ -531,6 +598,11 @@ class RopaController extends Controller
     private function messages(): array
     {
         return [
+            'tanggal_review.after'             => 'Tanggal review berikutnya harus setelah tanggal penyusunan.',
+            'status_dokumen.required'          => 'Pilih status dokumen.',
+            'riwayat.required'                 => 'Isi minimal satu riwayat perubahan dokumen.',
+            'riwayat.max'                      => 'Maksimal :max riwayat perubahan.',
+            'riwayat.*.tanggal.after_or_equal' => 'Tanggal riwayat tidak boleh sebelum Tanggal Penyusunan.',
             'required'                   => ':attribute wajib diisi.',
             'required_without'           => 'Isi :attribute atau :values (minimal salah satu).',
             'email'                      => ':attribute harus berupa alamat email yang valid.',
@@ -568,6 +640,13 @@ class RopaController extends Controller
     private function attributes(): array
     {
         return [
+            'tanggal_penyusunan'    => 'Tanggal penyusunan',
+            'tanggal_review'        => 'Tanggal review berikutnya',
+            'status_dokumen'        => 'Status dokumen',
+            'riwayat.*.versi'       => 'Versi',
+            'riwayat.*.tanggal'     => 'Tanggal perubahan',
+            'riwayat.*.deskripsi'   => 'Deskripsi perubahan',
+            'riwayat.*.oleh'        => 'Disusun/direvisi oleh',
             'nama_instansi'         => 'Nama Pengendali Data Pribadi (instansi)',
             'alamat'                => 'Alamat kantor',
             'telepon'               => 'Nomor telepon resmi',

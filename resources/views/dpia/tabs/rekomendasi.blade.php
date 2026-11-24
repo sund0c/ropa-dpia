@@ -24,7 +24,7 @@
 {{-- A. PPDP --}}
 <h3 class="sub">A. Rekomendasi dengan PPDP</h3>
 
-<x-readonly label="Nama PPDP" :value="$ropa['organisasi']['nama_ppdp']" hint="Diambil dari RoPA Tab I." />
+<x-readonly label="Nama PPDP" :value="$ropa['organisasi']['nama_ppdp']" hint="Diambil dari RoPA Tab II." />
 
 <x-field name="ppdp_tanggal" label="Tanggal Rekomendasi PPDP" type="date"
          :value="$d['ppdp_tanggal'] ?? null" required />

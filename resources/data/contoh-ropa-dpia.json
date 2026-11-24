@@ -4,6 +4,25 @@
     "diekspor": "2026-11-10T08:44:00+08:00",
     "ropa": {
         "nomor": "ROPA-20261008-YVPPBM",
+        "dokumen": {
+            "tanggal_penyusunan": "2026-10-08",
+            "tanggal_review": "2027-10-08",
+            "status_dokumen": "draf",
+            "riwayat": [
+                {
+                    "versi": "1.0",
+                    "tanggal": "2026-10-08",
+                    "deskripsi": "Penyusunan awal",
+                    "oleh": "Ina Ayu"
+                },
+                {
+                    "versi": "1.1",
+                    "tanggal": "2026-11-10",
+                    "deskripsi": "Pemisahan pengamanan organisasional, operasional, dan teknis",
+                    "oleh": "Ina Ayu"
+                }
+            ]
+        },
         "organisasi": {
             "nama_instansi": "Dinas Komunikasi, Informatika dan Statistik",
             "alamat": "Jalan D.I. Panjaitan Nomor 7 Kecamatan Denpasar Selatan, Kota Denpasar, Bali 80235",
