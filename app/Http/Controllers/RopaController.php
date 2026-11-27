@@ -179,7 +179,7 @@ class RopaController extends Controller
         $data = $this->dataTab($tab, $request);
 
         $ropa = session('ropa', []);
-        $ropa['nomor']    ??= $this->generateNomor();
+        $ropa['nomor']    ??= self::nomorBaru();
         $ropa[$tab]         = $data;
         $ropa['diperbarui'] = now()->toIso8601String();
 
@@ -694,8 +694,19 @@ class RopaController extends Controller
         ];
     }
 
-    private function generateNomor(): string
+    /**
+     * Nomor RoPA baru: ROPA-YYYYMMDD-XXXXXX. Enam karakter acak kriptografis dari 32 karakter
+     * (tanpa 0/O dan 1/I agar tidak tertukar saat dibaca), sekitar 1 miliar kemungkinan per hari,
+     * sehingga praktis tidak akan sama antarpengguna/komputer walau tanpa basis data.
+     */
+    public static function nomorBaru(): string
     {
-        return 'ROPA-' . now()->format('Ymd') . '-' . strtoupper(Str::random(6));
+        $abjad = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        $acak  = '';
+        for ($i = 0; $i < 6; $i++) {
+            $acak .= $abjad[random_int(0, strlen($abjad) - 1)];
+        }
+
+        return 'ROPA-' . now()->format('Ymd') . '-' . $acak;
     }
 }

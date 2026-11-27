@@ -61,22 +61,34 @@ class DataController extends Controller
             return $gagalFile('File harus berekstensi .json.');
         }
 
-        return $this->muat(file_get_contents($berkas->getRealPath()), 'Data %s berhasil diimpor.');
+        return $this->muat(
+            file_get_contents($berkas->getRealPath()),
+            'Data %s berhasil diimpor.',
+            $request->input('nomor') === 'baru',
+        );
     }
 
     /** Muat contoh data bawaan aplikasi (menggantikan isian RoPA & DPIA di sesi ini). */
-    public function imporContoh()
+    public function imporContoh(Request $request)
     {
         $path = resource_path(self::FILE_CONTOH);
         if (! is_file($path)) {
             return redirect()->route('ropa.form')->withErrors(['ropa' => 'File contoh data tidak ditemukan.']);
         }
 
-        return $this->muat(file_get_contents($path), 'Contoh data %s berhasil dimuat. Silakan ubah sesuai layanan Anda.');
+        // Contoh dipakai banyak orang: bawaannya nomor baru, kecuali dipilih sama dengan file
+        return $this->muat(
+            file_get_contents($path),
+            'Contoh data %s berhasil dimuat. Silakan ubah sesuai layanan Anda.',
+            $request->input('nomor', 'baru') !== 'file',
+        );
     }
 
-    /** Validasi & muat isi JSON ke sesi. $pesanOk memakai %s untuk nomor RoPA. */
-    private function muat(string $json, string $pesanOk)
+    /**
+     * Validasi & muat isi JSON ke sesi. $pesanOk memakai %s untuk nomor RoPA.
+     * $nomorBaru: abaikan nomor di file dan buat nomor RoPA (serta kode DPIA) baru.
+     */
+    private function muat(string $json, string $pesanOk, bool $nomorBaru = false)
     {
         $gagalFile = fn(string $pesan) => redirect()->route('ropa.form')->withErrors(['ropa' => $pesan]);
 
@@ -96,6 +108,10 @@ class DataController extends Controller
         $nomor = $in['ropa']['nomor'] ?? null;
         if (! is_string($nomor) || ! preg_match('/^ROPA-\d{8}-[A-Z0-9]{6}$/', $nomor)) {
             return $gagalFile('Nomor RoPA di dalam file tidak valid.');
+        }
+        $nomorFile = $nomor;
+        if ($nomorBaru) {
+            $nomor = RopaController::nomorBaru();
         }
 
         // --- 2. Kosongkan sesi (persetujuan penggunaan dibawa), lalu muat tab satu per satu ---
@@ -156,6 +172,7 @@ class DataController extends Controller
 
         $redirect = redirect()->route('ropa.form')
             ->with('saved', sprintf($pesanOk, $nomor)
+                . ($nomorBaru ? " Nomor dokumen baru dibuat (nomor di file: $nomorFile)." : '')
                 . ($dokumenOtomatis ? ' Informasi Dokumen RoPA (Tab I) diisi otomatis versi 1.0; periksa dan sesuaikan.' : ''));
 
         return $gagal
